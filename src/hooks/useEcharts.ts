@@ -107,7 +107,6 @@ export function useEcharts(
       const chartTheme = appStore.darkTheme ? 'dark' : 'light';
       await nextTick();
       chart = echarts.init(domRef.value, chartTheme);
-      console.log(renderFun);
       if (renderFun) {
         renderFun(chart);
       }
@@ -141,7 +140,7 @@ export function useEcharts(
   });
 
   const stopOptionWatch = watch(options, newValue => {
-    console.log(newValue);
+    // console.log(newValue);
     update(newValue);
   });
 

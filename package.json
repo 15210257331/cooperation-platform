@@ -7,7 +7,8 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint src --fix --ext .ts,.tsx,.vue,.js,.jsx",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "deploy": "node deploy"
   },
   "dependencies": {
     "@vueuse/core": "^8.7.5",
@@ -16,7 +17,8 @@
     "echarts": "^5.3.3",
     "pinia": "^2.0.14",
     "vue": "^3.2.25",
-    "vue-router": "^4.0.16"
+    "vue-router": "^4.0.16",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
@@ -33,6 +35,7 @@
     "naive-ui": "^2.30.7",
     "prettier": "^2.7.1",
     "sass": "^1.53.0",
+    "ssh2": "^1.11.0",
     "typescript": "^4.5.4",
     "unplugin-vue-components": "^0.20.1",
     "vfonts": "0.0.3",

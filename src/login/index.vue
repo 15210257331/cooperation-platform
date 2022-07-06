@@ -1,7 +1,7 @@
 <template>
   <div class="login">
+    <h2 class="login-title">登录</h2>
     <n-form class="login-form" ref="formRef" :model="model" :rules="rules" size="large" :show-label="false">
-      <h2 class="login-title">登录</h2>
       <n-form-item path="username">
         <n-input v-model:value="model.username" placeholder="请输入用户名" />
       </n-form-item>
@@ -79,8 +79,16 @@ function handleSubmit(e: MouseEvent) {
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  background: white url(../assets/images/task_bg.jpg) no-repeat fixed center center;
+  .login-title {
+    margin: 0 0 30px 0;
+    font-size: 23px;
+    font-weight: 600;
+    text-align: center;
+  }
   .login-form {
     width: 420px;
     height: auto;
@@ -88,12 +96,6 @@ function handleSubmit(e: MouseEvent) {
     border: 1px solid #eee;
     background-color: #eee;
     border-radius: 5px;
-    .login-title {
-      padding: 20px 0 30px 0;
-      font-size: 23px;
-      font-weight: 600;
-      text-align: center;
-    }
   }
 }
 </style>
