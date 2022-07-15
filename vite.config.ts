@@ -1,6 +1,6 @@
 import { defineConfig, loadEnv } from 'vite';
 import { viteDefine, createViteProxy, getProxyConfig } from './build';
-import { getRootPath, getSrcPath } from './src/utils/index';
+import { getRootPath, getSrcPath } from './src/utils/helper';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import ViteCompression from 'vite-plugin-compression';
@@ -46,7 +46,7 @@ export default defineConfig(({ command, mode }) => {
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `@import "@/style/main.scss";`
+          additionalData: `@import "@/style/main.scss","@/style/variable.scss";`
         }
       }
     },

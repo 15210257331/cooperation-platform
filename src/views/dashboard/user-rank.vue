@@ -11,7 +11,7 @@
         <n-radio-button :value="'2'" label="按完成率" />
       </n-radio-group>
     </template>
-    <table class="positive-rank" cellspacing="0">
+    <n-table :bordered="false" class="table">
       <thead>
         <tr>
           <th>排名</th>
@@ -38,13 +38,13 @@
           <td>{{ item.percent }}%</td>
         </tr>
       </tbody>
-    </table>
+    </n-table>
   </n-card>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { userRank } from '@/service/api';
+import { userRank } from '@/api';
 
 const type = ref<string>('1');
 const userList = ref<any>([]);
@@ -68,36 +68,10 @@ function queryData() {
 </script>
 
 <style lang="scss" scoped>
-table.positive-rank {
+.table {
   cursor: pointer;
-  height: auto;
-  width: 100%;
-  border-collapse: collapse;
-  thead tr {
-    background-color: #f9f9f9;
-    height: 54px;
-    th {
-      height: 54px;
-      line-height: 54px;
-      text-align: left;
-      padding-left: 40px;
-      color: #333;
-      font-size: 14px;
-      font-weight: 500;
-    }
-  }
   tbody tr {
-    &:hover {
-      background-color: #eaf2ff;
-    }
     td {
-      height: 50px;
-      line-height: 50px;
-      text-align: left;
-      padding-left: 40px;
-      color: #666;
-      font-size: 14px;
-      font-weight: 400;
       span {
         width: 20px;
         height: 20px;

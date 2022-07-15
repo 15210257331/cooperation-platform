@@ -19,8 +19,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue';
-import { useEcharts, type ECOption, useTest } from '@/hooks';
-import { taskTrend } from '@/service/api';
+import { useEcharts, type ECOption } from '@/hooks';
+import { taskTrend } from '@/api';
 
 const pieOptions = ref<ECOption>({});
 const { domRef: myChart } = useEcharts(pieOptions);

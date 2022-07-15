@@ -1,6 +1,6 @@
 <template>
   <router-link :class="{ 'app-logo': true, 'app-logo-collapse': appstore.siderCollapse }" to="/">
-    <img class="logo-img" src="../../assets/logo.png" />
+    <img class="logo-img" src="../assets/logo.png" />
     <h2 class="logo-title">任务管理平台</h2>
   </router-link>
 </template>
@@ -51,8 +51,7 @@ const appstore = useAppStore();
     width: 130px;
     margin: 0 0 0 10px;
     font-family: DFPSongW9;
-    color: black;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 18px;
     overflow: hidden;
     height: 35px;

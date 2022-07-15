@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import { h, ref, onMounted } from 'vue';
-import { userList } from '@/api';
+import { getTaskList } from '@/api';
 import { DataTableColumns, useMessage, NTag, NButton } from 'naive-ui';
 import dayjs from 'dayjs';
 
@@ -17,46 +17,21 @@ const message = useMessage();
 
 type RowData = {
   key: number;
-  username: string;
-  nickname: string;
-  phone: string;
-  role: number;
+  name: string;
+  description: string;
   createDate: string;
 };
 const columns: DataTableColumns<RowData> = [
   {
-    title: '用户名',
-    key: 'username'
+    title: '任务名称',
+    key: 'name'
   },
   {
-    title: '昵称',
-    key: 'nickname'
+    title: '任务描述',
+    key: 'description'
   },
   {
-    title: '手机号',
-    key: 'phone'
-  },
-  {
-    title: '角色',
-    key: 'tags',
-    render(row) {
-      return h(
-        NTag,
-        {
-          style: {
-            marginRight: '6px'
-          },
-          type: 'info',
-          bordered: false
-        },
-        {
-          default: () => (row.role === 1 ? '管理员' : '普通用户')
-        }
-      );
-    }
-  },
-  {
-    title: '注册时间',
+    title: '创建时间',
     key: 'createDate',
     render(row) {
       return h('span', null, { default: () => dayjs(row.createDate).format('YYYY年MM月DD日 HH:mm:ss') });
@@ -70,11 +45,12 @@ const columns: DataTableColumns<RowData> = [
         NButton,
         {
           size: 'small',
+          type: 'error',
           onClick: () => {
-            message.info('send mail to ' + row.nickname);
+            message.info('send mail to ' + row.name);
           }
         },
-        { default: () => '删除' }
+        { default: () => '彻底删除' }
       );
     }
   }
@@ -85,11 +61,12 @@ const total = ref<number>(0);
 const queryParams = ref({
   page: 1,
   size: 10,
-  name: ''
+  name: '',
+  isDelete: true
 });
 
 function queryData() {
-  userList(queryParams.value).then(res => {
+  getTaskList(queryParams.value).then(res => {
     if (res.code === 10000) {
       dataList.value = res.data.list || [];
       total.value = res.data.total;

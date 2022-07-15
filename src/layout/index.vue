@@ -15,9 +15,9 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import SiderBar from './sider-bar/index.vue';
-import HeaderBar from './header-bar/index.vue';
-import { getUserInfo } from '@/service/api';
+import SiderBar from './SiderBar/index.vue';
+import HeaderBar from './HeaderBar/index.vue';
+import { getUserInfo } from '@/api';
 import { useAppStore, useUserStore } from '@/store';
 
 const userStore = useUserStore();

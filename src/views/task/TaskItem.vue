@@ -1,0 +1,303 @@
+<template>
+  <n-card :content-style="{ padding: '10px 15px' }" class="task-item" @click="taskDetail">
+    <div class="border-line" :style="{ backgroundColor: borderColor }"></div>
+    <div class="title">
+      <p :class="{ complete: complete }">{{ task.name }}</p>
+      <n-dropdown trigger="hover" :options="options" @select="handleSelect">
+        <n-icon size="20">
+          <EllipsisHorizontal />
+        </n-icon>
+      </n-dropdown>
+    </div>
+
+    <div class="time">
+      <n-tag :bordered="false" size="small" type="warning">
+        {{ startDate }}
+      </n-tag>
+      <span>--</span>
+      <n-tag :bordered="false" size="small" type="error">
+        {{ endDate }}
+      </n-tag>
+    </div>
+
+    <div class="description">
+      <p :class="{ complete: complete }">{{ task.description }}</p>
+    </div>
+
+    <div class="progress">
+      <div>
+        <span>任务进度:</span>
+        <span
+          ><strong>{{ progress }}</strong
+          >of 100%
+        </span>
+      </div>
+      <n-progress type="line" :color="progressColor" status="info" :percentage="progress" :show-indicator="false" />
+    </div>
+
+    <div class="tag">
+      <n-space>
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <n-tag :bordered="false" type="info" size="small">
+              {{ priorityName }}
+              <template #icon>
+                <n-icon :component="AlertCircle" />
+              </template>
+            </n-tag>
+          </template>
+          任务优先级：{{ priorityName }}
+        </n-tooltip>
+        <n-tooltip trigger="hover" v-if="remind">
+          <template #trigger>
+            <n-tag type="success" :bordered="false" size="small">
+              提醒
+              <template #icon>
+                <n-icon :component="Alarm" />
+              </template>
+            </n-tag>
+          </template>
+          已添加任务提醒：{{ remind }}
+        </n-tooltip>
+        <n-tooltip trigger="hover" v-if="expiration">
+          <template #trigger>
+            <n-tag type="error" :bordered="false" size="small">
+              已过期
+              <template #icon>
+                <n-icon :component="TimeSharp" />
+              </template>
+            </n-tag>
+          </template>
+          该任务已经延期
+        </n-tooltip>
+      </n-space>
+    </div>
+
+    <TaskDetailModal v-model:value="showTaskDetailModal" :task="task" />
+  </n-card>
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { TaskType, useTaskStore } from '@/store';
+import {
+  EllipsisHorizontal,
+  CheckmarkCircle,
+  RemoveCircle,
+  Copy,
+  TrashBin,
+  Alarm,
+  ShareSocialSharp,
+  AlertCircle,
+  TimeSharp
+} from '@vicons/ionicons5';
+import { useRender } from '@/hooks';
+import TaskDetailModal from './TaskDetailModal.vue';
+import dayjs from 'dayjs';
+import { useMessage } from 'naive-ui';
+import { progressColors, leftBorderColors, priorityOptions, remindOptions } from '@/constant';
+
+interface Props {
+  task: TaskType;
+  complete: boolean;
+  flowId: number;
+}
+const props = defineProps<Props>();
+
+const { renderIcon } = useRender();
+const message = useMessage();
+const taskStore = useTaskStore();
+const showTaskDetailModal = ref<boolean>(false);
+const options = [
+  {
+    label: '复制任务',
+    key: 'copy',
+    icon: renderIcon(Copy)
+  },
+  {
+    label: '关联内容',
+    key: 'link',
+    icon: renderIcon(ShareSocialSharp)
+  },
+  {
+    label: '设置任务提醒',
+    key: 'alarm',
+    icon: renderIcon(Alarm)
+  },
+  {
+    type: 'divider',
+    key: 'divider'
+  },
+  {
+    label: '移到回收站',
+    key: 'trash',
+    icon: renderIcon(TrashBin)
+  }
+];
+const startDate = computed(() => {
+  let month = dayjs(props.task.startDate).format('MM');
+  let day = dayjs(props.task.startDate).format('DD');
+  return `${month}月${day}日开始`;
+});
+
+const endDate = computed(() => {
+  let month = dayjs(props.task.endDate).format('MM');
+  let day = dayjs(props.task.endDate).format('DD');
+  return `${month}月${day}日截止`;
+});
+
+const progress = computed(() => {
+  return props.task.progress;
+});
+
+const progressColor = computed(() => {
+  const progress = props.task.progress;
+  if (progress <= 10) {
+    return progressColors[0];
+  } else if (progress > 10 && progress <= 40) {
+    return progressColors[1];
+  } else if (progress > 40 && progress <= 60) {
+    return progressColors[2];
+  } else if (progress > 60 && progress <= 80) {
+    return progressColors[3];
+  } else if (progress > 80 && progress <= 90) {
+    return progressColors[4];
+  } else if (progress > 90 && progress <= 100) {
+    return progressColors[5];
+  }
+});
+
+const borderColor = computed(() => {
+  return leftBorderColors[Number(props.task.priority) - 1];
+});
+
+/**任务优先级 */
+const priorityName = computed(() => {
+  return priorityOptions.filter(item => item.value === props.task.priority)[0].label;
+});
+
+const remind = computed(() => {
+  if (props.task.remind === 0) {
+    return false;
+  }
+  return remindOptions.filter(item => item.value === props.task.remind)[0].label;
+});
+
+const expiration = computed(() => {
+  return dayjs().isAfter(dayjs(props.task.endDate)) && !props.task.computed;
+});
+
+function taskDetail() {
+  showTaskDetailModal.value = true;
+}
+
+async function handleSelect(key: string | number) {
+  if (key === 'next') {
+    let index = taskStore.flowList.findIndex(item => item.id === props.flowId);
+    let newFlowId;
+    if (index < taskStore.flowList.length - 1) {
+      newFlowId = taskStore.flowList[index + 1].id;
+    }
+    await taskStore.updateTaskProps(props.task.id, 'flow', newFlowId);
+  } else if (key === 'copy') {
+    message.info('任务已复制');
+  } else if (key === 'alarm') {
+    message.info('设置任务提醒');
+  } else if (key === 'trash') {
+    await taskStore.deleteTask(props.task.id);
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.task-item {
+  cursor: pointer;
+  margin: 10px 0px;
+  min-height: 70px;
+  position: relative;
+
+  &:hover {
+    box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.15);
+    .border-line {
+      width: 6px !important;
+    }
+  }
+
+  .border-line {
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    width: 4px;
+    background-color: red;
+    transition: all 0.2s;
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+    p {
+      flex: 1;
+      line-height: 30px;
+      font-weight: 600;
+      white-space: normal;
+      margin-right: 8px;
+      font-size: 16px;
+    }
+  }
+
+  .time {
+    overflow: hidden;
+    margin: 5px 0 10px 0;
+    display: flex;
+    align-items: center;
+    span {
+      font-size: 12px;
+      font-weight: 600;
+      margin: 0 5px;
+      color: #888;
+    }
+  }
+  .description {
+    font-size: 13px;
+    color: #888;
+    font-weight: 600;
+    margin: 10px 0;
+    p {
+      white-space: normal;
+    }
+  }
+  .progress {
+    margin: 10px 0;
+    & > div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      span {
+        font-size: 13px;
+        color: #888;
+        font-weight: 600;
+        strong {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+  .indicator {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+}
+.complete {
+  text-decoration: line-through;
+  color: #ccc;
+}
+
+::v-deep(.n-progress-content) {
+  width: 100%;
+}
+</style>

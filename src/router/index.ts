@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw, RouterView } from 'vue-router';
-import { Grid, CalendarNumber, Layers, PersonSharp, Settings } from '@vicons/ionicons5';
+import { Grid, CalendarNumber, Layers, PersonSharp, Settings, TrashBin, Aperture } from '@vicons/ionicons5';
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -47,6 +47,24 @@ export const routes: RouteRecordRaw[] = [
           icon: Layers
         },
         component: () => import('@/views/task/index.vue')
+      },
+      {
+        path: '/trash',
+        name: 'trash',
+        meta: {
+          title: '回收站',
+          icon: TrashBin
+        },
+        component: () => import('@/views/trash/index.vue')
+      },
+      {
+        path: '/components',
+        name: 'components',
+        meta: {
+          title: '组件示例',
+          icon: Aperture
+        },
+        component: () => import('@/views/components/index.vue')
       },
       {
         path: '/schedule',
@@ -105,10 +123,10 @@ router.beforeEach((to, from) => {
   // 未匹配到路由 比如浏览器输入路由表中不存在的路由
   if (to.matched.length === 0) {
     return {
-      name: '404',
-    }
+      name: '404'
+    };
   }
-  return true
-})
+  return true;
+});
 
 export default router;

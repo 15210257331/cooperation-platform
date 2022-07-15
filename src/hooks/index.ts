@@ -1,2 +1,4 @@
 export * from './useEcharts';
-export * from './test'
+export * from './useImageCode';
+export * from './useRender';
+export * from './useCountDown'

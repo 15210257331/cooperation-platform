@@ -9,7 +9,15 @@
         </div>
       </div>
       <n-space :size="24" :wrap="false">
-        <n-statistic v-for="item in statisticData" :key="item.id" class="whitespace-nowrap" v-bind="item"></n-statistic>
+        <n-statistic
+          v-for="item in statisticData"
+          :key="item.id"
+          class="whitespace-nowrap"
+          :label="item.label"
+          :value="item.animation ? undefined : item.value"
+        >
+          <n-number-animation v-if="item.animation" :from="0" :to="(item.value as number)" />
+        </n-statistic>
       </n-space>
     </div>
   </n-card>
@@ -17,11 +25,13 @@
 
 <script setup lang="ts">
 import { useUserStore } from '@/store';
+import dayjs from 'dayjs';
 
 interface StatisticData {
   id: number;
   label: string;
-  value: string;
+  value: number | string;
+  animation: boolean;
 }
 
 const userStore = useUserStore();
@@ -30,17 +40,20 @@ const statisticData: StatisticData[] = [
   {
     id: 0,
     label: '项目数',
-    value: '25'
+    value: 25,
+    animation: true
   },
   {
     id: 1,
     label: '待办',
-    value: '4/16'
+    value: 34,
+    animation: true
   },
   {
     id: 2,
-    label: '消息',
-    value: '12'
+    label: '当前日期',
+    value: dayjs().format('YYYY/MM/DD'),
+    animation: false
   }
 ];
 </script>

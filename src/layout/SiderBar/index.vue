@@ -15,11 +15,10 @@
 
 <script setup lang="ts">
 import { ref, Component, h, computed } from 'vue';
-import type { MenuOption } from 'naive-ui';
-import { NIcon } from 'naive-ui';
+import { NIcon, type MenuOption } from 'naive-ui';
 import { PersonSharp } from '@vicons/ionicons5';
 import { useAppStore } from '@/store';
-import AppLogo from '@/components/app-logo/index.vue';
+import AppLogo from '@/components/AppLogo.vue';
 import { RouteRecordRaw, RouterLink, useRoute } from 'vue-router';
 import { routes } from '@/router';
 

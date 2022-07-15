@@ -17,7 +17,7 @@
     "paths": {
       "@/*":["src/*"]
     },
-    "types": ["naive-ui/volar"]
+    "types": ["naive-ui/volar","vite/client","node",]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "build/proxy.ts", "build/proxy-config.ts", "build/define.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]

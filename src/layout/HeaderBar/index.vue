@@ -29,6 +29,13 @@
     </n-dropdown>
 
     <ProfileModal v-model:value="showProfileModal" />
+    <n-modal v-model:show="showModal">
+      <n-card style="width: 600px" title="模态框" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <template #header-extra> 噢！ </template>
+        内容
+        <template #footer> 尾部 </template>
+      </n-card>
+    </n-modal>
   </n-layout-header>
 </template>
 
@@ -48,11 +55,11 @@ import {
 } from '@vicons/ionicons5';
 import { DropdownOption, NIcon, useDialog } from 'naive-ui';
 import { useRouter } from 'vue-router';
-import Breadcrumb from './breadcrumb.vue';
+import Breadcrumb from './Breadcrumb.vue';
 import { useFullscreen } from '@vueuse/core';
-import ProfileModal from './profile-modal.vue';
-import ActionContainer from '@/components/action-container/index.vue';
-import Message from './message.vue';
+import ProfileModal from './ProfileModal.vue';
+import ActionContainer from '@/components/ActionContainer.vue';
+import Message from './Message.vue';
 
 const showProfileModal = ref<boolean>(false);
 
@@ -61,6 +68,8 @@ const appStore = useAppStore();
 const router = useRouter();
 const { isFullscreen, toggle } = useFullscreen();
 const dialog = useDialog();
+
+const showModal = ref<boolean>(false);
 
 function toggleTheme() {
   appStore.toggleTheme();
@@ -96,7 +105,6 @@ const options = [
   }
 ];
 function handleSelect(key: string | number, option: DropdownOption) {
-  console.log(key, option);
   if (key === 'logout') {
     dialog.warning({
       title: '警告',
@@ -115,6 +123,10 @@ function handleSelect(key: string | number, option: DropdownOption) {
   }
   if (key === 'profile') {
     showProfileModal.value = true;
+  }
+
+  if (key === 'editProfile') {
+    showModal.value = true;
   }
 }
 </script>

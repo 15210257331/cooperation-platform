@@ -1,12 +1,20 @@
-import { axiosRequest } from '../request';
-import { ResType } from '../request/request';
+import { axiosRequest, ResType } from './http';
 
 export function login(data: any): Promise<ResType> {
   return axiosRequest.post('/api/user/login', data);
 }
-
-export function getUserInfo() {
+export function getUserInfo(): Promise<ResType> {
   return axiosRequest.get(`/api/user/info`);
+}
+
+/** 注册 */
+export function register(data: any): Promise<ResType> {
+  return axiosRequest.post(`/api/user/register`, data);
+}
+
+// 发送验证码
+export function sendCode(data: any): Promise<ResType> {
+  return axiosRequest.post(`/api/user/code`, data);
 }
 
 // 用户排行top5

@@ -9,19 +9,19 @@
     <div class="statistics">
       <div class="item">
         <span>总任务</span>
-        <p style="color: #999999">{{ 99 }}</p>
+        <p style="color: #999999">{{ taskStore.total }}</p>
       </div>
       <div class="item">
-        <span>未开始</span>
-        <p style="color: #feb54e">{{ 99 }}</p>
-      </div>
-      <div class="item">
-        <span>进行中</span>
-        <p style="color: #ff5500">{{ 99 }}</p>
+        <span>未完成</span>
+        <p style="color: #feb54e">{{ taskStore.peddingTotal }}</p>
       </div>
       <div class="item">
         <span>已完成</span>
-        <p style="color: #22d7bb">{{ 9 }}</p>
+        <p style="color: #22d7bb">{{ taskStore.completeTotal }}</p>
+      </div>
+      <div class="item">
+        <span>已逾期</span>
+        <p style="color: #ff5500">{{ 12 }}</p>
       </div>
       <div class="line"></div>
       <div class="item" style="flex: 2">
@@ -38,9 +38,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useTaskStore } from '@/store';
 
-const percentage = ref(65);
+const taskStore = useTaskStore();
+const percentage = computed(() => {
+  return taskStore.total > 0 ? parseInt(((taskStore.completeTotal / taskStore.total) * 100).toFixed(2)) : 0;
+});
 </script>
 
 <style lang="scss" scoped>

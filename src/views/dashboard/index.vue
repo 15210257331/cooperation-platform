@@ -11,9 +11,9 @@
       </n-gi>
       <n-gi :span="8">
         <n-space vertical>
+          <CardItem />
+          <UserStatus />
           <!-- <Clock /> -->
-          <CardItem />
-          <CardItem />
         </n-space>
       </n-gi>
     </n-grid>
@@ -29,6 +29,7 @@ import TaskTrend from './task-trend.vue';
 import CardItem from './card-item.vue';
 import UserRank from './user-rank.vue';
 import Clock from './clock.vue';
+import UserStatus from './UserStatus.vue';
 
 const message = useMessage();
 

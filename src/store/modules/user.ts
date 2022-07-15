@@ -4,7 +4,7 @@ export interface UserInfoType {
   id: number | null;
   username: string;
   nickname: string;
-  phone: number | null;
+  phone: any;
   avatar: string;
   role: string;
   intro: string;

@@ -1,101 +1,81 @@
 <template>
-  <div class="login">
-    <h2 class="login-title">登录</h2>
-    <n-form class="login-form" ref="formRef" :model="model" :rules="rules" size="large" :show-label="false">
-      <n-form-item path="username">
-        <n-input v-model:value="model.username" placeholder="请输入用户名" />
-      </n-form-item>
-      <n-form-item path="password">
-        <n-input v-model:value="model.password" type="password" show-password-on="click" placeholder="请输入密码" />
-      </n-form-item>
-      <n-space :vertical="true" :size="24">
-        <div class="flex-y-center justify-between">
-          <n-checkbox v-model:checked="rememberMe">记住我</n-checkbox>
-        </div>
-        <n-button type="primary" size="large" :block="true" :round="true" @click="handleSubmit"> 确定 </n-button>
-      </n-space>
-    </n-form>
+  <div class="login-wrapper">
+    <!-- <vue-particles class="login-bg" color="#dedede"></vue-particles> -->
+    <transition :name="showLogin ? 'slide-right' : 'slide-left'" mode="out-in">
+      <LoginContent v-if="showLogin" @change="change"></LoginContent>
+      <RegisterContent v-else @change="change"></RegisterContent>
+    </transition>
+    <div class="footer">
+      <n-button text tag="a" href="https://beian.miit.gov.cn/" target="_blank">
+        京ICP备19012558号-2
+      </n-button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
-import type { FormInst, FormRules } from 'naive-ui';
-import { useMessage } from 'naive-ui';
-import { login } from '@/service/api/user';
-import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+import LoginContent from './LoginContent.vue';
+import RegisterContent from './RegisterContent.vue';
 
-const message = useMessage();
-const router = useRouter();
-const formRef = ref<(HTMLElement & FormInst) | null>(null);
-const model = reactive({
-  username: 'chenxiaofei',
-  password: '123456'
-});
-const rules: FormRules = {
-  password: [
-    {
-      required: true,
-      message: '请输入密码'
-    }
-  ],
-  userName: [
-    {
-      required: true,
-      message: '请再次输入密码',
-      trigger: ['blur']
-    }
-  ]
-};
+const showLogin = ref<boolean>(true);
 
-const rememberMe = ref<boolean>(false);
-
-function handleSubmit(e: MouseEvent) {
-  if (!formRef.value) return;
-  e.preventDefault();
-
-  formRef.value.validate(errors => {
-    if (!errors) {
-      const { username, password } = model;
-      login({ username, password }).then(res => {
-        console.log(res);
-        if (res.code === 10000) {
-          localStorage.setItem('token', res.data.token);
-          router.push({
-            name: 'home'
-          });
-          message.success('登录成功', {
-            keepAliveOnHover: true
-          });
-        }
-      });
-    }
-  });
+function change() {
+  showLogin.value = !showLogin.value;
 }
 </script>
 
 <style lang="scss" scoped>
-.login {
+.login-wrapper {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: white url(../assets/images/task_bg.jpg) no-repeat fixed center center;
-  .login-title {
-    margin: 0 0 30px 0;
-    font-size: 23px;
-    font-weight: 600;
+  background-color: #18a058;
+  position: relative;
+  .login-bg {
+    width: 100%;
+    height: 100vh;
+    background: #3e3e3e;
+    opacity: 0.7;
+  }
+  .footer {
+    width: 100%;
+    height: 60px;
+    box-sizing: border-box;
+    line-height: 60px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
     text-align: center;
   }
-  .login-form {
-    width: 420px;
-    height: auto;
-    padding: 20px;
-    border: 1px solid #eee;
-    background-color: #eee;
-    border-radius: 5px;
-  }
+}
+.slide-left-enter-active {
+  transition: all 0.4s ease-out;
+}
+
+.slide-left-leave-active {
+  transition: all 0.4s ease-out;
+}
+
+.slide-left-leave-to {
+  transform: translate(-1000px, 0px);
+  opacity: 0;
+}
+.slide-left-enter-from {
+  transform: translate(1000px, 0px);
+  opacity: 0;
+}
+
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all 0.4s ease-out;
+}
+
+.slide-right-leave-to {
+  transform: translate(1000px, 0px);
+  opacity: 0;
+}
+.slide-right-enter-from {
+  transform: translate(-1000px, 0px);
+  opacity: 0;
 }
 </style>

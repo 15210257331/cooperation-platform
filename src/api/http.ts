@@ -1,4 +1,4 @@
-import type { AxiosRequestConfig, AxiosInstance, AxiosError } from 'axios';
+import type { AxiosRequestConfig, AxiosInstance, AxiosError, AxiosResponse } from 'axios';
 import axios from 'axios';
 
 type RequestMethod = 'get' | 'post' | 'put' | 'delete';
@@ -31,7 +31,6 @@ export default class AxiosRequest {
           // 数据转换
           const contentType = config.headers['Content-Type'] as string;
           config.data = await transformRequestData(config.data, contentType);
-
           // 设置token
           config.headers.Authorization = getToken();
         }
@@ -42,30 +41,32 @@ export default class AxiosRequest {
       }
     );
     this.instance.interceptors.response.use(
-      async response => {
-        const { status } = response;
-        // if (status === 200 || status < 300 || status === 304) {
-        //   const backend = response.data;
-        //   const { codeKey, dataKey, successCode } = this.backendConfig;
-        //   // 请求成功
-        //   if (backend[codeKey] === successCode) {
-        //     return handleServiceResult(null, backend[dataKey]);
-        //   }
-
-        //   // token失效, 刷新token
-        //   if (REFRESH_TOKEN_CODE.includes(backend[codeKey])) {
-        //     const config = await handleRefreshToken(response.config);
-        //     if (config) {
-        //       return this.instance.request(config);
-        //     }
-        //   }
-
-        //   const error = handleBackendError(backend, this.backendConfig);
-        //   return handleServiceResult(error, null);
-        // }
+      async (response: AxiosResponse) => {
+        const { status, data } = response;
+        // console.log(response);
+        const responseCode = data.code;
+        if (responseCode !== 10000) {
+          showErrorNotification('', data.message);
+        }
         return response;
       },
+      // 当http的状态码不是200时触发
       (axiosError: AxiosError) => {
+        console.log(axiosError);
+        if (axiosError.response && axiosError.response.data) {
+          const statusCode = axiosError.response.status;
+          const description = axiosError.message;
+          const content = (axiosError.response.data as any)['message']
+            ? (axiosError.response.data as any)['message']
+            : axiosError.message;
+          // 401 token验证失败 跳转到登录页面
+          if (statusCode === 401) {
+            window.location.href = '/login';
+            // 其它错误
+          } else {
+            showErrorNotification(description, content);
+          }
+        }
         return axiosError;
       }
     );
@@ -85,6 +86,7 @@ export default class AxiosRequest {
   }
 
   post(url: string, data: any): Promise<ResType> {
+    console.log(url);
     return new Promise((resolve, reject) => {
       this.instance
         .post(url, data)
@@ -106,3 +108,19 @@ export function getToken() {
 export function transformRequestData(data: any, contentType: any) {
   return data;
 }
+
+export function showErrorNotification(description: string, content: any) {
+  window.$notification?.error({
+    title: '请求错误',
+    description: description,
+    content: content,
+    duration: 2500
+  });
+}
+
+const config: AxiosRequestConfig = {
+  baseURL: import.meta.env.VITE_APP_BASE_API,
+  timeout: 10000
+};
+console.log(import.meta.env);
+export const axiosRequest: AxiosRequest = new AxiosRequest(config);
