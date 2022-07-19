@@ -12,6 +12,11 @@ export function register(data: any): Promise<ResType> {
   return axiosRequest.post(`/api/user/register`, data);
 }
 
+/** 修改用户信息 */
+export function updateUserInfo(data: any): Promise<ResType> {
+  return axiosRequest.post(`/api/user/update`, data);
+}
+
 // 发送验证码
 export function sendCode(data: any): Promise<ResType> {
   return axiosRequest.post(`/api/user/code`, data);

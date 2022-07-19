@@ -64,6 +64,7 @@ declare module '@vue/runtime-core' {
     PropsTag: typeof import('./src/components/PropsTag.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    UploadFile: typeof import('./src/components/UploadFile.vue')['default']
   }
 }
 

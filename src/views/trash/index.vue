@@ -9,13 +9,14 @@
 
 <script setup lang="ts">
 import { h, ref, onMounted } from 'vue';
-import { getTaskList } from '@/api';
+import { deleteTask, getTaskList } from '@/api';
 import { DataTableColumns, useMessage, NTag, NButton } from 'naive-ui';
 import dayjs from 'dayjs';
 
 const message = useMessage();
 
 type RowData = {
+  id: number;
   key: number;
   name: string;
   description: string;
@@ -38,7 +39,7 @@ const columns: DataTableColumns<RowData> = [
     }
   },
   {
-    title: 'Action',
+    title: '操作',
     key: 'actions',
     render(row) {
       return h(
@@ -47,7 +48,7 @@ const columns: DataTableColumns<RowData> = [
           size: 'small',
           type: 'error',
           onClick: () => {
-            message.info('send mail to ' + row.name);
+            deleteData(row.id);
           }
         },
         { default: () => '彻底删除' }
@@ -65,6 +66,10 @@ const queryParams = ref({
   isDelete: true
 });
 
+onMounted(() => {
+  queryData();
+});
+
 function queryData() {
   getTaskList(queryParams.value).then(res => {
     if (res.code === 10000) {
@@ -74,9 +79,14 @@ function queryData() {
   });
 }
 
-onMounted(() => {
-  queryData();
-});
+function deleteData(id: number) {
+  deleteTask(id).then(res => {
+    if (res.code === 10000) {
+      message.success('任务已删除');
+      queryData();
+    }
+  });
+}
 </script>
 
 <style lang="scss" scoped></style>

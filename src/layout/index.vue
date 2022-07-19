@@ -22,9 +22,15 @@ import { useAppStore, useUserStore } from '@/store';
 
 const userStore = useUserStore();
 const appStore = useAppStore();
+const queryParams = {
+  pageIndex: 1,
+  pageSize: 10
+};
 
 onMounted(() => {
   queryUserInfo();
+  queryNotificationList();
+  queryUnreadCount();
 });
 
 function queryUserInfo() {
@@ -34,6 +40,12 @@ function queryUserInfo() {
       userStore.setUserInfo(userInfo);
     }
   });
+}
+function queryNotificationList() {
+  userStore.queryNotificationList(queryParams);
+}
+function queryUnreadCount() {
+  userStore.queryUnreadCount();
 }
 </script>
 

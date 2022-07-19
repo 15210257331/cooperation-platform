@@ -74,6 +74,46 @@
     </div>
 
     <TaskDetailModal v-model:value="showTaskDetailModal" :task="task" />
+
+    <!-- 设置提醒 -->
+    <n-modal v-model:show="showAlarmModal">
+      <n-card
+        :segmented="{
+          content: true,
+          footer: true
+        }"
+        style="width: 520px"
+        :title="'设置任务提醒'"
+        :bordered="false"
+        role="dialog"
+        aria-modal="true"
+      >
+        <template #header-extra>
+          <n-button quaternary circle>
+            <template #icon>
+              <n-icon size="20" @click="showAlarmModal = false">
+                <Close />
+              </n-icon>
+            </template>
+          </n-button>
+        </template>
+        <div>
+          <n-radio-group v-model:value="alarm" name="radiogroup">
+            <n-space>
+              <n-radio v-for="item in remindOptions" :key="item.value" :value="item.value">
+                {{ item.label }}
+              </n-radio>
+            </n-space>
+          </n-radio-group>
+        </div>
+        <template #footer>
+          <n-space horizontal style="float: right">
+            <n-button tertiary @click="showAlarmModal = false"> 取消 </n-button>
+            <n-button type="primary" @click="setAlarm"> 确认 </n-button>
+          </n-space>
+        </template>
+      </n-card>
+    </n-modal>
   </n-card>
 </template>
 
@@ -83,7 +123,7 @@ import { TaskType, useTaskStore } from '@/store';
 import {
   EllipsisHorizontal,
   CheckmarkCircle,
-  RemoveCircle,
+  Close,
   Copy,
   TrashBin,
   Alarm,
@@ -108,6 +148,8 @@ const { renderIcon } = useRender();
 const message = useMessage();
 const taskStore = useTaskStore();
 const showTaskDetailModal = ref<boolean>(false);
+const showAlarmModal = ref<boolean>(false);
+const alarm = ref<number>(props.task.remind);
 const options = [
   {
     label: '复制任务',
@@ -202,10 +244,16 @@ async function handleSelect(key: string | number) {
   } else if (key === 'copy') {
     message.info('任务已复制');
   } else if (key === 'alarm') {
-    message.info('设置任务提醒');
+     showAlarmModal.value = true;
   } else if (key === 'trash') {
     await taskStore.deleteTask(props.task.id);
   }
+}
+
+async function setAlarm() {
+  await taskStore.updateTaskProps(props.task.id, 'remind', alarm.value);
+   message.success('操作成功');
+   showAlarmModal.value = false;
 }
 </script>
 

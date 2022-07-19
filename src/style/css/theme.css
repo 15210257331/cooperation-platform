@@ -1,0 +1,56 @@
+/* 主题切换用到的变量定义 */
+
+/* // 默认变量 */
+:root {
+  /* // 通用文本颜色 */
+  --nice-primary-color: #348fe4;
+  --button-hover-color: rgba(52, 143, 228, 0.8);
+  /* // 侧边栏选中菜单背景色 */
+  --nice-sidebar-select-bg: #f3f5f7;
+  /* // 内容区背景色 */
+  --nice-content-bg: #f3f5f7;
+}
+
+[data-theme='green'] {
+  /* // 通用文本颜色 */
+  --nice-primary-color: #22d7bb;
+  --button-hover-color: rgba(34, 215, 187, 0.8);
+  /* // 侧边栏选中菜单背景色 */
+  --nice-sidebar-select-bg: #f3f5f7;
+  /* // 内容区背景色 */
+  --nice-content-bg: #f3f5f7;
+}
+
+[data-theme='akagired'] {
+  /* // 通用文本颜色 */
+  --nice-primary-color: #ed655c;
+  --button-hover-color: rgba(237, 101, 92, 0.8);
+  /* // 侧边栏选中菜单背景色 */
+  --nice-sidebar-select-bg: #f3f5f7;
+  /* // 内容区背景色 */
+  --nice-content-bg: #f3f5f7;
+}
+
+[data-theme='orange'] {
+  /* // 通用文本颜色 */
+  --nice-primary-color: #fe8c2b;
+  --button-hover-color: rgba(254, 140, 43, 0.8);
+  /* // 侧边栏选中菜单背景色 */
+  --nice-sidebar-select-bg: #f3f5f7;
+  /* // 内容区背景色 */
+  --nice-content-bg: #f3f5f7;
+}
+
+[data-theme='blue'] {
+  --nice-primary-color: #1291b3;
+  --button-hover-color: rgba(18, 145, 179, 0.8);
+  --nice-sidebar-select-bg: #f3f5f7;
+  --nice-content-bg: #f3f5f7;
+}
+
+[data-theme='pink'] {
+  --nice-primary-color: #0a9a47;
+  --button-hover-color: rgba(10, 154, 71, 0.8);
+  --nice-sidebar-select-bg: #f3f5f7;
+  --nice-content-bg: #f3f5f7;
+}

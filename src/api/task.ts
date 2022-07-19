@@ -1,5 +1,4 @@
 import { axiosRequest, ResType } from './http';
-import.meta.env.VITE_APP_BASE_API;
 
 // flow
 export function getFlowList(name: string): Promise<ResType> {
@@ -36,6 +35,7 @@ export function updateTaskProps(data: any): Promise<ResType> {
 export function taskDetail(taskId: number): Promise<ResType> {
   return axiosRequest.get(`/api/task/detail?taskId=${taskId}`);
 }
+/** 删除任务 */
 export function deleteTask(id: any): Promise<ResType> {
   return axiosRequest.get(`/api/task/delete/${id}`);
 }

@@ -21,31 +21,23 @@
         </n-button>
       </template>
       <n-form ref="formRef" :label-placement="'left'" :label-width="'auto'" :model="userStore.userInfo" :rules="rules">
-        <n-form-item label="头像:" path="nickname">
-          <n-avatar :size="48" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-          <n-upload
-            action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
-            :headers="{
-              'naive-info': 'hello!'
-            }"
-            :data="{
-              'naive-data': 'cool! naive!'
-            }"
-          >
-            <n-button>上传文件</n-button>
-          </n-upload>
-        </n-form-item>
-        <n-form-item label="昵称:" path="nickname">
-          <n-input v-model:value="userStore.userInfo.nickname" placeholder="昵称" />
+        <n-form-item label="头像:" path="avatar">
+          <UploadFile v-model:url="formValue.avatar" />
         </n-form-item>
         <n-form-item label="用户名:" path="username">
-          <n-input v-model:value="userStore.userInfo.username" placeholder="用户名" />
+          <n-input disabled v-model:value="formValue.username" placeholder="用户名" />
+        </n-form-item>
+        <n-form-item label="昵称:" path="nickname">
+          <n-input v-model:value="formValue.nickname" placeholder="昵称" />
         </n-form-item>
         <n-form-item label="手机号:" path="phone">
-          <n-input v-model:value="userStore.userInfo.phone" placeholder="手机号" />
+          <n-input v-model:value="formValue.phone" placeholder="手机号" />
+        </n-form-item>
+        <n-form-item label="角色:" path="role">
+          <n-select v-model:value="formValue.role" :options="options" />
         </n-form-item>
         <n-form-item label="个人简介:" path="intro">
-          <n-input v-model:value="userStore.userInfo.intro" type="textarea" placeholder="个人简介" />
+          <n-input v-model:value="formValue.intro" type="textarea" placeholder="个人简介" />
         </n-form-item>
       </n-form>
       <template #footer>
@@ -62,6 +54,9 @@
 import { ref, computed, onMounted } from 'vue';
 import { useUserStore, UserInfoType } from '@/store';
 import { Close } from '@vicons/ionicons5';
+import { FormInst, useMessage } from 'naive-ui';
+import { updateUserInfo } from '@/api';
+import UploadFile from '@/components/UploadFile.vue';
 interface Props {
   /** 弹窗显隐 */
   value: boolean;
@@ -74,7 +69,21 @@ interface Emits {
 const emit = defineEmits<Emits>();
 
 const userStore = useUserStore();
-const formValue = ref<UserInfoType>();
+const message = useMessage();
+const options = [
+  {
+    label: '普通用户',
+    value: 1
+  },
+  {
+    label: '管理员',
+    value: 2
+  }
+];
+const formRef = ref<FormInst | null>(null);
+const formValue = computed(() => {
+  return userStore.userInfo;
+});
 const show = computed({
   get() {
     return props.value;
@@ -83,19 +92,44 @@ const show = computed({
     emit('update:value', val);
   }
 });
-const rules = {};
-onMounted(() => {
-  formValue.value = {
-    id: userStore.userInfo.id,
-    username: userStore.userInfo.username,
-    nickname: userStore.userInfo.nickname,
-    phone: userStore.userInfo.phone,
-    avatar: userStore.userInfo.avatar,
-    role: userStore.userInfo.role,
-    intro: userStore.userInfo.intro
-  };
-});
-function handleSubmit() {}
+const rules = {
+  username: {
+    required: true,
+    message: '请输入用户名',
+    trigger: 'blur'
+  },
+  nickname: {
+    required: true,
+    message: '请输入昵称',
+    trigger: 'blur'
+  },
+  phone: {
+    required: true,
+    message: '请输入手机号',
+    trigger: 'blur'
+  }
+  // role: {
+  //   required: true,
+  //   message: '请选择角色',
+  //   trigger: 'blur'
+  // }
+};
+function handleSubmit(e: MouseEvent) {
+  e.preventDefault();
+  formRef.value?.validate(async errors => {
+    if (!errors) {
+      updateUserInfo(formValue.value).then(res => {
+        if (res.code === 10000) {
+          message.success(res.message);
+          handleClose();
+        }
+      });
+    } else {
+      console.log(errors);
+      //   message.error('Invalid');
+    }
+  });
+}
 function handleClose() {
   show.value = false;
 }

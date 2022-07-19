@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useMessage } from 'naive-ui';
-import UserInfo from './user-info.vue';
+import UserInfo from './UserInfo.vue';
 import TaskStatistics from './task-statistics.vue';
 import TaskTrend from './task-trend.vue';
 import CardItem from './card-item.vue';

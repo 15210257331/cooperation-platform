@@ -15,6 +15,9 @@
         <n-button type="error"> Error </n-button>
       </n-space>
     </n-card>
+    <n-card title="自定义主题测试">
+      <div class="theme">自定义主题测试</div>
+    </n-card>
   </n-space>
 </template>
 
@@ -25,4 +28,9 @@ import ImageCode from '@/components/ImageCode.vue';
 const imgCode = ref<string>('');
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.theme {
+  color: $test-color;
+  background-color: var(--nice-primary-color);
+}
+</style>

@@ -10,7 +10,7 @@
       </div>
       <n-space :size="24" :wrap="false">
         <n-statistic
-          v-for="item in statisticData"
+          v-for="item in statistic"
           :key="item.id"
           class="whitespace-nowrap"
           :label="item.label"
@@ -26,6 +26,7 @@
 <script setup lang="ts">
 import { useUserStore } from '@/store';
 import dayjs from 'dayjs';
+import { computed, Ref } from 'vue';
 
 interface StatisticData {
   id: number;
@@ -36,26 +37,28 @@ interface StatisticData {
 
 const userStore = useUserStore();
 
-const statisticData: StatisticData[] = [
-  {
-    id: 0,
-    label: '项目数',
-    value: 25,
-    animation: true
-  },
-  {
-    id: 1,
-    label: '待办',
-    value: 34,
-    animation: true
-  },
-  {
-    id: 2,
-    label: '当前日期',
-    value: dayjs().format('YYYY/MM/DD'),
-    animation: false
-  }
-];
+const statistic: Ref<Array<StatisticData>> = computed(() => {
+  return [
+    {
+      id: 0,
+      label: '项目数',
+      value: 25,
+      animation: true
+    },
+    {
+      id: 1,
+      label: '待办',
+      value: 34,
+      animation: true
+    },
+    {
+      id: 2,
+      label: '未读消息',
+      value: userStore.unReadCount,
+      animation: false
+    }
+  ];
+});
 </script>
 
 <style scoped></style>

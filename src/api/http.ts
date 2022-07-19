@@ -122,5 +122,5 @@ const config: AxiosRequestConfig = {
   baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 10000
 };
-console.log(import.meta.env);
+// console.log(import.meta.env);
 export const axiosRequest: AxiosRequest = new AxiosRequest(config);

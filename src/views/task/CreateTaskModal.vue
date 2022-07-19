@@ -69,6 +69,7 @@ import { FormInst, useMessage } from 'naive-ui';
 import { TaskType, useTaskStore } from '@/store';
 import { Close } from '@vicons/ionicons5';
 import { priorityOptions } from '@/constant';
+import dayjs from 'dayjs';
 
 interface Props {
   /** 弹窗显隐 */
@@ -139,6 +140,10 @@ async function createTask() {
     endDate: new Date(formValue.value.endDate as number),
     flowId: props.flowId
   });
+  if (dayjs(data.startDate).isAfter(dayjs(data.endDate))) {
+    message.success('开始时间不能大于结束时间！');
+    return;
+  }
   await taskStore.createTask(data);
   showModal.value = false;
   message.success('操作成功');

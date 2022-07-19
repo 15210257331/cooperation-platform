@@ -67,15 +67,6 @@ export const routes: RouteRecordRaw[] = [
         component: () => import('@/views/components/index.vue')
       },
       {
-        path: '/schedule',
-        name: 'schedule',
-        meta: {
-          title: '日程',
-          icon: CalendarNumber
-        },
-        component: () => import('@/views/schedule/index.vue')
-      },
-      {
         path: '/setting',
         name: 'setting',
         meta: {

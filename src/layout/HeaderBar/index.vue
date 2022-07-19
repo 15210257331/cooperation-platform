@@ -29,13 +29,7 @@
     </n-dropdown>
 
     <ProfileModal v-model:value="showProfileModal" />
-    <n-modal v-model:show="showModal">
-      <n-card style="width: 600px" title="模态框" :bordered="false" size="huge" role="dialog" aria-modal="true">
-        <template #header-extra> 噢！ </template>
-        内容
-        <template #footer> 尾部 </template>
-      </n-card>
-    </n-modal>
+    <ThemeSetting v-model:value="showThemeSettingModal" />
   </n-layout-header>
 </template>
 
@@ -50,7 +44,7 @@ import {
   ExpandSharp,
   ContractSharp,
   PersonCircleOutline,
-  Pencil,
+  ColorPalette,
   LogOutOutline
 } from '@vicons/ionicons5';
 import { DropdownOption, NIcon, useDialog } from 'naive-ui';
@@ -60,14 +54,17 @@ import { useFullscreen } from '@vueuse/core';
 import ProfileModal from './ProfileModal.vue';
 import ActionContainer from '@/components/ActionContainer.vue';
 import Message from './Message.vue';
+import ThemeSetting from './ThemeSetting.vue';
+import { useRender } from '@/hooks';
 
 const showProfileModal = ref<boolean>(false);
-
+const showThemeSettingModal = ref<boolean>(false);
 const userStore = useUserStore();
 const appStore = useAppStore();
 const router = useRouter();
 const { isFullscreen, toggle } = useFullscreen();
 const dialog = useDialog();
+const { renderIcon } = useRender();
 
 const showModal = ref<boolean>(false);
 
@@ -80,23 +77,16 @@ function toggleCollapse() {
 function toggleFullScreen() {
   toggle();
 }
-const renderIcon = (icon: Component) => {
-  return () => {
-    return h(NIcon, null, {
-      default: () => h(icon)
-    });
-  };
-};
 const options = [
   {
-    label: '用户资料',
+    label: '编辑用户资料',
     key: 'profile',
     icon: renderIcon(PersonCircleOutline)
   },
   {
-    label: '编辑用户资料',
-    key: 'editProfile',
-    icon: renderIcon(Pencil)
+    label: '自定义主題',
+    key: 'themeSetting',
+    icon: renderIcon(ColorPalette)
   },
   {
     label: '退出登录',
@@ -125,8 +115,8 @@ function handleSelect(key: string | number, option: DropdownOption) {
     showProfileModal.value = true;
   }
 
-  if (key === 'editProfile') {
-    showModal.value = true;
+  if (key === 'themeSetting') {
+    showThemeSettingModal.value = true;
   }
 }
 </script>
