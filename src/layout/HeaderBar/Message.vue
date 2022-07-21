@@ -1,14 +1,20 @@
 <template>
-  <n-popover trigger="click" placement="bottom-start">
+  <n-popover trigger="hover" placement="bottom-start">
     <template #trigger>
       <ActionContainer :tooltip-content="'消息通知'">
         <n-icon size="25" :component="Notifications" />
         <n-badge :value="unreadCount" :max="99" style="position: absolute; top: 10px; right: 2px" />
       </ActionContainer>
     </template>
-    <div style="width: 420px; height: 400px; overflow: auto; padding: 4px">
+    <div style="width: 370px; height: 400px; overflow: auto; padding: 10px 10px 0 0">
       <n-space vertical>
-        <n-card :bordered="true" :content-style="{ padding: '10px' }" v-for="item in notificationList" :key="item.id">
+        <n-card
+          class="notification"
+          :bordered="false"
+          :content-style="{ padding: '8px 0px 8px 0' }"
+          v-for="item in notificationList"
+          :key="item.id"
+        >
           <div class="notification-header">
             <n-avatar size="small" round :src="item.avatar" />
             <h2>{{ item.title }}</h2>
@@ -44,15 +50,20 @@ function readNotification(id: number) {
 }
 
 function format(value: any) {
-  return dayjs(value).format('YYYY年MM月DD日 HH:mm:ss');
+  return dayjs(value).format('MM月DD日 HH:mm:ss');
 }
 </script>
 
 <style lang="scss" scoped>
+.notification {
+  cursor: pointer;
+  &:hover {
+    background-color: #f8f8f9;
+  }
+}
 .notification-header {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
   padding: 0 4px;
   h2 {
     font-size: 17px;
@@ -63,15 +74,14 @@ function format(value: any) {
 }
 .notification-content {
   padding: 0 0 0 40px;
-  margin-bottom: 10px;
 }
 .notification-footer {
   padding: 0 10px 0 40px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: flex-end;
   span {
-    color: rgb(118, 124, 130);
+    color: #888;
     font-size: 12px;
     font-weight: 600;
   }

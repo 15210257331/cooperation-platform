@@ -49,8 +49,7 @@ const percentage = computed(() => {
 
 <style lang="scss" scoped>
 .statistics {
-  padding: 20px;
-  height: 150px;
+  height: 120px;
   display: flex;
   justify-content: space-around;
   align-items: center;

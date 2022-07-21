@@ -11,9 +11,8 @@
       </n-gi>
       <n-gi :span="8">
         <n-space vertical>
-          <CardItem />
           <UserStatus />
-          <!-- <Clock /> -->
+          <CardItem />
         </n-space>
       </n-gi>
     </n-grid>
@@ -24,11 +23,10 @@
 import { ref } from 'vue';
 import { useMessage } from 'naive-ui';
 import UserInfo from './UserInfo.vue';
-import TaskStatistics from './task-statistics.vue';
-import TaskTrend from './task-trend.vue';
+import TaskStatistics from './TaskStatistics.vue';
+import TaskTrend from './TaskTrend.vue';
 import CardItem from './card-item.vue';
-import UserRank from './user-rank.vue';
-import Clock from './clock.vue';
+import UserRank from './UserRank.vue';
 import UserStatus from './UserStatus.vue';
 
 const message = useMessage();

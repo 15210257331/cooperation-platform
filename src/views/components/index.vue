@@ -18,12 +18,14 @@
     <n-card title="自定义主题测试">
       <div class="theme">自定义主题测试</div>
     </n-card>
+    <EchartsClock />
   </n-space>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import ImageCode from '@/components/ImageCode.vue';
+import EchartsClock from './EchartsClock.vue';
 
 const imgCode = ref<string>('');
 </script>

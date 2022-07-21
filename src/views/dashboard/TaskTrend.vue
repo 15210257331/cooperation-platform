@@ -1,13 +1,13 @@
 <template>
   <n-card
     size="small"
-    title="任务趋势统计"
+    title="任务趋势"
     :segmented="{
       content: true
     }"
   >
     <template #header-extra>
-      <n-radio-group v-model:value="type" name="radiobuttongroup1" @update:value="handleChange">
+      <n-radio-group v-model:value="type" size="small" name="radiobuttongroup1" @update:value="handleChange">
         <n-radio-button :value="'1'" label="最近一周" />
         <n-radio-button :value="'2'" label="最近一月" />
         <n-radio-button :value="'3'" label="最近一年" />

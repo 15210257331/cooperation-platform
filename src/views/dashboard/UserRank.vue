@@ -1,12 +1,13 @@
 <template>
   <n-card
     title="用户排行TOP5"
+    size="small"
     :segmented="{
       content: true
     }"
   >
     <template #header-extra>
-      <n-radio-group v-model:value="type" name="radiobuttongroup1" @update:value="handleChange">
+      <n-radio-group v-model:value="type" size="small" name="radiobuttongroup1" @update:value="handleChange">
         <n-radio-button :value="'1'" label="按任务数" />
         <n-radio-button :value="'2'" label="按完成率" />
       </n-radio-group>
