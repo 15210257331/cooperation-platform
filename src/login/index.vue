@@ -6,22 +6,20 @@
       <RegisterContent v-else @change="change"></RegisterContent>
     </transition>
     <div class="footer">
-      <n-button text tag="a" href="https://beian.miit.gov.cn/" target="_blank">
-        京ICP备19012558号-2
-      </n-button>
+      <n-button text tag="a" href="https://beian.miit.gov.cn/" target="_blank"> 京ICP备19012558号-2 </n-button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import LoginContent from './LoginContent.vue';
-import RegisterContent from './RegisterContent.vue';
+import { ref } from 'vue'
+import LoginContent from './LoginContent.vue'
+import RegisterContent from './RegisterContent.vue'
 
-const showLogin = ref<boolean>(true);
+const showLogin = ref<boolean>(true)
 
 function change() {
-  showLogin.value = !showLogin.value;
+  showLogin.value = !showLogin.value
 }
 </script>
 

@@ -22,10 +22,10 @@
       </template>
       <n-space>
         <div
-          class="theme-item"
-          :style="{ backgroundColor: item.color }"
           v-for="item in themes"
           :key="item.name"
+          class="theme-item"
+          :style="{ backgroundColor: item.color }"
           @click="changeTheme(item.name)"
         >
           <h5>{{ item.title }}</h5>
@@ -45,44 +45,44 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useUserStore, UserInfoType } from '@/store';
-import { Close } from '@vicons/ionicons5';
-import { FormInst, useMessage } from 'naive-ui';
-import { updateUserInfo } from '@/api';
-import { themes } from '@/constant';
-import { useAppStore } from '@/store';
+import { ref, computed, onMounted } from 'vue'
+import { useUserStore, UserInfoType } from '@/store'
+import { Close } from '@vicons/ionicons5'
+import { FormInst, useMessage } from 'naive-ui'
+import { updateUserInfo } from '@/api'
+import { themes } from '@/constant'
+import { useAppStore } from '@/store'
 interface Props {
   /** 弹窗显隐 */
   value: boolean;
 }
-const props = defineProps<Props>();
+const props = defineProps<Props>()
 
 interface Emits {
   (e: 'update:value', val: boolean): void;
 }
-const emit = defineEmits<Emits>();
+const emit = defineEmits<Emits>()
 
-const userStore = useUserStore();
-const appStore = useAppStore();
-const message = useMessage();
+const userStore = useUserStore()
+const appStore = useAppStore()
+const message = useMessage()
 
 const show = computed({
   get() {
-    return props.value;
+    return props.value
   },
   set(val: boolean) {
-    emit('update:value', val);
+    emit('update:value', val)
   }
-});
+})
 
 function changeTheme(theme: any) {
-  appStore.setTheme(theme);
+  appStore.setTheme(theme)
 }
 
 function handleSubmit(e: MouseEvent) {}
 function handleClose() {
-  show.value = false;
+  show.value = false
 }
 </script>
 

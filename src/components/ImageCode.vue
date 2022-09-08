@@ -5,8 +5,8 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue';
-import { useImageCode } from '@/hooks';
+import { watch } from 'vue'
+import { useImageCode } from '@/hooks'
 
 interface Props {
   code?: string;
@@ -18,23 +18,23 @@ interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   code: ''
-});
+})
 
-const emit = defineEmits<Emits>();
+const emit = defineEmits<Emits>()
 
-const { domRef, imgCode, setImgCode, getImgCode } = useImageCode();
+const { domRef, imgCode, setImgCode, getImgCode } = useImageCode()
 
 watch(
   () => props.code,
   newValue => {
-    setImgCode(newValue);
+    setImgCode(newValue)
   }
-);
+)
 watch(imgCode, newValue => {
-  emit('update:code', newValue);
-});
+  emit('update:code', newValue)
+})
 
-defineExpose({ getImgCode });
+defineExpose({ getImgCode })
 </script>
 
 <style lang="scss" scoped></style>

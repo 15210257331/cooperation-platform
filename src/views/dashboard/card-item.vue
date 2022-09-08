@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 interface Message {
   title: string;
@@ -60,7 +60,7 @@ const messgeList = ref<Array<Message>>([
     avatar: 'http://www.example.com',
     time: '2020年07月16日'
   }
-]);
+])
 </script>
 
 <style lang="scss" scoped></style>

@@ -1,10 +1,5 @@
 <template>
-  <n-card
-    hoverable
-    :content-style="{ padding: '15px' }"
-    style="margin-top: 10px"
-    @click="handleClick"
-  >
+  <n-card hoverable :content-style="{ padding: '15px' }" style="margin-top: 10px" @click="handleClick">
     <span class="task-add">新建任务</span>
   </n-card>
 </template>
@@ -13,10 +8,10 @@
 interface Emits {
   (e: 'click'): void;
 }
-const emit = defineEmits<Emits>();
+const emit = defineEmits<Emits>()
 
 function handleClick() {
-  emit('click');
+  emit('click')
 }
 </script>
 

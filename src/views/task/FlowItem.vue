@@ -23,20 +23,20 @@
           tag: 'ul',
           name: 'flip-list'
         }"
-        ghostClass="ghost"
-        dragClass="drag"
-        chosenClass="chosen"
+        ghost-class="ghost"
+        drag-class="drag"
+        chosen-class="chosen"
         :list="flow.tasks"
         :group="{
           name: flow.id,
           put: put,
           pull: pull
         }"
+        item-key="id"
         @change="change($event, flow)"
-        itemKey="id"
       >
         <template #item="{ element, index }">
-          <TaskItem :task="element" :complete="flow.complete" :flowId="flow.id" :index="index"></TaskItem>
+          <TaskItem :task="element" :complete="flow.complete" :flow-id="(flow.id as number)" :index="index"></TaskItem>
         </template>
       </draggable>
       <CreateTaskButton v-if="flow.canNew" @click="createTask" />
@@ -45,33 +45,33 @@
   <!-- 新增/修改流程弹窗 -->
   <CreateFlowModal v-model:value="showModal" :data="flow" :is-edit="flowEdit" />
   <!-- 新增任务modal -->
-  <CreateTaskModal v-model:value="showCreateTaskModal" :flow-id="flow.id"></CreateTaskModal>
+  <CreateTaskModal v-model:value="showCreateTaskModal" :flow-id="(flow.id as number)"></CreateTaskModal>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import draggable from 'vuedraggable';
-import TaskItem from './TaskItem.vue';
-import { useTaskStore, useAppStore, FlowType } from '@/store';
-import { useRender } from '@/hooks';
-import { useMessage, useDialog, FormInst } from 'naive-ui';
-import { EllipsisHorizontal, Documents, AddCircleSharp, TrashBin, Close, Duplicate } from '@vicons/ionicons5';
-import CreateFlowModal from './CreateFlowModal.vue';
-import CreateTaskModal from './CreateTaskModal.vue';
-import CreateTaskButton from '@/components/CreateTaskButton.vue';
+import { ref, computed } from 'vue'
+import draggable from 'vuedraggable'
+import TaskItem from './TaskItem.vue'
+import { useTaskStore, useAppStore, FlowType } from '@/store'
+import { useRender } from '@/hooks'
+import { useMessage, useDialog, FormInst } from 'naive-ui'
+import { EllipsisHorizontal, Documents, AddCircleSharp, TrashBin, Close, Duplicate } from '@vicons/ionicons5'
+import CreateFlowModal from './CreateFlowModal.vue'
+import CreateTaskModal from './CreateTaskModal.vue'
+import CreateTaskButton from '@/components/CreateTaskButton.vue'
 
 interface Props {
   flow: FlowType;
 }
-const props = defineProps<Props>();
+const props = defineProps<Props>()
 
-const taskStore = useTaskStore();
-const message = useMessage();
-const dialog = useDialog();
-const { renderIcon } = useRender();
-const showModal = ref<boolean>(false);
-const showCreateTaskModal = ref<boolean>(false);
-const flowEdit = ref<boolean>(false);
+const taskStore = useTaskStore()
+const message = useMessage()
+const dialog = useDialog()
+const { renderIcon } = useRender()
+const showModal = ref<boolean>(false)
+const showCreateTaskModal = ref<boolean>(false)
+const flowEdit = ref<boolean>(false)
 const options = [
   {
     label: '在此后添加新流程',
@@ -97,13 +97,13 @@ const options = [
     key: 'delete',
     icon: renderIcon(TrashBin)
   }
-];
+]
 
 async function handleSelect(key: string | number) {
   if (key === 'delete') {
     if (props.flow.tasks.length > 0) {
-      message.error('删除流程前请保证该流程下无任务！');
-      return;
+      message.error('删除流程前请保证该流程下无任务！')
+      return
     }
     dialog.warning({
       title: '警告',
@@ -111,48 +111,48 @@ async function handleSelect(key: string | number) {
       positiveText: '确定',
       negativeText: '取消',
       onPositiveClick: async () => {
-        await taskStore.deleteFlow(props.flow.id);
-        message.success('流程已删除！');
+        await taskStore.deleteFlow(props.flow.id as number)
+        message.success('流程已删除！')
       },
       onNegativeClick: () => {}
-    });
+    })
   } else if (key === 'create') {
-    showModal.value = true;
-    flowEdit.value = false;
+    showModal.value = true
+    flowEdit.value = false
   } else if (key === 'edit') {
-    showModal.value = true;
-    flowEdit.value = true;
+    showModal.value = true
+    flowEdit.value = true
   } else if (key === 'createTask') {
-    createTask();
+    createTask()
   }
 }
 
 function createTask() {
-  showCreateTaskModal.value = true;
+  showCreateTaskModal.value = true
 }
 
 // 判断是否可以从其他流程拖拽过来
 function put(to: any, from: any) {
-  return true;
+  return true
 }
 // 判断是否可以拖拽到其他流程返回可以拖拽进去的流程的group值列表 | true | false
 function pull(to: any, from: any) {
-  let arr = props.flow.range.map(item => Number(item));
-  return arr;
+  const arr = props.flow.range.map(item => Number(item))
+  return arr
 }
 
 // 更新任务流程
 async function change(evt: any, flow: any) {
   if (Object.keys(evt).includes('added')) {
-    let taskId = evt['added'].element.id;
-    let newFlowId = flow.id;
-    let newFlowComplete = flow.complete;
-    await taskStore.updateTaskProps(taskId, 'flow', newFlowId);
+    const taskId = evt.added.element.id
+    const newFlowId = flow.id
+    const newFlowComplete = flow.complete
+    await taskStore.updateTaskProps(taskId, 'flow', newFlowId)
     // 如果进入的流程标记为已完成则将任务状态改成已完成
     if (newFlowComplete === true) {
-      await taskStore.updateTaskProps(taskId, 'complete', true);
+      await taskStore.updateTaskProps(taskId, 'complete', true)
     }
-    message.success('状态已更新');
+    message.success('状态已更新')
   }
 }
 </script>

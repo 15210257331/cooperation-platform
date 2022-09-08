@@ -48,7 +48,7 @@
           </template>
           任务优先级：{{ priorityName }}
         </n-tooltip>
-        <n-tooltip trigger="hover" v-if="remind">
+        <n-tooltip v-if="remind && !complete" trigger="hover">
           <template #trigger>
             <n-tag type="success" :bordered="false" size="small">
               提醒
@@ -59,7 +59,7 @@
           </template>
           已添加任务提醒：{{ remind }}
         </n-tooltip>
-        <n-tooltip trigger="hover" v-if="expiration">
+        <n-tooltip v-if="expiration && !complete" trigger="hover">
           <template #trigger>
             <n-tag type="error" :bordered="false" size="small">
               已过期
@@ -70,10 +70,22 @@
           </template>
           该任务已经延期
         </n-tooltip>
+        <n-tooltip v-if="complete" trigger="hover">
+          <template #trigger>
+            <n-tag type="success" :bordered="false" size="small">
+              已完成
+              <template #icon>
+                <n-icon :component="TimeSharp" />
+              </template>
+            </n-tag>
+          </template>
+          该任务标记为已完成
+        </n-tooltip>
       </n-space>
     </div>
 
-    <TaskDetailModal v-model:value="showTaskDetailModal" :task="task" />
+    <!-- 任务详情modal -->
+    <TaskDetailModal v-model:value="showTaskDetailModal" :task="task" :complete="complete" />
 
     <!-- 设置提醒 -->
     <n-modal v-model:show="showAlarmModal">
@@ -118,8 +130,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { TaskType, useTaskStore } from '@/store';
+import { ref, computed } from 'vue'
+import { TaskType, useTaskStore } from '@/store'
 import {
   EllipsisHorizontal,
   CheckmarkCircle,
@@ -130,27 +142,25 @@ import {
   ShareSocialSharp,
   AlertCircle,
   TimeSharp
-} from '@vicons/ionicons5';
-import { useRender } from '@/hooks';
-import TaskDetailModal from './TaskDetailModal.vue';
-import dayjs from 'dayjs';
-import { useMessage } from 'naive-ui';
-import { progressColors, leftBorderColors, priorityOptions, remindOptions } from '@/constant';
+} from '@vicons/ionicons5'
+import { useRender } from '@/hooks'
+import TaskDetailModal from './TaskDetailModal.vue'
+import dayjs from 'dayjs'
+import { useMessage } from 'naive-ui'
+import { progressColors, leftBorderColors, priorityOptions, remindOptions } from '@/constant'
 
-interface Props {
+const props = defineProps<{
   task: TaskType;
   complete: boolean;
   flowId: number;
-}
-const props = defineProps<Props>();
-
-const { renderIcon } = useRender();
-const message = useMessage();
-const taskStore = useTaskStore();
-const showTaskDetailModal = ref<boolean>(false);
-const showAlarmModal = ref<boolean>(false);
-const alarm = ref<number>(props.task.remind);
-const options = [
+}>()
+const { renderIcon } = useRender()
+const message = useMessage()
+const taskStore = useTaskStore()
+const showTaskDetailModal = ref<boolean>(false)
+const showAlarmModal = ref<boolean>(false)
+const alarm = ref<number>(props.task.remind)
+const options = ref([
   {
     label: '复制任务',
     key: 'copy',
@@ -159,12 +169,14 @@ const options = [
   {
     label: '关联内容',
     key: 'link',
-    icon: renderIcon(ShareSocialSharp)
+    icon: renderIcon(ShareSocialSharp),
+    disabled: props.complete
   },
   {
     label: '设置任务提醒',
     key: 'alarm',
-    icon: renderIcon(Alarm)
+    icon: renderIcon(Alarm),
+    disabled: props.complete
   },
   {
     type: 'divider',
@@ -175,85 +187,85 @@ const options = [
     key: 'trash',
     icon: renderIcon(TrashBin)
   }
-];
+])
 const startDate = computed(() => {
-  let month = dayjs(props.task.startDate).format('MM');
-  let day = dayjs(props.task.startDate).format('DD');
-  return `${month}月${day}日开始`;
-});
+  const month = dayjs(props.task.startDate).format('MM')
+  const day = dayjs(props.task.startDate).format('DD')
+  return `${month}月${day}日开始`
+})
 
 const endDate = computed(() => {
-  let month = dayjs(props.task.endDate).format('MM');
-  let day = dayjs(props.task.endDate).format('DD');
-  return `${month}月${day}日截止`;
-});
+  const month = dayjs(props.task.endDate).format('MM')
+  const day = dayjs(props.task.endDate).format('DD')
+  return `${month}月${day}日截止`
+})
 
 const progress = computed(() => {
-  return props.task.progress;
-});
+  return props.task.progress
+})
 
 const progressColor = computed(() => {
-  const progress = props.task.progress;
+  const progress = props.task.progress
   if (progress <= 10) {
-    return progressColors[0];
+    return progressColors[0]
   } else if (progress > 10 && progress <= 40) {
-    return progressColors[1];
+    return progressColors[1]
   } else if (progress > 40 && progress <= 60) {
-    return progressColors[2];
+    return progressColors[2]
   } else if (progress > 60 && progress <= 80) {
-    return progressColors[3];
+    return progressColors[3]
   } else if (progress > 80 && progress <= 90) {
-    return progressColors[4];
+    return progressColors[4]
   } else if (progress > 90 && progress <= 100) {
-    return progressColors[5];
+    return progressColors[5]
   }
-});
+})
 
 const borderColor = computed(() => {
-  return leftBorderColors[Number(props.task.priority) - 1];
-});
+  return leftBorderColors[Number(props.task.priority) - 1]
+})
 
 /**任务优先级 */
 const priorityName = computed(() => {
-  return priorityOptions.filter(item => item.value === props.task.priority)[0].label;
-});
+  return priorityOptions.filter(item => item.value === props.task.priority)[0].label
+})
 
 const remind = computed(() => {
   if (props.task.remind === 0) {
-    return false;
+    return false
   }
-  return remindOptions.filter(item => item.value === props.task.remind)[0].label;
-});
+  return remindOptions.filter(item => item.value === props.task.remind)[0].label
+})
 
 const expiration = computed(() => {
-  return dayjs().isAfter(dayjs(props.task.endDate)) && !props.task.computed;
-});
+  return dayjs().isAfter(dayjs(props.task.endDate)) && !props.task.computed
+})
 
 function taskDetail() {
-  showTaskDetailModal.value = true;
+  showTaskDetailModal.value = true
 }
 
 async function handleSelect(key: string | number) {
   if (key === 'next') {
-    let index = taskStore.flowList.findIndex(item => item.id === props.flowId);
-    let newFlowId;
+    const index = taskStore.flowList.findIndex(item => item.id === props.flowId)
+    let newFlowId
     if (index < taskStore.flowList.length - 1) {
-      newFlowId = taskStore.flowList[index + 1].id;
+      newFlowId = taskStore.flowList[index + 1].id
     }
-    await taskStore.updateTaskProps(props.task.id, 'flow', newFlowId);
+    await taskStore.updateTaskProps(props.task.id, 'flow', newFlowId)
   } else if (key === 'copy') {
-    message.info('任务已复制');
+    message.info('任务已复制')
   } else if (key === 'alarm') {
-     showAlarmModal.value = true;
+    showAlarmModal.value = true
   } else if (key === 'trash') {
-    await taskStore.deleteTask(props.task.id);
+    await taskStore.deleteTask(props.task.id)
   }
 }
 
 async function setAlarm() {
-  await taskStore.updateTaskProps(props.task.id, 'remind', alarm.value);
-   message.success('操作成功');
-   showAlarmModal.value = false;
+  await taskStore.updateTaskProps(props.task.id, 'remind', alarm.value)
+  message.success('操作成功')
+  showAlarmModal.value = false
 }
 </script>
 

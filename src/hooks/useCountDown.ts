@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref } from 'vue'
 
 /**
  * 倒计时
@@ -6,25 +6,25 @@ import { computed, ref } from 'vue';
  */
 export function useCountDown() {
   // 倒计时的秒数
-  const counts = ref(0);
+  const counts = ref(0)
   // 是否还在计时中
-  const isCounting = computed(() => Boolean(counts.value));
+  const isCounting = computed(() => Boolean(counts.value))
 
-  let intervalId: any;
+  let intervalId: any
 
   /**
    * 开始计时
    * @param updateSecond - 更改初时传入的倒计时时间
    */
-  function startCountDown(second: number = 60) {
+  function startCountDown(second = 60) {
     if (!counts.value) {
-      counts.value = second;
+      counts.value = second
       intervalId = setInterval(() => {
-        counts.value -= 1;
+        counts.value -= 1
         if (counts.value <= 0) {
-          clearInterval(intervalId);
+          clearInterval(intervalId)
         }
-      }, 1000);
+      }, 1000)
     }
   }
 
@@ -32,5 +32,5 @@ export function useCountDown() {
     counts,
     isCounting,
     startCountDown
-  };
+  }
 }

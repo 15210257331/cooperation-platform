@@ -64,29 +64,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { FormInst, useMessage } from 'naive-ui';
-import { TaskType, useTaskStore } from '@/store';
-import { Close } from '@vicons/ionicons5';
-import { priorityOptions } from '@/constant';
-import dayjs from 'dayjs';
+import { ref, computed, watch } from 'vue'
+import { FormInst, useMessage } from 'naive-ui'
+import { TaskType, useTaskStore } from '@/store'
+import { Close } from '@vicons/ionicons5'
+import { priorityOptions } from '@/constant'
+import dayjs from 'dayjs'
 
 interface Props {
   /** 弹窗显隐 */
   value: boolean;
   flowId: number;
 }
-const props = defineProps<Props>();
+const props = defineProps<Props>()
 
 interface Emits {
   (e: 'update:value', val: boolean): void;
 }
-const emit = defineEmits<Emits>();
+const emit = defineEmits<Emits>()
 
-const taskStore = useTaskStore();
-const message = useMessage();
+const taskStore = useTaskStore()
+const message = useMessage()
 
-const formRef = ref<FormInst | null>(null);
+const formRef = ref<FormInst | null>(null)
 const formValue = ref<TaskType>({
   name: '',
   description: '',
@@ -94,7 +94,7 @@ const formValue = ref<TaskType>({
   endDate: new Date().getTime(),
   priority: null,
   progress: 0
-});
+})
 const rules = {
   name: {
     required: true,
@@ -111,27 +111,27 @@ const rules = {
     message: '请选择任务优先级',
     trigger: ['blur', 'change']
   }
-};
+}
 
 const showModal = computed({
   get() {
-    return props.value;
+    return props.value
   },
   set(val: boolean) {
-    emit('update:value', val);
+    emit('update:value', val)
   }
-});
+})
 
 async function handleSubmit(e: MouseEvent) {
-  e.preventDefault();
+  e.preventDefault()
   formRef.value?.validate(async errors => {
     if (!errors) {
-      createTask();
+      createTask()
     } else {
-      console.log(errors);
+      console.log(errors)
       //   message.error('Invalid');
     }
-  });
+  })
 }
 
 async function createTask() {
@@ -139,18 +139,18 @@ async function createTask() {
     startDate: new Date(formValue.value.startDate as number),
     endDate: new Date(formValue.value.endDate as number),
     flowId: props.flowId
-  });
+  })
   if (dayjs(data.startDate).isAfter(dayjs(data.endDate))) {
-    message.success('开始时间不能大于结束时间！');
-    return;
+    message.success('开始时间不能大于结束时间！')
+    return
   }
-  await taskStore.createTask(data);
-  showModal.value = false;
-  message.success('操作成功');
+  await taskStore.createTask(data)
+  showModal.value = false
+  message.success('操作成功')
 }
 
 function handleClose() {
-  showModal.value = false;
+  showModal.value = false
 }
 </script>
 

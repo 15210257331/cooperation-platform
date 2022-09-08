@@ -1,7 +1,7 @@
 <template>
   <n-card size="small">
     <n-space>
-      <n-input v-model:value="queryParams.nickname" @keyup.enter="queryData" type="text" placeholder="请输入用户昵称" />
+      <n-input v-model:value="queryParams.nickname" type="text" placeholder="请输入用户昵称" @keyup.enter="queryData" />
       <n-button type="success" @click="queryData">
         <template #icon>
           <n-icon>
@@ -32,14 +32,14 @@
 </template>
 
 <script setup lang="ts">
-import { h, ref, onMounted, reactive } from 'vue';
-import { deleteUser, userList } from '@/api';
-import { DataTableColumns, useMessage, NTag, NButton, useDialog } from 'naive-ui';
-import dayjs from 'dayjs';
-import { SearchSharp, RefreshSharp } from '@vicons/ionicons5';
+import { h, ref, onMounted, reactive } from 'vue'
+import { deleteUser, userList } from '@/api'
+import { DataTableColumns, useMessage, NTag, NButton, useDialog } from 'naive-ui'
+import dayjs from 'dayjs'
+import { SearchSharp, RefreshSharp } from '@vicons/ionicons5'
 
-const message = useMessage();
-const dialog = useDialog();
+const message = useMessage()
+const dialog = useDialog()
 
 type RowData = {
   id: number;
@@ -79,14 +79,14 @@ const columns: DataTableColumns<RowData> = [
         {
           default: () => (row.role === 1 ? '管理员' : '普通用户')
         }
-      );
+      )
     }
   },
   {
     title: '注册时间',
     key: 'createDate',
     render(row) {
-      return h('span', null, { default: () => dayjs(row.createDate).format('YYYY年MM月DD日 HH:mm:ss') });
+      return h('span', null, { default: () => dayjs(row.createDate).format('YYYY年MM月DD日 HH:mm:ss') })
     }
   },
   {
@@ -99,14 +99,14 @@ const columns: DataTableColumns<RowData> = [
           size: 'small',
           type: 'error',
           onClick: () => {
-            userDelete(row.id);
+            userDelete(row.id)
           }
         },
         { default: () => '删除' }
-      );
+      )
     }
   }
-];
+]
 
 const options = [
   {
@@ -117,44 +117,44 @@ const options = [
     label: '管理员',
     value: 1
   }
-];
+]
 
-const dataList = ref<RowData[]>([]);
-const total = ref<number>(0);
-const loading = ref<boolean>(false);
+const dataList = ref<RowData[]>([])
+const total = ref<number>(0)
+const loading = ref<boolean>(false)
 const queryParams = reactive({
   pageIndex: 1,
   pageSize: 4,
   nickname: ''
-});
+})
 
 onMounted(() => {
-  queryData();
-});
+  queryData()
+})
 
 function queryData() {
-  loading.value = true;
+  loading.value = true
   userList(queryParams)
     .then(res => {
       if (res.code === 10000) {
-        dataList.value = res.data.list || [];
-        total.value = res.data.total;
+        dataList.value = res.data.list || []
+        total.value = res.data.total
       }
     })
     .finally(() => {
-      loading.value = false;
-    });
+      loading.value = false
+    })
 }
 
 function reset() {
-  queryParams.pageIndex = 1;
-  queryParams.nickname = '';
-  queryData();
+  queryParams.pageIndex = 1
+  queryParams.nickname = ''
+  queryData()
 }
 
 function pageChange(page: number) {
-  queryParams.pageIndex = page;
-  queryData();
+  queryParams.pageIndex = page
+  queryData()
 }
 
 function userDelete(id: number) {
@@ -166,12 +166,12 @@ function userDelete(id: number) {
     onPositiveClick: () => {
       deleteUser(id).then(res => {
         if (res.code === 10000) {
-          message.success(res.message);
+          message.success(res.message)
         }
-      });
+      })
     },
     onNegativeClick: () => {}
-  });
+  })
 }
 </script>
 

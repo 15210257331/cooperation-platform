@@ -29,4 +29,4 @@ export const themes = [
     color: '#0a9a47',
     name: 'pink'
   }
-];
+]

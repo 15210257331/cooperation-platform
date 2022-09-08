@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory, RouteRecordRaw, RouterView } from 'vue-router';
-import { Grid, CalendarNumber, Layers, PersonSharp, Settings, TrashBin, Aperture } from '@vicons/ionicons5';
+import { createRouter, createWebHistory, RouteRecordRaw, RouterView } from 'vue-router'
+import { Grid, CalendarNumber, Layers, PersonSharp, Settings, TrashBin, Aperture } from '@vicons/ionicons5'
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -22,11 +22,11 @@ export const routes: RouteRecordRaw[] = [
     },
     beforeEnter: (to, from) => {
       // console.log(to);
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token')
       if (!token) {
         return {
           path: '/login'
-        };
+        }
       }
     },
     children: [
@@ -98,26 +98,26 @@ export const routes: RouteRecordRaw[] = [
       }
     ]
   }
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes
-});
+})
 
 // 路由拦截器用于户权限判断
 router.beforeEach((to, from) => {
   // 根据路由修改网站标题
   if (to.meta && to.meta.title) {
-    document.title = to.meta.title as string;
+    document.title = to.meta.title as string
   }
   // 未匹配到路由 比如浏览器输入路由表中不存在的路由
   if (to.matched.length === 0) {
     return {
       name: '404'
-    };
+    }
   }
-  return true;
-});
+  return true
+})
 
-export default router;
+export default router

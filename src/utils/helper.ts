@@ -1,12 +1,12 @@
-import { resolve } from 'path';
-import dayjs from 'dayjs';
+import { resolve } from 'path'
+import dayjs from 'dayjs'
 
 /**
  * 获取项目根路径(绝对路径)
  * @descrition 结尾不带斜杠
  */
 export function getRootPath() {
-  return resolve(process.cwd());
+  return resolve(process.cwd())
 }
 
 /**
@@ -15,11 +15,11 @@ export function getRootPath() {
  * @descrition 结尾不带斜杠
  */
 export function getSrcPath(srcName = 'src') {
-  const rootPath = getRootPath();
+  const rootPath = getRootPath()
 
-  return `${rootPath}/${srcName}`;
+  return `${rootPath}/${srcName}`
 }
 
 export function formatDate(value: Date | string | any) {
-  return dayjs(value).format('YYYY年MM月DD日 HH:mm:ss');
+  return dayjs(value).format('YYYY年MM月DD日 HH:mm:ss')
 }

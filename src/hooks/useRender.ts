@@ -1,5 +1,5 @@
-import { Component, h } from 'vue';
-import { NIcon } from 'naive-ui';
+import { Component, h } from 'vue'
+import { NIcon } from 'naive-ui'
 
 export function useRender() {
   /** 渲染图标 */
@@ -7,11 +7,11 @@ export function useRender() {
     return () => {
       return h(NIcon, null, {
         default: () => h(icon)
-      });
-    };
+      })
+    }
   }
 
   return {
     renderIcon
-  };
+  }
 }

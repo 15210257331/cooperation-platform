@@ -18,22 +18,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
-import { useEcharts, type ECOption } from '@/hooks';
-import { taskTrend } from '@/api';
+import { ref, onMounted, reactive } from 'vue'
+import { useEcharts, type ECOption } from '@/hooks'
+import { taskTrend } from '@/api'
 
-const pieOptions = ref<ECOption>({});
-const { domRef: myChart } = useEcharts(pieOptions);
-const type = ref<string>('1');
-const loading = ref(true);
+const pieOptions = ref<ECOption>({})
+const { domRef: myChart } = useEcharts(pieOptions)
+const type = ref<string>('1')
+const loading = ref(true)
 
 onMounted(() => {
-  queryData();
-});
+  queryData()
+})
 
 function handleChange(value: string) {
-  type.value = value;
-  queryData();
+  type.value = value
+  queryData()
 }
 
 function queryData() {
@@ -79,13 +79,13 @@ function queryData() {
               data: res.data.map((item: any) => item.total)
             }
           ]
-        };
-        loading.value = false;
+        }
+        loading.value = false
       }
     })
     .catch(err => {
-      loading.value = false;
-    });
+      loading.value = false
+    })
 }
 </script>
 

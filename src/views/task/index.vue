@@ -1,27 +1,27 @@
 <template>
   <div class="flow-list">
     <FlowItem v-for="flow in flowList" :key="flow.id" :flow="flow" />
-    <Loading ref="loading" v-if="loading" />
+    <Loading v-if="loading" ref="loading" />
     <Empty v-if="!loading && flowList.length === 0" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import Loading from '@/components/Loading.vue';
-import Empty from '@/components/Empty.vue';
-import { useTaskStore } from '@/store';
+import { ref, onMounted, computed } from 'vue'
+import Loading from '@/components/Loading.vue'
+import Empty from '@/components/Empty.vue'
+import { useTaskStore } from '@/store'
 
-import FlowItem from './FlowItem.vue';
+import FlowItem from './FlowItem.vue'
 
-const taskStore = useTaskStore();
-const loading = ref<boolean>(true);
-const flowList = computed(() => taskStore.flowList);
+const taskStore = useTaskStore()
+const loading = ref<boolean>(true)
+const flowList = computed(() => taskStore.flowList)
 
 onMounted(async () => {
-  await taskStore.getFlowList();
-  loading.value = false;
-});
+  await taskStore.getFlowList()
+  loading.value = false
+})
 </script>
 
 <style lang="scss" scoped>

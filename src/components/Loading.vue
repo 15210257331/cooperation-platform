@@ -11,7 +11,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   description: '正在努力加载中'
-});
+})
 </script>
 
 <style lang="scss" scoped>

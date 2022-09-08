@@ -11,8 +11,8 @@
 </template>
 
 <script setup lang="ts">
-import { onUnmounted, ref } from 'vue';
-import { useEcharts, type ECOption } from '@/hooks';
+import { onUnmounted, ref } from 'vue'
+import { useEcharts, type ECOption } from '@/hooks'
 
 const gaugeOptions = ref<ECOption>({
   series: [
@@ -46,9 +46,9 @@ const gaugeOptions = ref<ECOption>({
         distance: 25,
         formatter(value) {
           if (value === 0) {
-            return '';
+            return ''
           }
-          return `${value}`;
+          return `${value}`
         }
       },
       anchor: {
@@ -204,16 +204,16 @@ const gaugeOptions = ref<ECOption>({
       ]
     }
   ]
-});
+})
 
-let intervalId: NodeJS.Timer;
+let intervalId: NodeJS.Timer
 const { domRef: gaugeRef } = useEcharts(gaugeOptions, chart => {
   intervalId = setInterval(() => {
-    const date = new Date();
-    const second = date.getSeconds();
-    const minute = date.getMinutes() + second / 60;
-    const hour = (date.getHours() % 12) + minute / 60;
-    console.log(minute);
+    const date = new Date()
+    const second = date.getSeconds()
+    const minute = date.getMinutes() + second / 60
+    const hour = (date.getHours() % 12) + minute / 60
+    console.log(minute)
     chart.setOption({
       animationDurationUpdate: 300,
       series: [
@@ -233,16 +233,16 @@ const { domRef: gaugeRef } = useEcharts(gaugeOptions, chart => {
           data: [{ value: second }]
         }
       ]
-    });
-  }, 1000);
-});
+    })
+  }, 1000)
+})
 function clearClock() {
-  clearInterval(intervalId);
+  clearInterval(intervalId)
 }
 
 onUnmounted(() => {
-  clearClock();
-});
+  clearClock()
+})
 </script>
 
 <style lang="scss" scoped></style>

@@ -9,11 +9,11 @@
     <div style="width: 370px; height: 400px; overflow: auto; padding: 10px 10px 0 0">
       <n-space vertical>
         <n-card
+          v-for="item in notificationList"
+          :key="item.id"
           class="notification"
           :bordered="false"
           :content-style="{ padding: '8px 0px 8px 0' }"
-          v-for="item in notificationList"
-          :key="item.id"
         >
           <div class="notification-header">
             <n-avatar size="small" round :src="item.avatar" />
@@ -31,26 +31,26 @@
 </template>
 
 <script setup lang="ts">
-import { Notifications } from '@vicons/ionicons5';
-import { useUserStore } from '@/store';
-import { computed } from 'vue';
-import dayjs from 'dayjs';
+import { Notifications } from '@vicons/ionicons5'
+import { useUserStore } from '@/store'
+import { computed } from 'vue'
+import dayjs from 'dayjs'
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 
 const unreadCount = computed(() => {
-  return userStore.unReadCount;
-});
+  return userStore.unReadCount
+})
 const notificationList = computed(() => {
-  return userStore.notificationList;
-});
+  return userStore.notificationList
+})
 
 function readNotification(id: number) {
-  userStore.readNotification({ id });
+  userStore.readNotification({ id })
 }
 
 function format(value: any) {
-  return dayjs(value).format('MM月DD日 HH:mm:ss');
+  return dayjs(value).format('MM月DD日 HH:mm:ss')
 }
 </script>
 

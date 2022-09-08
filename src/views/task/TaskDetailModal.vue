@@ -31,6 +31,7 @@
         <n-form-item label="任务名称:" path="name">
           <n-input
             v-model:value="formValue.name"
+            :disabled="complete"
             :autofocus="false"
             placeholder="输入任务名称"
             @change="updateTaskProps('name')"
@@ -39,6 +40,7 @@
         <n-form-item label="任务描述:" path="description">
           <n-input
             v-model:value="formValue.description"
+            :disabled="complete"
             type="textarea"
             placeholder="任务描述"
             :autosize="{
@@ -51,6 +53,7 @@
           <n-form-item label="开始时间:" path="startDate">
             <n-date-picker
               v-model:value="formValue.startDate"
+              :disabled="complete"
               type="datetime"
               @update:value="updateTaskProps('startDate')"
             />
@@ -58,6 +61,7 @@
           <n-form-item label="结束时间:" path="endDate">
             <n-date-picker
               v-model:value="formValue.endDate"
+              :disabled="complete"
               type="datetime"
               @update:value="updateTaskProps('endDate')"
             />
@@ -66,6 +70,7 @@
         <n-form-item label="优先级:" path="priority">
           <n-select
             v-model:value="formValue.priority"
+            :disabled="complete"
             :options="priorityOptions"
             placeholder="请选择任务优先级"
             @update:value="updateTaskProps('priority')"
@@ -74,6 +79,7 @@
         <n-form-item label="任务进度:" path="priority">
           <n-slider
             v-model:value="formValue.progress"
+            :disabled="complete"
             :marks="{ 0: '0%', 50: '50%', 100: '100%' }"
             :step="10"
             @update:value="updateTaskProps('progress')"
@@ -90,26 +96,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue';
-import { FormInst, useMessage } from 'naive-ui';
-import { TaskType, useTaskStore } from '@/store';
-import { Close } from '@vicons/ionicons5';
-import { priorityOptions } from '@/constant';
-import dayjs from 'dayjs';
+import { ref, computed, watch, onMounted } from 'vue'
+import { FormInst, useMessage } from 'naive-ui'
+import { TaskType, useTaskStore } from '@/store'
+import { Close } from '@vicons/ionicons5'
+import { priorityOptions } from '@/constant'
+import dayjs from 'dayjs'
 
 const props = defineProps<{
   /** 弹窗显隐 */
   value: boolean;
   task: TaskType;
-}>();
+  complete: boolean;
+}>()
 
 const emit = defineEmits<{
   (e: 'update:value', val: boolean): void;
-}>();
+}>()
 
-const taskStore = useTaskStore();
-const message = useMessage();
-const formRef = ref<FormInst | null>(null);
+const taskStore = useTaskStore()
+const message = useMessage()
+const formRef = ref<FormInst | null>(null)
 const formValue = ref<TaskType>({
   name: props.task.name,
   description: props.task.description,
@@ -117,7 +124,7 @@ const formValue = ref<TaskType>({
   endDate: dayjs(props.task.startDate).valueOf(),
   priority: props.task.priority,
   progress: props.task.progress
-});
+})
 
 const rules = {
   name: {
@@ -135,32 +142,32 @@ const rules = {
     message: '请选择任务优先级',
     trigger: ['blur', 'change']
   }
-};
+}
 
 const showModal = computed({
   get() {
-    return props.value;
+    return props.value
   },
   set(val: boolean) {
-    emit('update:value', val);
+    emit('update:value', val)
   }
-});
+})
 
 /** 更新任务单个属性 */
 async function updateTaskProps(propName: string) {
-  const taskId = props.task.id;
-  let propValue: any;
+  const taskId = props.task.id
+  let propValue: any
   if (propName == 'endDate' || propName == 'startDate') {
-    propValue = new Date(formValue.value[propName] as number);
+    propValue = new Date(formValue.value[propName] as number)
   } else {
-    propValue = formValue.value[propName];
+    propValue = formValue.value[propName]
   }
-  await taskStore.updateTaskProps(taskId, propName, propValue);
-  message.success('操作成功');
+  await taskStore.updateTaskProps(taskId, propName, propValue)
+  message.success('操作成功')
 }
 
 function handleClose() {
-  showModal.value = false;
+  showModal.value = false
 }
 </script>
 

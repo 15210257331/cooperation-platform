@@ -7,8 +7,8 @@
 </template>
 
 <script setup lang="ts">
-import { Component, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { Component, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import {
   AlbumsSharp,
   SunnyOutline,
@@ -19,25 +19,25 @@ import {
   PersonCircleOutline as UserIcon,
   Pencil as EditIcon,
   LogOutOutline as LogoutIcon
-} from '@vicons/ionicons5';
+} from '@vicons/ionicons5'
 
 interface BreadcrumbType {
   title: string;
   icon: Component;
   name: string;
 }
-const route = useRoute();
+const route = useRoute()
 const breadcrumbs = computed(() => {
-  let arr: Array<BreadcrumbType> = [];
+  const arr: Array<BreadcrumbType> = []
   route.matched.map((item: any) => {
     arr.push({
       title: item.meta.title,
       icon: AlbumsSharp,
       name: item.meta.name
-    });
-  });
-  return arr as Array<BreadcrumbType>;
-});
+    })
+  })
+  return arr as Array<BreadcrumbType>
+})
 </script>
 
 <style lang="scss" scoped></style>

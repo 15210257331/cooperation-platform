@@ -34,9 +34,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, h } from 'vue';
-import type { Component } from 'vue';
-import { useAppStore, useUserStore } from '@/store';
+import { ref, h } from 'vue'
+import type { Component } from 'vue'
+import { useAppStore, useUserStore } from '@/store'
 import {
   SunnyOutline,
   Moon,
@@ -46,36 +46,36 @@ import {
   PersonCircleOutline,
   ColorPalette,
   LogOutOutline
-} from '@vicons/ionicons5';
-import { DropdownOption, NIcon, useDialog } from 'naive-ui';
-import { useRouter } from 'vue-router';
-import Breadcrumb from './Breadcrumb.vue';
-import { useFullscreen } from '@vueuse/core';
-import ProfileModal from './ProfileModal.vue';
-import ActionContainer from '@/components/ActionContainer.vue';
-import Message from './Message.vue';
-import ThemeSetting from './ThemeSetting.vue';
-import { useRender } from '@/hooks';
+} from '@vicons/ionicons5'
+import { DropdownOption, NIcon, useDialog } from 'naive-ui'
+import { useRouter } from 'vue-router'
+import Breadcrumb from './Breadcrumb.vue'
+import { useFullscreen } from '@vueuse/core'
+import ProfileModal from './ProfileModal.vue'
+import ActionContainer from '@/components/ActionContainer.vue'
+import Message from './Message.vue'
+import ThemeSetting from './ThemeSetting.vue'
+import { useRender } from '@/hooks'
 
-const showProfileModal = ref<boolean>(false);
-const showThemeSettingModal = ref<boolean>(false);
-const userStore = useUserStore();
-const appStore = useAppStore();
-const router = useRouter();
-const { isFullscreen, toggle } = useFullscreen();
-const dialog = useDialog();
-const { renderIcon } = useRender();
+const showProfileModal = ref<boolean>(false)
+const showThemeSettingModal = ref<boolean>(false)
+const userStore = useUserStore()
+const appStore = useAppStore()
+const router = useRouter()
+const { isFullscreen, toggle } = useFullscreen()
+const dialog = useDialog()
+const { renderIcon } = useRender()
 
-const showModal = ref<boolean>(false);
+const showModal = ref<boolean>(false)
 
 function toggleTheme() {
-  appStore.toggleTheme();
+  appStore.toggleTheme()
 }
 function toggleCollapse() {
-  appStore.toggleCollapse();
+  appStore.toggleCollapse()
 }
 function toggleFullScreen() {
-  toggle();
+  toggle()
 }
 const options = [
   {
@@ -93,7 +93,7 @@ const options = [
     key: 'logout',
     icon: renderIcon(LogOutOutline)
   }
-];
+]
 function handleSelect(key: string | number, option: DropdownOption) {
   if (key === 'logout') {
     dialog.warning({
@@ -102,21 +102,21 @@ function handleSelect(key: string | number, option: DropdownOption) {
       positiveText: '确定',
       negativeText: '取消',
       onPositiveClick: () => {
-        localStorage.removeItem('token');
-        userStore.clearUserInfo();
+        localStorage.removeItem('token')
+        userStore.clearUserInfo()
         router.push({
           name: 'login'
-        });
+        })
       },
       onNegativeClick: () => {}
-    });
+    })
   }
   if (key === 'profile') {
-    showProfileModal.value = true;
+    showProfileModal.value = true
   }
 
   if (key === 'themeSetting') {
-    showThemeSettingModal.value = true;
+    showThemeSettingModal.value = true
   }
 }
 </script>

@@ -1,5 +1,5 @@
-import { getNotificationList, getUnreadCount, readNotification } from '@/api';
-import { defineStore } from 'pinia';
+import { getNotificationList, getUnreadCount, readNotification } from '@/api'
+import { defineStore } from 'pinia'
 
 export interface UserInfoType {
   id: number | null;
@@ -30,7 +30,7 @@ function initUserInfo(): UserInfoType {
     avatar: '',
     role: 0,
     intro: ''
-  };
+  }
 }
 
 export const useUserStore = defineStore('user', {
@@ -39,45 +39,45 @@ export const useUserStore = defineStore('user', {
       userInfo: initUserInfo(),
       unReadCount: 0,
       notificationList: []
-    };
+    }
   },
   actions: {
     queryNotificationList(queryParams: any) {
       getNotificationList(queryParams).then(res => {
         if (res.code === 10000) {
-          this.notificationList = res.data.list || [];
+          this.notificationList = res.data.list || []
         }
-      });
+      })
     },
     queryUnreadCount() {
       getUnreadCount().then(res => {
         if (res.code === 10000) {
-          this.unReadCount = res.data || 0;
+          this.unReadCount = res.data || 0
         }
-      });
+      })
     },
     readNotification(data: any) {
       readNotification(data).then(res => {
         if (res.code === 10000) {
           if (this.unReadCount > 0) {
-            this.unReadCount -= 1;
+            this.unReadCount -= 1
             this.notificationList.map(item => {
               if (item.id === data.id) {
-                item.read = 1;
+                item.read = 1
               }
-            });
+            })
           }
         }
-      });
+      })
     },
     setUserInfo(userInfo: UserInfoType) {
-      this.userInfo = userInfo;
+      this.userInfo = userInfo
     },
     clearUserInfo() {
-      this.userInfo = initUserInfo();
+      this.userInfo = initUserInfo()
     }
   },
   getters: {
     nickname: state => state.userInfo.nickname
   }
-});
+})

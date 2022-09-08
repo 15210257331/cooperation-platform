@@ -5,10 +5,10 @@
   </router-link>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useAppStore } from '@/store';
+import { ref } from 'vue'
+import { useAppStore } from '@/store'
 
-const appstore = useAppStore();
+const appstore = useAppStore()
 </script>
 <style scoped lang="scss">
 .app-logo-collapse {

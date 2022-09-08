@@ -24,9 +24,9 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from '@/store';
-import dayjs from 'dayjs';
-import { computed, Ref } from 'vue';
+import { useUserStore } from '@/store'
+import dayjs from 'dayjs'
+import { computed, Ref } from 'vue'
 
 interface StatisticData {
   id: number;
@@ -35,7 +35,7 @@ interface StatisticData {
   animation: boolean;
 }
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 
 const statistic: Ref<Array<StatisticData>> = computed(() => {
   return [
@@ -57,8 +57,8 @@ const statistic: Ref<Array<StatisticData>> = computed(() => {
       value: userStore.unReadCount,
       animation: false
     }
-  ];
-});
+  ]
+})
 </script>
 
 <style scoped></style>

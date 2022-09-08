@@ -15,7 +15,7 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/*":["src/*"]
+      "@/*":["src/*"] // 标识匹配 src 下的所有文件
     },
     "types": ["naive-ui/volar","vite/client","node",]
   },

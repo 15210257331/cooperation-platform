@@ -20,24 +20,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useMessage } from 'naive-ui';
-import UserInfo from './UserInfo.vue';
-import TaskStatistics from './TaskStatistics.vue';
-import TaskTrend from './TaskTrend.vue';
-import CardItem from './card-item.vue';
-import UserRank from './UserRank.vue';
-import UserStatus from './UserStatus.vue';
+import { ref } from 'vue'
+import { useMessage } from 'naive-ui'
+import UserInfo from './UserInfo.vue'
+import TaskStatistics from './TaskStatistics.vue'
+import TaskTrend from './TaskTrend.vue'
+import CardItem from './card-item.vue'
+import UserRank from './UserRank.vue'
+import UserStatus from './UserStatus.vue'
 
-const message = useMessage();
+const message = useMessage()
 
 function info() {
   message.info("I don't know why nobody told you how to unfold your love", {
     keepAliveOnHover: true
-  });
+  })
 }
 
-const text = ref('dashaboard');
+const text = ref('dashaboard')
 </script>
 
 <style scoped></style>

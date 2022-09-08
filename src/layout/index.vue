@@ -14,38 +14,43 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import SiderBar from './SiderBar/index.vue';
-import HeaderBar from './HeaderBar/index.vue';
-import { getUserInfo } from '@/api';
-import { useAppStore, useUserStore } from '@/store';
+import { onMounted } from 'vue'
+import SiderBar from './SiderBar/index.vue'
+import HeaderBar from './HeaderBar/index.vue'
+import { getUserInfo } from '@/api'
+import { useAppStore, useProjectStore, useUserStore } from '@/store'
 
-const userStore = useUserStore();
-const appStore = useAppStore();
+const userStore = useUserStore()
+const projectStore = useProjectStore()
+const appStore = useAppStore()
 const queryParams = {
   pageIndex: 1,
   pageSize: 10
-};
+}
 
 onMounted(() => {
-  queryUserInfo();
-  queryNotificationList();
-  queryUnreadCount();
-});
+  queryUserInfo()
+  queryProjectList()
+  queryNotificationList()
+  queryUnreadCount()
+})
 
 function queryUserInfo() {
   getUserInfo().then(res => {
     if (res.code === 10000) {
-      const userInfo = res.data;
-      userStore.setUserInfo(userInfo);
+      const userInfo = res.data
+      userStore.setUserInfo(userInfo)
     }
-  });
+  })
+}
+function queryProjectList() {
+  projectStore.getProjectList()
 }
 function queryNotificationList() {
-  userStore.queryNotificationList(queryParams);
+  userStore.queryNotificationList(queryParams)
 }
 function queryUnreadCount() {
-  userStore.queryUnreadCount();
+  userStore.queryUnreadCount()
 }
 </script>
 

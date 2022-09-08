@@ -20,15 +20,15 @@
           </template>
         </n-button>
       </template>
-      <n-form ref="formRef" :label-placement="'left'" :label-width="'auto'" :model="formValue" :rules="rules">
+      <n-form ref="formRef" :label-placement="'left'" :label-width="'auto'" :model="form" :rules="rules">
         <n-form-item label="流程名称:" path="name">
-          <n-input v-model:value="formValue.name" placeholder="输入流程名称" />
+          <n-input v-model:value="form.name" placeholder="输入流程名称" />
         </n-form-item>
-        <n-form-item v-if="isEdit === true" label="节点排序:" path="sort">
-          <n-input-number v-model:value="formValue.sort" />
+        <n-form-item label="节点排序:" path="sort">
+          <n-input-number v-model:value="form.sort" />
         </n-form-item>
         <n-form-item label="新建任务:" path="canNew">
-          <n-radio-group v-model:value="formValue.canNew" name="radiogroup">
+          <n-radio-group v-model:value="form.canNew" name="radiogroup">
             <n-space>
               <n-radio :value="1"> 允许新建任务 </n-radio>
               <n-radio :value="2"> 无法新建任务 </n-radio>
@@ -36,10 +36,10 @@
           </n-radio-group>
         </n-form-item>
         <n-form-item v-if="isEdit === true" label="流转范围:" path="range">
-          <n-checkbox-group v-model:value="formValue.range">
+          <n-checkbox-group v-model:value="form.range">
             <n-space item-style="display: flex;">
               <n-checkbox
-                v-for="item in allFlows"
+                v-for="item in rangeList"
                 :key="item.id"
                 :disabled="item.disabled"
                 :value="item.id"
@@ -50,8 +50,8 @@
         </n-form-item>
         <n-form-item label="标记完成:" path="complete">
           <n-space horizontal>
-            <n-switch v-model:value="formValue.complete" />
-            <n-tag :bordered="false" type="success" v-if="formValue.complete === true">
+            <n-switch v-model:value="form.complete" />
+            <n-tag v-if="form.complete === true" :bordered="false" type="success">
               该流程下的所有任务状态为已完成
             </n-tag>
           </n-space>
@@ -69,24 +69,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { FormInst, useMessage } from 'naive-ui';
-import { useTaskStore } from '@/store';
-import { Close } from '@vicons/ionicons5';
-import { getAllFlows } from '@/api';
-
-const taskStore = useTaskStore();
-const message = useMessage();
-
-interface FlowType {
-  id: number | undefined;
-  name: string;
-  canNew: number;
-  sort: number;
-  complete: boolean;
-  range: Array<number>;
-  disabled?: boolean;
-}
+import { ref, computed, watch } from 'vue'
+import { FormInst, useMessage } from 'naive-ui'
+import { FlowType, useTaskStore } from '@/store'
+import { Close } from '@vicons/ionicons5'
 
 interface Props {
   /** 弹窗显隐 */
@@ -94,130 +80,129 @@ interface Props {
   data: any;
   isEdit: boolean;
 }
-const props = defineProps<Props>();
+const props = defineProps<Props>()
 
 interface Emits {
   (e: 'update:value', val: boolean): void;
 }
-const emit = defineEmits<Emits>();
+const emit = defineEmits<Emits>()
 
-const allFlows = ref<FlowType[]>([]);
-const formRef = ref<FormInst | null>(null);
-const formValue = ref<FlowType>({
-  id: undefined,
+const taskStore = useTaskStore()
+const message = useMessage()
+const formRef = ref<FormInst | null>(null)
+const form = ref<FlowType>({
   name: '',
   canNew: 1,
   sort: props.data.sort + 1,
   complete: false,
-  range: []
-});
+  range: [],
+  tasks: []
+})
 const rules = {
   name: {
     required: true,
     message: '请输入流程名称',
     trigger: 'blur'
+  },
+  sort: {
+    required: true,
+    message: '排序必填'
+  },
+  canNew: {
+    required: true,
+    message: '新建任务必选'
+  },
+  complete: {
+    required: true,
+    message: '完成状态必选'
   }
-  //   canNew: {
-  //     required: true,
-  //     message: '新建任务必选',
-  //     trigger: ['blur']
-  //   },
-  //   complete: {
-  //     required: true,
-  //     message: '完成状态必选',
-  //     trigger: ['blur']
-  //   }
-};
+}
 
 const showModal = computed({
   get() {
-    return props.value;
+    return props.value
   },
   set(val: boolean) {
-    emit('update:value', val);
+    emit('update:value', val)
   }
-});
+})
+
+const rangeList = computed(() => {
+  const arr = taskStore.flowList
+  arr.sort((a: { sort: number }, b: { sort: number }) => a.sort - b.sort)
+  arr.map((flow: any) => {
+    if (flow.id === props.data.id) {
+      flow.disabled = true
+    } else {
+      flow.disabled = false
+    }
+  })
+  return arr
+})
 
 watch(
   () => props.isEdit,
   newValue => {
-    console.log(newValue);
     if (newValue === true) {
-      formValue.value = {
+      form.value = {
         id: props.data.id,
         name: props.data.name,
         canNew: props.data.canNew ? 1 : 2,
         sort: props.data.sort,
         complete: props.data.complete,
-        range: props.data.range.map((item: string) => Number(item))
-      };
-      getFlowList();
+        range: props.data.range.map((item: string) => Number(item)),
+        tasks: []
+      }
     } else {
-      formValue.value = {
+      form.value = {
         id: undefined,
         name: '',
         canNew: 1,
         sort: props.data.sort + 1,
         complete: false,
-        range: []
-      };
+        range: [],
+        tasks: []
+      }
     }
   }
-);
-
-function getFlowList() {
-  getAllFlows().then(res => {
-    if (res.code === 10000) {
-      const arr = res.data || [];
-      arr.sort((a: { sort: number }, b: { sort: number }) => a.sort - b.sort);
-      arr.map((flow: any) => {
-        if (flow.id === formValue.value.id) {
-          flow.disabled = true;
-        } else {
-          flow.disabled = false;
-        }
-      });
-      allFlows.value = arr;
-    }
-  });
-}
+)
 
 async function handleSubmit(e: MouseEvent) {
-  e.preventDefault();
+  e.preventDefault()
   formRef.value?.validate(async errors => {
     if (!errors) {
       if (props.isEdit === false) {
-        createFlow();
+        createFlow()
       } else {
-        updateFlow();
+        updateFlow()
       }
     } else {
-      console.log(errors);
+      console.log(errors)
       //   message.error('Invalid');
     }
-  });
+  })
 }
 
 async function createFlow() {
-  const data = Object.assign({}, formValue.value, {
-    canNew: formValue.value.canNew == 1 ? true : false
-  });
-  await taskStore.createFlow(data);
-  showModal.value = false;
-  message.success('操作成功');
+  const data = Object.assign({}, form.value, {
+    canNew: form.value.canNew == 1 ? true : false
+  })
+  await taskStore.createFlow(data)
+  showModal.value = false
+  message.success('操作成功')
 }
 
 async function updateFlow() {
-  const data = Object.assign({}, formValue.value, {
-    canNew: formValue.value.canNew == 1 ? true : false
-  });
-  await taskStore.updateFlow(data);
-  showModal.value = false;
-  message.success('操作成功');
+  const data = Object.assign({}, form.value, {
+    canNew: form.value.canNew == 1 ? true : false
+  })
+  await taskStore.updateFlow(data)
+  showModal.value = false
+  message.success('操作成功')
 }
 
 function handleClose() {
-  showModal.value = false;
+  showModal.value = false
 }
 </script>
 

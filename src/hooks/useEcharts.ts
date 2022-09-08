@@ -1,7 +1,7 @@
-import { ref, watch, nextTick, onUnmounted } from 'vue';
-import type { Ref, ComputedRef } from 'vue';
-import * as echarts from 'echarts/core';
-import { BarChart, LineChart, PieChart, ScatterChart, PictorialBarChart, RadarChart, GaugeChart } from 'echarts/charts';
+import { ref, watch, nextTick, onUnmounted } from 'vue'
+import type { Ref, ComputedRef } from 'vue'
+import * as echarts from 'echarts/core'
+import { BarChart, LineChart, PieChart, ScatterChart, PictorialBarChart, RadarChart, GaugeChart } from 'echarts/charts'
 import type {
   BarSeriesOption,
   LineSeriesOption,
@@ -10,7 +10,7 @@ import type {
   PictorialBarSeriesOption,
   RadarSeriesOption,
   GaugeSeriesOption
-} from 'echarts/charts';
+} from 'echarts/charts'
 import {
   TitleComponent,
   LegendComponent,
@@ -19,7 +19,7 @@ import {
   DatasetComponent,
   TransformComponent,
   ToolboxComponent
-} from 'echarts/components';
+} from 'echarts/components'
 import type {
   TitleComponentOption,
   LegendComponentOption,
@@ -27,11 +27,11 @@ import type {
   GridComponentOption,
   ToolboxComponentOption,
   DatasetComponentOption
-} from 'echarts/components';
-import { LabelLayout, UniversalTransition } from 'echarts/features';
-import { CanvasRenderer } from 'echarts/renderers';
-import { useElementSize } from '@vueuse/core';
-import { useAppStore } from '@/store';
+} from 'echarts/components'
+import { LabelLayout, UniversalTransition } from 'echarts/features'
+import { CanvasRenderer } from 'echarts/renderers'
+import { useElementSize } from '@vueuse/core'
+import { useAppStore } from '@/store'
 
 export type ECOption = echarts.ComposeOption<
   | BarSeriesOption
@@ -67,7 +67,7 @@ echarts.use([
   LabelLayout,
   UniversalTransition,
   CanvasRenderer
-]);
+])
 
 /**
  * Echarts hooks函数
@@ -79,86 +79,86 @@ export function useEcharts(
   options: Ref<ECOption> | ComputedRef<ECOption>,
   renderFun?: (chartInstance: echarts.ECharts) => void
 ) {
-  const appStore = useAppStore();
+  const appStore = useAppStore()
 
-  const domRef = ref<HTMLElement | null>(null);
+  const domRef = ref<HTMLElement | null>(null)
 
-  const initialSize = { width: 0, height: 0 };
-  const { width, height } = useElementSize(domRef, initialSize);
+  const initialSize = { width: 0, height: 0 }
+  const { width, height } = useElementSize(domRef, initialSize)
 
-  let chart: echarts.ECharts | null = null;
+  let chart: echarts.ECharts | null = null
 
   function canRender() {
-    return initialSize.width > 0 && initialSize.height > 0;
+    return initialSize.width > 0 && initialSize.height > 0
   }
 
   function isRendered() {
-    return Boolean(domRef.value && chart);
+    return Boolean(domRef.value && chart)
   }
 
   function update(updateOptions: ECOption) {
     if (isRendered()) {
-      chart!.setOption({ ...updateOptions, backgroundColor: 'transparent' });
+      chart!.setOption({ ...updateOptions, backgroundColor: 'transparent' })
     }
   }
 
   async function render() {
     if (domRef.value) {
-      const chartTheme = appStore.darkTheme ? 'dark' : 'light';
-      await nextTick();
-      chart = echarts.init(domRef.value, chartTheme);
+      const chartTheme = appStore.darkTheme ? 'dark' : 'light'
+      await nextTick()
+      chart = echarts.init(domRef.value, chartTheme)
       if (renderFun) {
-        renderFun(chart);
+        renderFun(chart)
       }
-      update(options.value);
+      update(options.value)
     }
   }
 
   function resize() {
-    chart?.resize();
+    chart?.resize()
   }
 
   function destroy() {
-    chart?.dispose();
+    chart?.dispose()
   }
 
   function updateTheme() {
-    destroy();
-    render();
+    destroy()
+    render()
   }
 
   const stopSizeWatch = watch([width, height], ([newWidth, newHeight]) => {
-    initialSize.width = newWidth;
-    initialSize.height = newHeight;
+    initialSize.width = newWidth
+    initialSize.height = newHeight
     if (canRender()) {
       if (!isRendered()) {
-        render();
+        render()
       } else {
-        resize();
+        resize()
       }
     }
-  });
+  })
 
   const stopOptionWatch = watch(options, newValue => {
     // console.log(newValue);
-    update(newValue);
-  });
+    update(newValue)
+  })
 
   const stopDarkModeWatch = watch(
     () => appStore.darkTheme,
     () => {
-      updateTheme();
+      updateTheme()
     }
-  );
+  )
 
   onUnmounted(() => {
-    destroy();
-    stopSizeWatch();
-    stopOptionWatch();
-    stopDarkModeWatch();
-  });
+    destroy()
+    stopSizeWatch()
+    stopOptionWatch()
+    stopDarkModeWatch()
+  })
 
   return {
     domRef
-  };
+  }
 }

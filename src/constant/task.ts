@@ -1,5 +1,5 @@
-export const progressColors = ['#CB3A56', '#F47983', '#AE7000', '#3DE1AD', '#801DAE', '#21A675'];
-export const leftBorderColors = ['#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'];
+export const progressColors = ['#CB3A56', '#F47983', '#AE7000', '#3DE1AD', '#801DAE', '#21A675']
+export const leftBorderColors = ['#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc']
 /** 任务优先级 */
 export const priorityOptions = [
   {
@@ -22,7 +22,7 @@ export const priorityOptions = [
     value: '5',
     label: '紧急'
   }
-];
+]
 
 export const remindOptions = [
   {
@@ -45,4 +45,4 @@ export const remindOptions = [
     value: 4,
     label: '截止前半小时'
   }
-];
+]

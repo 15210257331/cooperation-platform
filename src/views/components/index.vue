@@ -23,11 +23,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import ImageCode from '@/components/ImageCode.vue';
-import EchartsClock from './EchartsClock.vue';
+import { ref } from 'vue'
+import ImageCode from '@/components/ImageCode.vue'
+import EchartsClock from './EchartsClock.vue'
 
-const imgCode = ref<string>('');
+const imgCode = ref<string>('')
 </script>
 
 <style lang="scss" scoped>

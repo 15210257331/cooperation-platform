@@ -8,12 +8,12 @@
 </template>
 
 <script setup lang="ts">
-import { h, ref, onMounted } from 'vue';
-import { deleteTask, getTaskList } from '@/api';
-import { DataTableColumns, useMessage, NTag, NButton } from 'naive-ui';
-import dayjs from 'dayjs';
+import { h, ref, onMounted } from 'vue'
+import { deleteTask, getTaskList } from '@/api'
+import { DataTableColumns, useMessage, NTag, NButton } from 'naive-ui'
+import dayjs from 'dayjs'
 
-const message = useMessage();
+const message = useMessage()
 
 type RowData = {
   id: number;
@@ -35,7 +35,7 @@ const columns: DataTableColumns<RowData> = [
     title: '创建时间',
     key: 'createDate',
     render(row) {
-      return h('span', null, { default: () => dayjs(row.createDate).format('YYYY年MM月DD日 HH:mm:ss') });
+      return h('span', null, { default: () => dayjs(row.createDate).format('YYYY年MM月DD日 HH:mm:ss') })
     }
   },
   {
@@ -48,44 +48,44 @@ const columns: DataTableColumns<RowData> = [
           size: 'small',
           type: 'error',
           onClick: () => {
-            deleteData(row.id);
+            deleteData(row.id)
           }
         },
         { default: () => '彻底删除' }
-      );
+      )
     }
   }
-];
+]
 
-const dataList = ref<RowData[]>([]);
-const total = ref<number>(0);
+const dataList = ref<RowData[]>([])
+const total = ref<number>(0)
 const queryParams = ref({
   page: 1,
   size: 10,
   name: '',
   isDelete: true
-});
+})
 
 onMounted(() => {
-  queryData();
-});
+  queryData()
+})
 
 function queryData() {
   getTaskList(queryParams.value).then(res => {
     if (res.code === 10000) {
-      dataList.value = res.data.list || [];
-      total.value = res.data.total;
+      dataList.value = res.data.list || []
+      total.value = res.data.total
     }
-  });
+  })
 }
 
 function deleteData(id: number) {
   deleteTask(id).then(res => {
     if (res.code === 10000) {
-      message.success('任务已删除');
-      queryData();
+      message.success('任务已删除')
+      queryData()
     }
-  });
+  })
 }
 </script>
 

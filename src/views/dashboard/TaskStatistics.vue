@@ -38,13 +38,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useTaskStore } from '@/store';
+import { ref, computed } from 'vue'
+import { useTaskStore } from '@/store'
 
-const taskStore = useTaskStore();
+const taskStore = useTaskStore()
 const percentage = computed(() => {
-  return taskStore.total > 0 ? parseInt(((taskStore.completeTotal / taskStore.total) * 100).toFixed(2)) : 0;
-});
+  return taskStore.total > 0 ? parseInt(((taskStore.completeTotal / taskStore.total) * 100).toFixed(2)) : 0
+})
 </script>
 
 <style lang="scss" scoped>

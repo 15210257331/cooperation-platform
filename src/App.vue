@@ -17,31 +17,31 @@
 </template>
 
 <script setup lang="ts">
-import { lightTheme, darkTheme, useMessage, useNotification, zhCN, dateZhCN } from 'naive-ui';
-import { useAppStore } from '@/store/index';
-import { defineComponent, h, onMounted } from 'vue';
+import { lightTheme, darkTheme, useMessage, useNotification, zhCN, dateZhCN } from 'naive-ui'
+import { useAppStore } from '@/store/index'
+import { defineComponent, h, onMounted } from 'vue'
 
-const appStore = useAppStore();
+const appStore = useAppStore()
 
 onMounted(() => {
-  let theme = localStorage.getItem('theme') || 'default';
-  appStore.setTheme(theme);
-});
+  const theme = localStorage.getItem('theme') || 'default'
+  appStore.setTheme(theme)
+})
 
 // 将消息和通知挂载到window上以供非组件的ts文件中使用
 function registerNaiveTools() {
-  window.$message = useMessage();
-  window.$notification = useNotification();
+  window.$message = useMessage()
+  window.$notification = useNotification()
 }
 
 const NaiveProviderContent = defineComponent({
   setup() {
-    registerNaiveTools();
+    registerNaiveTools()
   },
   render() {
-    return h('div');
+    return h('div')
   }
-});
+})
 </script>
 
 <style lang="scss"></style>

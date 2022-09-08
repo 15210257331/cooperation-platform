@@ -25,7 +25,7 @@
           <UploadFile v-model:url="formValue.avatar" />
         </n-form-item>
         <n-form-item label="用户名:" path="username">
-          <n-input disabled v-model:value="formValue.username" placeholder="用户名" />
+          <n-input v-model:value="formValue.username" disabled placeholder="用户名" />
         </n-form-item>
         <n-form-item label="昵称:" path="nickname">
           <n-input v-model:value="formValue.nickname" placeholder="昵称" />
@@ -51,25 +51,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useUserStore, UserInfoType } from '@/store';
-import { Close } from '@vicons/ionicons5';
-import { FormInst, useMessage } from 'naive-ui';
-import { updateUserInfo } from '@/api';
-import UploadFile from '@/components/UploadFile.vue';
+import { ref, computed, onMounted } from 'vue'
+import { useUserStore, UserInfoType } from '@/store'
+import { Close } from '@vicons/ionicons5'
+import { FormInst, useMessage } from 'naive-ui'
+import { updateUserInfo } from '@/api'
+import UploadFile from '@/components/UploadFile.vue'
 interface Props {
   /** 弹窗显隐 */
   value: boolean;
 }
-const props = defineProps<Props>();
+const props = defineProps<Props>()
 
 interface Emits {
   (e: 'update:value', val: boolean): void;
 }
-const emit = defineEmits<Emits>();
+const emit = defineEmits<Emits>()
 
-const userStore = useUserStore();
-const message = useMessage();
+const userStore = useUserStore()
+const message = useMessage()
 const options = [
   {
     label: '普通用户',
@@ -79,19 +79,19 @@ const options = [
     label: '管理员',
     value: 2
   }
-];
-const formRef = ref<FormInst | null>(null);
+]
+const formRef = ref<FormInst | null>(null)
 const formValue = computed(() => {
-  return userStore.userInfo;
-});
+  return userStore.userInfo
+})
 const show = computed({
   get() {
-    return props.value;
+    return props.value
   },
   set(val: boolean) {
-    emit('update:value', val);
+    emit('update:value', val)
   }
-});
+})
 const rules = {
   username: {
     required: true,
@@ -113,25 +113,25 @@ const rules = {
   //   message: '请选择角色',
   //   trigger: 'blur'
   // }
-};
+}
 function handleSubmit(e: MouseEvent) {
-  e.preventDefault();
+  e.preventDefault()
   formRef.value?.validate(async errors => {
     if (!errors) {
       updateUserInfo(formValue.value).then(res => {
         if (res.code === 10000) {
-          message.success(res.message);
-          handleClose();
+          message.success(res.message)
+          handleClose()
         }
-      });
+      })
     } else {
-      console.log(errors);
+      console.log(errors)
       //   message.error('Invalid');
     }
-  });
+  })
 }
 function handleClose() {
-  show.value = false;
+  show.value = false
 }
 </script>
 

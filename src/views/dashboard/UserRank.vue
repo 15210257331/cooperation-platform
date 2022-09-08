@@ -44,27 +44,27 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { userRank } from '@/api';
+import { onMounted, ref } from 'vue'
+import { userRank } from '@/api'
 
-const type = ref<string>('1');
-const userList = ref<any>([]);
+const type = ref<string>('1')
+const userList = ref<any>([])
 
 onMounted(() => {
-  queryData();
-});
+  queryData()
+})
 
 function handleChange(value: string) {
-  type.value = value;
-  queryData();
+  type.value = value
+  queryData()
 }
 
 function queryData() {
   userRank(type.value).then(res => {
     if (res.code === 10000) {
-      userList.value = res.data || [];
+      userList.value = res.data || []
     }
-  });
+  })
 }
 </script>
 

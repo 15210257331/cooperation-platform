@@ -15,9 +15,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import type { PopoverPlacement } from 'naive-ui';
-import { useAppStore } from '@/store';
+import { computed } from 'vue'
+import type { PopoverPlacement } from 'naive-ui'
+import { useAppStore } from '@/store'
 
 interface Props {
   /** tooltip显示文本 */
@@ -26,18 +26,18 @@ interface Props {
   placement?: PopoverPlacement;
 }
 
-const appStore = useAppStore();
+const appStore = useAppStore()
 
 const props = withDefaults(defineProps<Props>(), {
   tooltipContent: '',
   placement: 'bottom'
-});
+})
 
 const emit = defineEmits<{
   (e: 'handleClick'): void;
-}>();
+}>()
 
-const showTooltip = computed(() => Boolean(props.tooltipContent));
+const showTooltip = computed(() => Boolean(props.tooltipContent))
 </script>
 
 <style scoped lang="scss">

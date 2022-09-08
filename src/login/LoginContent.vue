@@ -4,14 +4,14 @@
       <h3>用户登录</h3>
       <span>简易任务管理器</span>
     </div>
-    <n-form class="login-form" ref="formRef" :model="form" :rules="rules" :show-label="false">
+    <n-form ref="formRef" class="login-form" :model="form" :rules="rules" :show-label="false">
       <n-form-item path="username">
         <n-input v-model:value="form.username" placeholder="请输入用户名">
           <template #prefix>
             <n-icon :component="Person" />
           </template>
           <template #suffix>
-            <n-icon :component="Close" @click="clear" style="cursor: pointer" />
+            <n-icon :component="Close" style="cursor: pointer" @click="clear" />
           </template>
         </n-input>
       </n-form-item>
@@ -34,26 +34,26 @@
 </template>
 
 <script setup lang="ts">
-import { FormInst, FormRules, useMessage } from 'naive-ui';
-import { reactive, ref, onMounted } from 'vue';
-import { login } from '@/api';
-import { useRouter } from 'vue-router';
-import { FlashOutline, LockClosed, Person, Close } from '@vicons/ionicons5';
+import { FormInst, FormRules, useMessage } from 'naive-ui'
+import { reactive, ref, onMounted } from 'vue'
+import { login } from '@/api'
+import { useRouter } from 'vue-router'
+import { FlashOutline, LockClosed, Person, Close } from '@vicons/ionicons5'
 
 interface Emits {
   (e: 'change'): void;
 }
 
-const emit = defineEmits<Emits>();
+const emit = defineEmits<Emits>()
 
-const message = useMessage();
-const router = useRouter();
-const formRef = ref<(HTMLElement & FormInst) | null>(null);
-const rememberMe = ref<boolean>(false);
+const message = useMessage()
+const router = useRouter()
+const formRef = ref<(HTMLElement & FormInst) | null>(null)
+const rememberMe = ref<boolean>(false)
 const form = reactive({
   username: '',
   password: ''
-});
+})
 const rules: FormRules = {
   password: [
     {
@@ -68,60 +68,62 @@ const rules: FormRules = {
       trigger: ['blur']
     }
   ]
-};
+}
 
 onMounted(() => {
-  form.username = localStorage.getItem('username') || '';
-  form.password = localStorage.getItem('password') || '';
+  form.username = localStorage.getItem('username') || ''
+  form.password = localStorage.getItem('password') || ''
   if (form.username) {
-    rememberMe.value = true;
+    rememberMe.value = true
   }
-});
+})
 
 function register() {
-  emit('change');
+  emit('change')
 }
 function clear() {
-  form.username = '';
-  form.password = '';
+  form.username = ''
+  form.password = ''
   if (formRef.value) {
-    formRef.value.restoreValidation();
+    formRef.value.restoreValidation()
   }
 }
 function rememberPass() {
-  localStorage.setItem('username', form.username);
-  localStorage.setItem('password', form.password);
+  localStorage.setItem('username', form.username)
+  localStorage.setItem('password', form.password)
 }
 function deletePass() {
-  localStorage.removeItem('username');
-  localStorage.removeItem('password');
+  localStorage.removeItem('username')
+  localStorage.removeItem('password')
 }
 function handleSubmit(e: MouseEvent) {
-  if (!formRef.value) return;
-  e.preventDefault();
+  if (!formRef.value) {
+    return
+  }
+  e.preventDefault()
 
   formRef.value.validate(errors => {
     if (!errors) {
-      const { username, password } = form;
+      const { username, password } = form
       login({ username, password }).then(res => {
-        console.log(res);
+        console.log(res)
         if (res.code === 10000) {
           if (rememberMe.value === true) {
-            rememberPass();
+            rememberPass()
           } else {
-            deletePass();
+            deletePass()
           }
-          localStorage.setItem('token', res.data.token);
+          localStorage.setItem('token', res.data.token)
           router.push({
             name: 'home'
-          });
+          })
           message.success('登录成功', {
             keepAliveOnHover: true
-          });
+          })
         }
-      });
+      })
     }
-  });
+  })
 }
 </script>
 

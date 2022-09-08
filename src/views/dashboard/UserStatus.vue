@@ -11,9 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue';
-import { useEcharts, type ECOption } from '@/hooks';
-import { taskTrend } from '@/api';
+import { ref, onMounted, reactive } from 'vue'
+import { useEcharts, type ECOption } from '@/hooks'
+import { taskTrend } from '@/api'
 
 const pieOptions = ref<ECOption>({
   tooltip: {
@@ -60,13 +60,13 @@ const pieOptions = ref<ECOption>({
       ]
     }
   ]
-});
-const { domRef: myChart } = useEcharts(pieOptions);
-const loading = ref(true);
+})
+const { domRef: myChart } = useEcharts(pieOptions)
+const loading = ref(true)
 
 onMounted(() => {
   //   queryData();
-});
+})
 </script>
 
 <style lang="scss" scoped></style>

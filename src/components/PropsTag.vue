@@ -5,23 +5,23 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { priorityOptions } from '@/constant';
+import { computed } from 'vue'
+import { priorityOptions } from '@/constant'
 
 interface Props {
   propName: string;
 }
-const props = defineProps<Props>();
+const props = defineProps<Props>()
 
 const text = computed(() => {
-  let t;
+  let t
   priorityOptions.map(item => {
     if (item.value === props.propName) {
-      t = item.label;
+      t = item.label
     }
-  });
-  return t;
-});
+  })
+  return t
+})
 </script>
 
 <style lang="scss" scoped></style>

@@ -60,6 +60,7 @@ declare module '@vue/runtime-core' {
     NTimelineItem: typeof import('naive-ui')['NTimelineItem']
     NTooltip: typeof import('naive-ui')['NTooltip']
     NUpload: typeof import('naive-ui')['NUpload']
+    ProjectCard: typeof import('./src/components/ProjectCard.vue')['default']
     PropsTag: typeof import('./src/components/PropsTag.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
