@@ -6,7 +6,7 @@
         footer: true
       }"
       style="width: 620px"
-      :title="isEdit ? '节点信息修改' : '新建流程节点'"
+      :title="isEdit ? '分组信息修改' : '新建分组'"
       :bordered="false"
       role="dialog"
       aria-modal="true"
@@ -71,7 +71,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { FormInst, useMessage } from 'naive-ui'
-import { FlowType, useProjectStore } from '@/store'
+import { useProjectStore } from '@/store'
+import { FlowType } from '@/interface'
 import { Close } from '@vicons/ionicons5'
 
 interface Props {

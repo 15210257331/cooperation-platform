@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch } from 'vue'
 import { useProjectStore, ProjectType } from '@/store'
-import { FlashOutline, Dice, ChevronDownSharp, StarSharp, StarOutline } from '@vicons/ionicons5'
+import { Dice, ChevronDownSharp, StarSharp, StarOutline } from '@vicons/ionicons5'
 
 const projectStore = useProjectStore()
 const selectedProject = computed(() => projectStore.selectedProject)

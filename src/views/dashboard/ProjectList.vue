@@ -16,7 +16,13 @@
     </template>
     <Empty v-if="projectList.length === 0" />
     <div v-else style="height: 500px; padding: 0 10px 0 5px; overflow: auto">
-      <ProjectCard v-for="item in projectList" :key="item.id" :project="item" />
+      <ProjectCard
+        v-for="item in projectList"
+        :key="item.id"
+        :project="item"
+        @update-project="updateProject($event)"
+        @delete-project="deleteProject($event)"
+      />
     </div>
   </n-card>
   <!-- 新增项目弹窗 -->
@@ -41,12 +47,17 @@
           </template>
         </n-button>
       </template>
-      <n-form ref="formRef" :label-width="80" :model="formValue" :rules="rules">
+      <n-form ref="formRef" label-placement="left" :label-width="80" :model="formValue" :rules="rules">
         <n-form-item label="项目名称" path="name">
           <n-input v-model:value="formValue.name" placeholder="输入姓名" />
         </n-form-item>
-        <n-form-item label="项目icon" path="icon">
-          <n-input v-model:value="formValue.icon" placeholder="输入姓名" />
+        <n-form-item label="是否星标" path="star">
+          <n-radio-group v-model:value="formValue.star" name="radiogroup">
+            <n-space>
+              <n-radio :value="false"> 普通 </n-radio>
+              <n-radio :value="true"> 星标 </n-radio>
+            </n-space>
+          </n-radio-group>
         </n-form-item>
       </n-form>
       <template #footer>
@@ -64,17 +75,18 @@ import { ref, computed } from 'vue'
 import ProjectCard from '@/components/ProjectCard.vue'
 import { useProjectStore } from '@/store'
 import { AddCircle, Close } from '@vicons/ionicons5'
-import { FormInst, useMessage } from 'naive-ui'
-import { createProject } from '@/api'
+import { FormInst, useMessage, useDialog } from 'naive-ui'
 
 const projectStore = useProjectStore()
 const message = useMessage()
+const dialog = useDialog()
 
 const showModal = ref<boolean>(false)
+const id = ref<number | null>(null)
 const formRef = ref<FormInst | null>(null)
 const formValue = ref({
   name: '',
-  icon: ''
+  star: false
 })
 const rules = {
   name: {
@@ -82,21 +94,54 @@ const rules = {
     message: '请输入项目名称',
     trigger: 'blur'
   },
-  icon: {
+  star: {
     required: false,
     message: '请选择项目icon',
-    trigger: ['input', 'blur']
   }
 }
 const projectList = computed(() => projectStore.projectList)
+
+function updateProject($event: any) {
+  showModal.value = true
+  id.value = $event.id
+  formValue.value = {
+    name: $event.name,
+    star: $event.star
+  }
+}
+
+function deleteProject($event: any) {
+  const id = $event.id
+  dialog.warning({
+    title: '警告',
+    content: '你确定删除当前项目吗？',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      await projectStore.deleteProject(id as number)
+      message.success('项目已删除！')
+    },
+    onNegativeClick: () => {}
+  })
+}
 
 function handleValidateClick(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate(async errors => {
     if (!errors) {
-      const msg = await projectStore.createProject(formValue.value)
-      message.success(msg)
-      showModal.value = false
+      if (id.value) {
+        const data = Object.assign({}, formValue.value, {
+          id: id.value
+        })
+        const msg = await projectStore.updateProject(data)
+        message.success(msg)
+        showModal.value = false
+        id.value = null
+      } else {
+        const msg = await projectStore.createProject(formValue.value)
+        message.success(msg)
+        showModal.value = false
+      }
     } else {
       console.log(errors)
       message.error('Invalid')

@@ -18,6 +18,7 @@ import { onMounted, getCurrentInstance } from 'vue'
 import SiderBar from './SiderBar/index.vue'
 import HeaderBar from './HeaderBar/index.vue'
 import { getUserInfo } from '@/api'
+import { useLocalStorage } from '@/hooks'
 import { useAppStore, useUserStore, useProjectStore } from '@/store'
 
 const userStore = useUserStore()
@@ -37,7 +38,6 @@ onMounted(async () => {
   queryNotificationList()
   queryUnreadCount()
   await queryProjectList()
-  // await queryFlowList()
 })
 
 /** 请求用户信息 */
@@ -61,7 +61,6 @@ function queryNotificationList() {
 function queryUnreadCount() {
   userStore.queryUnreadCount()
 }
-
 </script>
 
 <style scoped lang="scss">

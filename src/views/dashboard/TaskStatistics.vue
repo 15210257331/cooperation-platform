@@ -9,15 +9,15 @@
     <div class="statistics">
       <div class="item">
         <span>总任务</span>
-        <p style="color: #999999">{{ projectStore.totalTask }}</p>
+        <p style="color: #999999">{{ total }}</p>
       </div>
       <div class="item">
         <span>未完成</span>
-        <p style="color: #feb54e">{{ projectStore.peddingTotal }}</p>
+        <p style="color: #feb54e">{{ undone }}</p>
       </div>
       <div class="item">
         <span>已完成</span>
-        <p style="color: #22d7bb">{{ projectStore.completeTotal }}</p>
+        <p style="color: #22d7bb">{{ done }}</p>
       </div>
       <div class="item">
         <span>已逾期</span>
@@ -42,8 +42,32 @@ import { ref, computed } from 'vue'
 import { useProjectStore } from '@/store'
 
 const projectStore = useProjectStore()
+const total = computed(() => {
+  const groups = projectStore.selectedProjectGroups
+  let num = 0
+  groups.map(item => {
+    num += item.tasks.length
+  })
+  return num
+})
+const undone = computed(() => {
+  const groups = projectStore.selectedProjectGroups
+  let num = 0
+  groups.map(item => {
+    num += item.tasks.filter(task => task.complete === false).length
+  })
+  return num
+})
+const done = computed(() => {
+  const groups = projectStore.selectedProjectGroups
+  let num = 0
+  groups.map(item => {
+    num += item.tasks.filter(task => task.complete === true).length
+  })
+  return num
+})
 const percentage = computed(() => {
-  return projectStore.totalTask > 0 ? parseInt(((projectStore.completeTotal / projectStore.totalTask) * 100).toFixed(2)) : 0
+  return total.value > 0 ? parseInt(((done.value / total.value) * 100).toFixed(2)) : 0
 })
 </script>
 

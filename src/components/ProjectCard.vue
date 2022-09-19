@@ -14,21 +14,10 @@
       <div class="project-info">
         <p>
           {{ project.name }}
-          <n-tag type="warning" size="small" round> 10 Tasks </n-tag>
+          <!-- <n-tag type="warning" size="small" round> 10 Tasks </n-tag> -->
         </p>
-        <div class="project-extra">
-          <n-icon
-            :component="project.star ? StarSharp : StarOutline"
-            size="15"
-            :color="project.star ? 'rgba(239, 232, 14, 1)' : '#999'"
-          />
-          <div class="line"></div>
-          <span>{{ createDate }}</span>
-        </div>
+        <span>{{ createDate }}</span>
       </div>
-      <n-icon class="navigate" size="25" @click="navigare">
-        <ArrowForwardCircle />
-      </n-icon>
       <n-dropdown style="margin-right: 15px" trigger="hover" :options="options" @select="handleSelect($event)">
         <n-icon size="20">
           <EllipsisHorizontal />
@@ -41,8 +30,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRender } from '@/hooks'
-import { EllipsisHorizontal, Documents, TrashBin, ArrowForwardCircle, StarOutline, StarSharp } from '@vicons/ionicons5'
-import { ProjectType, useProjectStore } from '@/store'
+import { EllipsisHorizontal, Documents, TrashBin} from '@vicons/ionicons5'
+import { useProjectStore } from '@/store'
+import { ProjectType } from '@/interface'
 import dayjs from 'dayjs'
 import { useRouter } from 'vue-router'
 
@@ -53,6 +43,7 @@ const projectStore = useProjectStore()
 const props = defineProps<{
   project: ProjectType
 }>()
+const emit = defineEmits(['updateProject', 'deleteProject'])
 const createDate = computed(() => {
   return dayjs(props.project.createDate).format('YYYY年MM月DD日')
 })
@@ -74,6 +65,11 @@ const changeSelectedProject = (projectId: number) => {
 }
 const handleSelect = ($event: any) => {
   console.log($event)
+  if ($event === 'edit') {
+    emit('updateProject', props.project)
+  } else if ($event === 'delete') {
+    emit('deleteProject', props.project)
+  }
 }
 const navigare = () => {
   router.push({
@@ -87,11 +83,6 @@ const navigare = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  &:hover {
-    .navigate {
-      display: inline-block;
-    }
-  }
   .project-icon {
     width: 46px;
     height: 46px;
@@ -112,31 +103,12 @@ const navigare = () => {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      margin-bottom: 5px;
     }
-    .project-extra {
-      display: flex;
-      align-items: center;
-      .line {
-        margin: 0 6px;
-        background-color: #999;
-        width: 1.5px;
-        height: 10px;
-        border-radius: 1px;
-        display: inline-block;
-        border: none;
-      }
-      span {
-        font-size: 12px;
-        color: #999;
-        font-weight: 500;
-      }
+    span {
+      font-size: 12px;
+      color: #999;
+      font-weight: 500;
     }
-  }
-  .navigate {
-    margin-right: 18px;
-    display: none;
-    cursor: pointer;
   }
 }
 </style>

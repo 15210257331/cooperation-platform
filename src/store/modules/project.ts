@@ -4,47 +4,14 @@ import {
   createProject,
   createTask,
   deleteFlow,
+  deleteProject,
   getFlowList,
   getProjectList,
   updateFlow,
+  updateProject,
   updateTaskProps
 } from '@/api'
-
-interface ProjectStoreType {
-  projectList: Array<ProjectType>
-}
-
-export interface ProjectType {
-  id?: number
-  name: string
-  star: boolean
-  createDate: string
-  // 是否是当前选中的项目
-  selected: boolean
-  // 项目下的任务分组
-  flows: Array<FlowType>
-}
-
-export interface FlowType {
-  id?: number
-  name: string
-  sort: number
-  canNew: number
-  complete: boolean
-  range: string[]
-  disabled?: boolean
-  tasks: Array<TaskType>
-}
-
-export interface TaskType {
-  name: string
-  description: string
-  startDate: number | null
-  endDate: number | null
-  priority: string | null
-  progress: number
-  [key: string]: any
-}
+import { ProjectStoreType } from '@/interface'
 
 export const useProjectStore = defineStore('project', {
   state: (): ProjectStoreType => {
@@ -64,8 +31,12 @@ export const useProjectStore = defineStore('project', {
             if (res.code === 10000) {
               this.projectList = res.data
               if (this.projectList.length > 0) {
-                const selectedId = this.projectList[0].id
-                this.changeSelectedProject(selectedId as number)
+                const selectedProjectId = localStorage.getItem('selectedProjectId')
+                if (selectedProjectId) {
+                  this.changeSelectedProject(Number(selectedProjectId))
+                } else {
+                  this.changeSelectedProject(this.projectList[0].id as number)
+                }
               }
               resolve(true)
             } else {
@@ -93,6 +64,37 @@ export const useProjectStore = defineStore('project', {
             resolve(res.message)
           } else {
             reject(res.message)
+          }
+        })
+      })
+    },
+    /** 修改项目信息 */
+    async updateProject(data: any): Promise<string> {
+      return new Promise((resolve, reject) => {
+        updateProject(data).then(res => {
+          if (res.code === 10000) {
+            const index = this.projectList.findIndex(item => item.id === data.id)
+            this.projectList.splice(index, 1, res.data)
+            resolve(res.message)
+          } else {
+            reject(res.message)
+          }
+        })
+      })
+    },
+    /**
+     * 删除项目
+     * @param id  流程ID
+     */
+    deleteProject(id: number) {
+      return new Promise((resolve, reject) => {
+        deleteProject(id).then(res => {
+          if (res.code === 10000) {
+            const index = this.projectList.findIndex(item => item.id === id)
+            this.projectList.splice(index, 1)
+            resolve(true)
+          } else {
+            reject(false)
           }
         })
       })
@@ -128,6 +130,7 @@ export const useProjectStore = defineStore('project', {
         }
       })
       this.getFlowList(selectedId)
+      localStorage.setItem('selectedProjectId', selectedId.toString())
     },
     /**
      * 新增分组
@@ -241,7 +244,7 @@ export const useProjectStore = defineStore('project', {
   },
   getters: {
     // 所有项目数量
-    totalProject: state => {
+    total: state => {
       return state.projectList.length
     },
     selectedProject: state => {
@@ -250,29 +253,6 @@ export const useProjectStore = defineStore('project', {
     selectedProjectGroups: state => {
       const selectedProject = state.projectList.find(item => item.selected)
       return selectedProject ? selectedProject.flows : []
-    },
-    // 所有任务数量
-    totalTask: state => {
-      let total = 0
-      // state.flowList.map(item => {
-      //   total += item.tasks.length
-      // })
-      return total
-    },
-    // 未完成的任务数量
-    peddingTotal: state => {
-      let total = 0
-      // state.flowList.map(item => {
-      //   total += item.tasks.filter(task => task.complete === false).length
-      // })
-      return total
-    },
-    completeTotal: state => {
-      let total = 0
-      // state.flowList.map(item => {
-      //   total += item.tasks.filter(task => task.complete === true).length
-      // })
-      return total
     }
   }
 })
