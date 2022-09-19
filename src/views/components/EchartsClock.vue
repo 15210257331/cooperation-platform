@@ -1,13 +1,5 @@
 <template>
-  <n-card
-    size="small"
-    title="钟表"
-    :segmented="{
-      content: true
-    }"
-  >
-    <div ref="gaugeRef" style="height: 500px"></div>
-  </n-card>
+  <div ref="gaugeRef" style="height: 500px"></div>
 </template>
 
 <script setup lang="ts">

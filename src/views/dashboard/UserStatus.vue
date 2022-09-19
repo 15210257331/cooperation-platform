@@ -6,7 +6,7 @@
       content: true
     }"
   >
-    <div ref="myChart" style="height: 278px"></div>
+    <div ref="myChart" style="height: 297px"></div>
   </n-card>
 </template>
 

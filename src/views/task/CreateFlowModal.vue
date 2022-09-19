@@ -71,29 +71,28 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { FormInst, useMessage } from 'naive-ui'
-import { FlowType, useTaskStore } from '@/store'
+import { FlowType, useProjectStore } from '@/store'
 import { Close } from '@vicons/ionicons5'
 
 interface Props {
   /** 弹窗显隐 */
-  value: boolean;
-  data: any;
-  isEdit: boolean;
+  value: boolean
+  data: FlowType | null
 }
 const props = defineProps<Props>()
 
 interface Emits {
-  (e: 'update:value', val: boolean): void;
+  (e: 'update:value', val: boolean): void
 }
 const emit = defineEmits<Emits>()
 
-const taskStore = useTaskStore()
+const projectStore = useProjectStore()
 const message = useMessage()
 const formRef = ref<FormInst | null>(null)
 const form = ref<FlowType>({
   name: '',
   canNew: 1,
-  sort: props.data.sort + 1,
+  sort: props.data ? props.data.sort + 1 : 0,
   complete: false,
   range: [],
   tasks: []
@@ -127,11 +126,18 @@ const showModal = computed({
   }
 })
 
+const isEdit = computed(() => {
+  if (props.data) {
+    return true
+  }
+  return false
+})
+
 const rangeList = computed(() => {
-  const arr = taskStore.flowList
+  const arr = projectStore.selectedProject ? projectStore.selectedProject.flows : []
   arr.sort((a: { sort: number }, b: { sort: number }) => a.sort - b.sort)
   arr.map((flow: any) => {
-    if (flow.id === props.data.id) {
+    if (flow.id === (props.data as FlowType).id) {
       flow.disabled = true
     } else {
       flow.disabled = false
@@ -141,16 +147,18 @@ const rangeList = computed(() => {
 })
 
 watch(
-  () => props.isEdit,
+  () => props.data,
   newValue => {
-    if (newValue === true) {
+    if (newValue) {
+      console.log(newValue)
+      const data = props.data as FlowType
       form.value = {
-        id: props.data.id,
-        name: props.data.name,
-        canNew: props.data.canNew ? 1 : 2,
-        sort: props.data.sort,
-        complete: props.data.complete,
-        range: props.data.range.map((item: string) => Number(item)),
+        id: data.id,
+        name: data.name,
+        canNew: data.canNew ? 1 : 2,
+        sort: data.sort,
+        complete: data.complete,
+        range: data.range.map((item: string) => item),
         tasks: []
       }
     } else {
@@ -158,7 +166,7 @@ watch(
         id: undefined,
         name: '',
         canNew: 1,
-        sort: props.data.sort + 1,
+        sort: 0,
         complete: false,
         range: [],
         tasks: []
@@ -171,7 +179,7 @@ async function handleSubmit(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate(async errors => {
     if (!errors) {
-      if (props.isEdit === false) {
+      if (isEdit.value === false) {
         createFlow()
       } else {
         updateFlow()
@@ -187,7 +195,7 @@ async function createFlow() {
   const data = Object.assign({}, form.value, {
     canNew: form.value.canNew == 1 ? true : false
   })
-  await taskStore.createFlow(data)
+  await projectStore.createFlow(data)
   showModal.value = false
   message.success('操作成功')
 }
@@ -196,7 +204,7 @@ async function updateFlow() {
   const data = Object.assign({}, form.value, {
     canNew: form.value.canNew == 1 ? true : false
   })
-  await taskStore.updateFlow(data)
+  await projectStore.updateFlow(data)
   showModal.value = false
   message.success('操作成功')
 }

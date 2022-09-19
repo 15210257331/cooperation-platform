@@ -98,7 +98,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { FormInst, useMessage } from 'naive-ui'
-import { TaskType, useTaskStore } from '@/store'
+import { TaskType, useProjectStore } from '@/store'
 import { Close } from '@vicons/ionicons5'
 import { priorityOptions } from '@/constant'
 import dayjs from 'dayjs'
@@ -114,7 +114,7 @@ const emit = defineEmits<{
   (e: 'update:value', val: boolean): void;
 }>()
 
-const taskStore = useTaskStore()
+const projectStore = useProjectStore()
 const message = useMessage()
 const formRef = ref<FormInst | null>(null)
 const formValue = ref<TaskType>({
@@ -162,7 +162,7 @@ async function updateTaskProps(propName: string) {
   } else {
     propValue = formValue.value[propName]
   }
-  await taskStore.updateTaskProps(taskId, propName, propValue)
+  await projectStore.updateTaskProps(taskId, propName, propValue)
   message.success('操作成功')
 }
 

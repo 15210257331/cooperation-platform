@@ -9,15 +9,15 @@
     <div class="statistics">
       <div class="item">
         <span>总任务</span>
-        <p style="color: #999999">{{ taskStore.total }}</p>
+        <p style="color: #999999">{{ projectStore.totalTask }}</p>
       </div>
       <div class="item">
         <span>未完成</span>
-        <p style="color: #feb54e">{{ taskStore.peddingTotal }}</p>
+        <p style="color: #feb54e">{{ projectStore.peddingTotal }}</p>
       </div>
       <div class="item">
         <span>已完成</span>
-        <p style="color: #22d7bb">{{ taskStore.completeTotal }}</p>
+        <p style="color: #22d7bb">{{ projectStore.completeTotal }}</p>
       </div>
       <div class="item">
         <span>已逾期</span>
@@ -39,11 +39,11 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useTaskStore } from '@/store'
+import { useProjectStore } from '@/store'
 
-const taskStore = useTaskStore()
+const projectStore = useProjectStore()
 const percentage = computed(() => {
-  return taskStore.total > 0 ? parseInt(((taskStore.completeTotal / taskStore.total) * 100).toFixed(2)) : 0
+  return projectStore.totalTask > 0 ? parseInt(((projectStore.completeTotal / projectStore.totalTask) * 100).toFixed(2)) : 0
 })
 </script>
 

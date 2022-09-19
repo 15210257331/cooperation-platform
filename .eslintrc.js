@@ -22,7 +22,7 @@ module.exports = {
       jsx: true
     }
   },
-  // eslint-plugin-vue @typescript-eslint/eslint-plugin eslint-plugin-prettier的缩写
+  // eslint-plugin-vue   @typescript-eslint/eslint-plugin   eslint-plugin-prettier的缩写
   plugins: ['vue', '@typescript-eslint', 'prettier'],
   rules: {
     '@typescript-eslint/ban-ts-ignore': 'off',
@@ -39,7 +39,7 @@ module.exports = {
     'no-var': 'error',
     'prettier/prettier': 'off',
     // 禁止出现console
-    'no-console': 'warn',
+    'no-console': 'off',
     // 禁用debugger
     'no-debugger': 'warn',
     // 禁止出现重复的 case 标签
@@ -118,7 +118,7 @@ module.exports = {
     'no-mixed-spaces-and-tabs': 'warn',
     // 禁止出现多行空行
     'no-multiple-empty-lines': 'warn',
-    // 禁止出现;
+    // 出现分号;
     semi: ['warn', 'never'],
     // 强制在块之前使用一致的空格
     'space-before-blocks': 'warn',
@@ -145,6 +145,8 @@ module.exports = {
     'no-extra-boolean-cast': 'warn',
     'no-case-declarations': 'warn',
     'no-async-promise-executor': 'warn',
+    //关闭组件命名规则
+    "vue/multi-word-component-names":"off",
   },
   globals: {
     defineProps: 'readonly',

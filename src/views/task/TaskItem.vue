@@ -37,50 +37,33 @@
 
     <div class="tag">
       <n-space>
-        <n-tooltip trigger="hover">
-          <template #trigger>
-            <n-tag :bordered="false" type="info" size="small">
-              {{ priorityName }}
-              <template #icon>
-                <n-icon :component="AlertCircle" />
-              </template>
-            </n-tag>
-          </template>
-          任务优先级：{{ priorityName }}
-        </n-tooltip>
-        <n-tooltip v-if="remind && !complete" trigger="hover">
-          <template #trigger>
-            <n-tag type="success" :bordered="false" size="small">
-              提醒
-              <template #icon>
-                <n-icon :component="Alarm" />
-              </template>
-            </n-tag>
-          </template>
-          已添加任务提醒：{{ remind }}
-        </n-tooltip>
-        <n-tooltip v-if="expiration && !complete" trigger="hover">
-          <template #trigger>
-            <n-tag type="error" :bordered="false" size="small">
-              已过期
-              <template #icon>
-                <n-icon :component="TimeSharp" />
-              </template>
-            </n-tag>
-          </template>
-          该任务已经延期
-        </n-tooltip>
-        <n-tooltip v-if="complete" trigger="hover">
-          <template #trigger>
-            <n-tag type="success" :bordered="false" size="small">
-              已完成
-              <template #icon>
-                <n-icon :component="TimeSharp" />
-              </template>
-            </n-tag>
-          </template>
-          该任务标记为已完成
-        </n-tooltip>
+        <TaskTag
+          type="info"
+          :name="priorityName"
+          :icon="AlertCircle"
+          :tooltip-content="'任务优先级：' + priorityName"
+        />
+        <TaskTag
+          v-if="remind && !complete"
+          type="success"
+          name="提醒"
+          :icon="Alarm"
+          :tooltip-content="'已添加任务提醒：' + remind"
+        />
+        <TaskTag
+          v-if="expiration && !complete"
+          type="error"
+          name="已过期"
+          :icon="TimeSharp"
+          tooltip-content="该任务已经延期"
+        />
+        <TaskTag
+          v-if="complete"
+          type="success"
+          :name="'已完成'"
+          :icon="TimeSharp"
+          :tooltip-content="'该任务标记为已完成'"
+        />
       </n-space>
     </div>
 
@@ -131,7 +114,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { TaskType, useTaskStore } from '@/store'
+import { TaskType, useProjectStore } from '@/store'
 import {
   EllipsisHorizontal,
   CheckmarkCircle,
@@ -145,18 +128,19 @@ import {
 } from '@vicons/ionicons5'
 import { useRender } from '@/hooks'
 import TaskDetailModal from './TaskDetailModal.vue'
+import TaskTag from '@/components/TaskTag.vue'
 import dayjs from 'dayjs'
 import { useMessage } from 'naive-ui'
 import { progressColors, leftBorderColors, priorityOptions, remindOptions } from '@/constant'
 
 const props = defineProps<{
-  task: TaskType;
-  complete: boolean;
-  flowId: number;
+  task: TaskType
+  complete: boolean
+  flowId: number
 }>()
 const { renderIcon } = useRender()
 const message = useMessage()
-const taskStore = useTaskStore()
+const projectStore = useProjectStore()
 const showTaskDetailModal = ref<boolean>(false)
 const showAlarmModal = ref<boolean>(false)
 const alarm = ref<number>(props.task.remind)
@@ -218,6 +202,8 @@ const progressColor = computed(() => {
     return progressColors[4]
   } else if (progress > 90 && progress <= 100) {
     return progressColors[5]
+  } else {
+    return progressColors[5]
   }
 })
 
@@ -247,23 +233,23 @@ function taskDetail() {
 
 async function handleSelect(key: string | number) {
   if (key === 'next') {
-    const index = taskStore.flowList.findIndex(item => item.id === props.flowId)
+    const index = projectStore.selectedProjectGroups.findIndex(item => item.id === props.flowId)
     let newFlowId
-    if (index < taskStore.flowList.length - 1) {
-      newFlowId = taskStore.flowList[index + 1].id
+    if (index < projectStore.selectedProjectGroups.length - 1) {
+      newFlowId = projectStore.selectedProjectGroups[index + 1].id
     }
-    await taskStore.updateTaskProps(props.task.id, 'flow', newFlowId)
+    await projectStore.updateTaskProps(props.task.id, 'flow', newFlowId)
   } else if (key === 'copy') {
     message.info('任务已复制')
   } else if (key === 'alarm') {
     showAlarmModal.value = true
   } else if (key === 'trash') {
-    await taskStore.deleteTask(props.task.id)
+    await projectStore.deleteTask(props.task.id)
   }
 }
 
 async function setAlarm() {
-  await taskStore.updateTaskProps(props.task.id, 'remind', alarm.value)
+  await projectStore.updateTaskProps(props.task.id, 'remind', alarm.value)
   message.success('操作成功')
   showAlarmModal.value = false
 }

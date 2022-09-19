@@ -10,7 +10,7 @@ module.exports = { // https://prettier.io/docs/en/options.html
   proseWrap: 'preserve',
   quoteProps: 'as-needed',
   requirePragma: false,
-  semi: true,
+  semi: false,
   singleQuote: true,
   tabWidth: 2,
   trailingComma: 'none',

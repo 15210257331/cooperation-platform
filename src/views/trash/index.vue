@@ -1,6 +1,7 @@
 <template>
   <n-data-table
     :bordered="false"
+    striped
     :columns="columns"
     :data="dataList"
     :pagination="{ itemCount: total, pageSize: queryParams.size }"
@@ -10,18 +11,19 @@
 <script setup lang="ts">
 import { h, ref, onMounted } from 'vue'
 import { deleteTask, getTaskList } from '@/api'
-import { DataTableColumns, useMessage, NTag, NButton } from 'naive-ui'
+import { DataTableColumns, useMessage, NTag, NButton, useDialog } from 'naive-ui'
 import dayjs from 'dayjs'
 
 const message = useMessage()
+const dialog = useDialog()
 
 type RowData = {
-  id: number;
-  key: number;
-  name: string;
-  description: string;
-  createDate: string;
-};
+  id: number
+  key: number
+  name: string
+  description: string
+  createDate: string
+}
 const columns: DataTableColumns<RowData> = [
   {
     title: '任务名称',
@@ -80,10 +82,21 @@ function queryData() {
 }
 
 function deleteData(id: number) {
-  deleteTask(id).then(res => {
-    if (res.code === 10000) {
-      message.success('任务已删除')
-      queryData()
+  dialog.warning({
+    title: '警告',
+    content: '你确定彻底删除这个任务吗？',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      deleteTask(id).then(res => {
+        if (res.code === 10000) {
+          message.success('任务已删除')
+          queryData()
+        }
+      })
+    },
+    onNegativeClick: () => {
+      console.log('取消')
     }
   })
 }

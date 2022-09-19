@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 
 /**
- * 倒计时
+ * 倒计时hook
  * @param second - 倒计时的时间(s)
  */
 export function useCountDown() {

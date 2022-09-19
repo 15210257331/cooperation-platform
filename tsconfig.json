@@ -17,8 +17,8 @@
     "paths": {
       "@/*":["src/*"] // 标识匹配 src 下的所有文件
     },
-    "types": ["naive-ui/volar","vite/client","node",]
+    "types": ["naive-ui/volar","vite-plugin-svg-icons/client","vite/client","node",]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "build/proxy.ts", "build/proxy-config.ts", "build/define.ts"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "build/**/*.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

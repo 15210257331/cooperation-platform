@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from '@/store'
+import { useUserStore, useProjectStore } from '@/store'
 import dayjs from 'dayjs'
 import { computed, Ref } from 'vue'
 
@@ -36,13 +36,14 @@ interface StatisticData {
 }
 
 const userStore = useUserStore()
+const projectStore = useProjectStore()
 
 const statistic: Ref<Array<StatisticData>> = computed(() => {
   return [
     {
       id: 0,
       label: '项目数',
-      value: 25,
+      value: projectStore.total,
       animation: true
     },
     {

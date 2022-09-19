@@ -66,24 +66,24 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { FormInst, useMessage } from 'naive-ui'
-import { TaskType, useTaskStore } from '@/store'
+import { TaskType, useProjectStore } from '@/store'
 import { Close } from '@vicons/ionicons5'
 import { priorityOptions } from '@/constant'
 import dayjs from 'dayjs'
 
 interface Props {
   /** 弹窗显隐 */
-  value: boolean;
-  flowId: number;
+  value: boolean
+  flowId: any
 }
 const props = defineProps<Props>()
 
 interface Emits {
-  (e: 'update:value', val: boolean): void;
+  (e: 'update:value', val: boolean): void
 }
 const emit = defineEmits<Emits>()
 
-const taskStore = useTaskStore()
+const projectStore = useProjectStore()
 const message = useMessage()
 
 const formRef = ref<FormInst | null>(null)
@@ -144,7 +144,7 @@ async function createTask() {
     message.success('开始时间不能大于结束时间！')
     return
   }
-  await taskStore.createTask(data)
+  await projectStore.createTask(data)
   showModal.value = false
   message.success('操作成功')
 }

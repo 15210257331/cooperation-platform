@@ -14,27 +14,33 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, getCurrentInstance } from 'vue'
 import SiderBar from './SiderBar/index.vue'
 import HeaderBar from './HeaderBar/index.vue'
 import { getUserInfo } from '@/api'
-import { useAppStore, useProjectStore, useUserStore } from '@/store'
+import { useAppStore, useUserStore, useProjectStore } from '@/store'
 
 const userStore = useUserStore()
-const projectStore = useProjectStore()
 const appStore = useAppStore()
+const projectStore = useProjectStore()
 const queryParams = {
   pageIndex: 1,
   pageSize: 10
 }
 
-onMounted(() => {
+// const { appContext } = getCurrentInstance() as any;
+// console.log('组件实例');
+// console.log(appContext.config.globalProperties.$title);
+
+onMounted(async () => {
   queryUserInfo()
-  queryProjectList()
   queryNotificationList()
   queryUnreadCount()
+  await queryProjectList()
+  // await queryFlowList()
 })
 
+/** 请求用户信息 */
 function queryUserInfo() {
   getUserInfo().then(res => {
     if (res.code === 10000) {
@@ -43,15 +49,19 @@ function queryUserInfo() {
     }
   })
 }
-function queryProjectList() {
-  projectStore.getProjectList()
+
+/** 请求项目列表 */
+async function queryProjectList() {
+  await projectStore.getProjectList()
 }
+
 function queryNotificationList() {
   userStore.queryNotificationList(queryParams)
 }
 function queryUnreadCount() {
   userStore.queryUnreadCount()
 }
+
 </script>
 
 <style scoped lang="scss">

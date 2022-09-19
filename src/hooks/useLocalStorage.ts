@@ -1,21 +1,21 @@
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
 /**
  * localstorage
  */
 export function useLocalStorage(key: string) {
-  const value = getItem(key)
+  const value = getItem(key);
 
   function setItem(key: string, value: any) {
-    localStorage.setItem(key, value)
+    localStorage.setItem(key, value);
   }
 
   function getItem(key: string) {
-    localStorage.getItem(key)
+    localStorage.getItem(key);
   }
 
   return {
     setItem,
     value
-  }
+  };
 }

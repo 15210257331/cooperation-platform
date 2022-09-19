@@ -1,8 +1,8 @@
 import { axiosRequest, ResType } from './http'
 
 // flow
-export function getFlowList(name: string): Promise<ResType> {
-  return axiosRequest.get(`/api/flow/list?name=${name}`)
+export function getFlowList(projectId: number, name: string): Promise<ResType> {
+  return axiosRequest.get(`/api/flow/list?name=${name}&projectId=${projectId}`)
 }
 export function getAllFlows(): Promise<ResType> {
   return axiosRequest.get(`/api/flow/all`)

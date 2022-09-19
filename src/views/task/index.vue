@@ -1,33 +1,151 @@
 <template>
-  <div class="flow-list">
-    <FlowItem v-for="flow in flowList" :key="flow.id" :flow="flow" />
-    <Loading v-if="loading" ref="loading" />
-    <Empty v-if="!loading && flowList.length === 0" />
+  <div class="task">
+    <TaskHeader></TaskHeader>
+    <div class="task-content">
+      <Empty v-if="flowList.length === 0" />
+      <div v-for="flow in flowList" :key="flow.id" class="flow-item">
+        <GroupHeader
+          :flow="flow"
+          @create-group="createGroup($event)"
+          @edit-group="editGroup($event)"
+          @delete-group="deleteGroup($event)"
+          @create-task="createTask($event)"
+        ></GroupHeader>
+        <div class="task-list">
+          <draggable
+            :delay="0.5"
+            :animation="300"
+            :sort="false"
+            :component-data="{
+              tag: 'ul',
+              name: 'flip-list'
+            }"
+            ghost-class="ghost"
+            drag-class="drag"
+            chosen-class="chosen"
+            :list="flow.tasks"
+            :group="{
+              name: flow.id,
+              put: put,
+              pull: pull
+            }"
+            item-key="id"
+            @change="change($event, flow)"
+          >
+            <template #item="{ element, index }">
+              <TaskItem
+                :task="element"
+                :complete="flow.complete"
+                :flow-id="(flow.id as number)"
+                :index="index"
+              ></TaskItem>
+            </template>
+          </draggable>
+          <CreateTaskButton v-if="flow.canNew" @click="createTask(flow)" />
+        </div>
+      </div>
+    </div>
+    <!-- 新增/修改流程弹窗 -->
+    <CreateFlowModal v-model:value="showCreateGroupModal" :data="selectedFlowData" />
+    <!-- 新增任务modal -->
+    <CreateTaskModal v-model:value="showCreateTaskModal" :flow-id="selectedFlowData?.id"></CreateTaskModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import Loading from '@/components/Loading.vue'
 import Empty from '@/components/Empty.vue'
-import { useTaskStore } from '@/store'
+import draggable from 'vuedraggable'
+import TaskItem from './TaskItem.vue'
+import { useAppStore, FlowType, useProjectStore } from '@/store'
+import { useMessage, useDialog, FormInst } from 'naive-ui'
+import CreateFlowModal from './CreateFlowModal.vue'
+import CreateTaskModal from './CreateTaskModal.vue'
+import CreateTaskButton from '@/components/CreateTaskButton.vue'
+import GroupHeader from './GroupHeader.vue'
+import TaskHeader from './TaskHeader.vue'
 
-import FlowItem from './FlowItem.vue'
+const projectStore = useProjectStore()
+const message = useMessage()
+const dialog = useDialog()
 
-const taskStore = useTaskStore()
-const loading = ref<boolean>(true)
-const flowList = computed(() => taskStore.flowList)
+const showCreateGroupModal = ref<boolean>(false)
+const showCreateTaskModal = ref<boolean>(false)
+const selectedFlowData = ref<FlowType | null>(null)
+const flowList = computed(() => (projectStore.selectedProject ? projectStore.selectedProject.flows : []))
 
-onMounted(async () => {
-  await taskStore.getFlowList()
-  loading.value = false
-})
+/** 新建分组 */
+function createGroup(flow: FlowType) {
+  showCreateGroupModal.value = true
+  selectedFlowData.value = null
+}
+/** 编辑分组 */
+function editGroup(flow: FlowType) {
+  showCreateGroupModal.value = true
+  selectedFlowData.value = flow
+}
+/** 删除分组 */
+function deleteGroup(flow: FlowType) {
+  if (flow.tasks.length > 0) {
+    message.error('删除流程前请保证该流程下无任务！')
+    return
+  }
+  dialog.warning({
+    title: '警告',
+    content: '你确定删除当前流程吗？',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      await projectStore.deleteFlow(flow.id as number)
+      message.success('流程已删除！')
+    },
+    onNegativeClick: () => {}
+  })
+}
+
+function createTask(flow: FlowType) {
+  showCreateTaskModal.value = true
+  selectedFlowData.value = flow
+}
+
+// 判断是否可以从其他流程拖拽过来
+function put(to: any, from: any) {
+  return true
+}
+// 判断是否可以拖拽到其他流程返回可以拖拽进去的流程的group值列表 | true | false
+function pull(to: any, from: any) {
+  const fromGroupId = from.options.group.name
+  const fromGroup = flowList.value.find(item => item.id === fromGroupId)
+  // console.log(fromGroup?.range.map(item => Number(item)))
+  return fromGroup?.range.map(item => Number(item))
+}
+
+// 更新任务流程
+async function change(evt: any, flow: any) {
+  if (Object.keys(evt).includes('added')) {
+    const taskId = evt.added.element.id
+    const newFlowId = flow.id
+    const newFlowComplete = flow.complete
+    await projectStore.updateTaskProps(taskId, 'flow', newFlowId)
+    // 如果进入的流程标记为已完成则将任务状态改成已完成
+    if (newFlowComplete === true) {
+      await projectStore.updateTaskProps(taskId, 'complete', true)
+    }
+    message.success('状态已更新')
+  }
+}
 </script>
 
 <style lang="scss" scoped>
-.flow-list {
+.task {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.task-content {
+  flex: 1;
+  width: 100%;
   border-radius: 3px;
   overflow-x: auto;
   overflow-y: hidden;
@@ -35,6 +153,7 @@ onMounted(async () => {
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
+  margin-top: 15px;
 
   .group-add {
     display: inline-block;
@@ -66,5 +185,40 @@ onMounted(async () => {
       font-weight: 600;
     }
   }
+
+  .flow-item {
+    display: inline-block;
+    width: 320px;
+    margin: 0 20px 0 0;
+    overflow: hidden;
+    height: 100%;
+
+    .task-list {
+      width: 100%;
+      flex: 1;
+      overflow-y: auto;
+      height: calc(100% - 45px);
+      margin: 0 auto;
+    }
+  }
+}
+
+// // 选中的样式
+// .chosen {
+//   opacity: 0.8;
+//   background: #c8ebfb;
+// }
+// 移动的样式
+.drag {
+  opacity: 0.9;
+  background: #c8ebfb;
+}
+// 占位符的样式
+.ghost {
+  opacity: 0.2;
+}
+// 任务子项动画效果
+.flip-list-move {
+  transition: transform 0.2s linear;
 }
 </style>

@@ -1,7 +1,7 @@
-import type { ProxyOptions } from 'vite';
+import type { ProxyOptions } from 'vite'
 
 /** 请求环境配置 */
-type ServiceEnv = Record<any, any>;
+type ServiceEnv = Record<any, any>
 
 /** 环境配置 */
 const serviceProxyConfig: ServiceEnv = {
@@ -17,20 +17,19 @@ const serviceProxyConfig: ServiceEnv = {
     url: 'http://localhost:8080',
     proxy: '/api'
   }
-};
+}
 
 /**
  * 获取代理配置
  * @param env 环境描述
  */
 export function getProxyConfig(env: any) {
-  const { VITE_ENV_TYPE = 'dev' } = env;
+  const { VITE_ENV_TYPE = 'dev' } = env
 
-  const proxyConfig = serviceProxyConfig[VITE_ENV_TYPE];
+  const proxyConfig = serviceProxyConfig[VITE_ENV_TYPE]
 
-  return proxyConfig;
+  return proxyConfig
 }
-
 
 /**
  * 设置网络代理
@@ -38,7 +37,7 @@ export function getProxyConfig(env: any) {
  * @param envConfig - env环境配置
  */
 export function createViteProxy(isOpenProxy: boolean, envConfig: any) {
-  if (!isOpenProxy) return undefined;
+  if (!isOpenProxy) return undefined
 
   const proxy: Record<string, string | ProxyOptions> = {
     [envConfig.proxy]: {
@@ -46,7 +45,7 @@ export function createViteProxy(isOpenProxy: boolean, envConfig: any) {
       changeOrigin: true,
       rewrite: path => path.replace(new RegExp(`^${envConfig.proxy}`), '')
     }
-  };
+  }
 
-  return proxy;
+  return proxy
 }

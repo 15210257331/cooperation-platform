@@ -43,6 +43,7 @@ declare module '@vue/runtime-core' {
     NNotificationProvider: typeof import('naive-ui')['NNotificationProvider']
     NNumberAnimation: typeof import('naive-ui')['NNumberAnimation']
     NPopover: typeof import('naive-ui')['NPopover']
+    NPopselect: typeof import('naive-ui')['NPopselect']
     NProgress: typeof import('naive-ui')['NProgress']
     NRadio: typeof import('naive-ui')['NRadio']
     NRadioButton: typeof import('naive-ui')['NRadioButton']
@@ -64,6 +65,7 @@ declare module '@vue/runtime-core' {
     PropsTag: typeof import('./src/components/PropsTag.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TaskTag: typeof import('./src/components/TaskTag.vue')['default']
     UploadFile: typeof import('./src/components/UploadFile.vue')['default']
   }
 }
