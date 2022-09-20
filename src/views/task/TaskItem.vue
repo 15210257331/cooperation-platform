@@ -114,7 +114,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { TaskType, useProjectStore } from '@/store'
+import { useProjectStore } from '@/store'
+import { TaskType } from '@/interface'
 import {
   EllipsisHorizontal,
   CheckmarkCircle,

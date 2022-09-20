@@ -56,7 +56,8 @@ export const useProjectStore = defineStore('project', {
             this.projectList.push({
               id: res.data.id,
               name: res.data.name,
-              star: res.data.star,
+              icon: res.data.icon,
+              type: res.data.type,
               createDate: res.data.createDate,
               selected: false,
               flows: []
@@ -74,7 +75,9 @@ export const useProjectStore = defineStore('project', {
         updateProject(data).then(res => {
           if (res.code === 10000) {
             const index = this.projectList.findIndex(item => item.id === data.id)
-            this.projectList.splice(index, 1, res.data)
+            this.projectList[index].name = res.data.name
+            this.projectList[index].icon = res.data.icon
+            this.projectList[index].type = res.data.type
             resolve(res.message)
           } else {
             reject(res.message)

@@ -1,6 +1,6 @@
 <template>
   <div class="task">
-    <TaskHeader></TaskHeader>
+    <TaskHeader @create-group="createGroup"></TaskHeader>
     <div class="task-content">
       <Empty v-if="flowList.length === 0" />
       <div v-for="flow in flowList" :key="flow.id" class="flow-item">
@@ -45,8 +45,8 @@
         </div>
       </div>
     </div>
-    <!-- 新增/修改流程弹窗 -->
-    <CreateFlowModal v-model:value="showCreateGroupModal" :data="selectedFlowData" />
+    <!-- 新增/修改分组dialog -->
+    <CreateGroupModal v-model:value="showCreateGroupModal" :data="selectedFlowData" />
     <!-- 新增任务modal -->
     <CreateTaskModal v-model:value="showCreateTaskModal" :flow-id="selectedFlowData?.id"></CreateTaskModal>
   </div>
@@ -57,9 +57,10 @@ import { ref, onMounted, computed } from 'vue'
 import Empty from '@/components/Empty.vue'
 import draggable from 'vuedraggable'
 import TaskItem from './TaskItem.vue'
-import { useAppStore, FlowType, useProjectStore } from '@/store'
+import { useAppStore, useProjectStore } from '@/store'
+import { FlowType } from '@/interface'
 import { useMessage, useDialog, FormInst } from 'naive-ui'
-import CreateFlowModal from './CreateFlowModal.vue'
+import CreateGroupModal from './CreateGroupModal.vue'
 import CreateTaskModal from './CreateTaskModal.vue'
 import CreateTaskButton from '@/components/CreateTaskButton.vue'
 import GroupHeader from './GroupHeader.vue'
@@ -102,12 +103,11 @@ function deleteGroup(flow: FlowType) {
     onNegativeClick: () => {}
   })
 }
-
+/** 新建任务 */
 function createTask(flow: FlowType) {
   showCreateTaskModal.value = true
   selectedFlowData.value = flow
 }
-
 // 判断是否可以从其他流程拖拽过来
 function put(to: any, from: any) {
   return true
@@ -119,7 +119,6 @@ function pull(to: any, from: any) {
   // console.log(fromGroup?.range.map(item => Number(item)))
   return fromGroup?.range.map(item => Number(item))
 }
-
 // 更新任务流程
 async function change(evt: any, flow: any) {
   if (Object.keys(evt).includes('added')) {

@@ -42,14 +42,14 @@ const message = useMessage()
 const dialog = useDialog()
 
 type RowData = {
-  id: number;
-  key: number;
-  username: string;
-  nickname: string;
-  phone: string;
-  role: number;
-  createDate: string;
-};
+  id: number
+  key: number
+  username: string
+  nickname: string
+  phone: string
+  role: number
+  createDate: string
+}
 const columns: DataTableColumns<RowData> = [
   {
     title: '用户名',
@@ -73,7 +73,7 @@ const columns: DataTableColumns<RowData> = [
           style: {
             marginRight: '6px'
           },
-          type: 'info',
+          type: row.role === 1 ? 'error' : 'warning',
           bordered: false
         },
         {

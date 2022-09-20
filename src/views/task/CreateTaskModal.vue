@@ -66,7 +66,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { FormInst, useMessage } from 'naive-ui'
-import { TaskType, useProjectStore } from '@/store'
+import { useProjectStore } from '@/store'
+import {TaskType} from '@/interface'
 import { Close } from '@vicons/ionicons5'
 import { priorityOptions } from '@/constant'
 import dayjs from 'dayjs'

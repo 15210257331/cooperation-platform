@@ -15,15 +15,15 @@
       >
         <div class="project-change">
           <n-icon :component="Dice" size="20" color="#0e7a0d" />
-          <p>{{ selectedProject?.name }}</p>
+          <p>{{ selectedProject?.name || '暂无项目' }}</p>
           <n-icon :component="ChevronDownSharp" />
         </div>
       </n-popselect>
       <n-divider vertical />
       <n-icon
-        :component="selectedProject?.star ? StarSharp : StarOutline"
         size="17"
-        :color="selectedProject?.star ? 'rgba(239, 232, 14, 1)' : '#999'"
+        :component="selectedProject?.type === 2 ? StarSharp : StarOutline"
+        :color="selectedProject?.type === 2 ? '#efe80eff' : '#999'"
       />
       <div style="flex: 1">
         <n-button style="float: right" size="small" type="primary" @click="createGroup"> 新建分组 </n-button>
@@ -34,16 +34,18 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch } from 'vue'
-import { useProjectStore, ProjectType } from '@/store'
+import { useProjectStore } from '@/store'
+import { ProjectType } from '@/interface'
 import { Dice, ChevronDownSharp, StarSharp, StarOutline } from '@vicons/ionicons5'
 
 const projectStore = useProjectStore()
+const emit = defineEmits(['createGroup'])
 const selectedProject = computed(() => projectStore.selectedProject)
 const options = computed(() => {
   const starList: Array<any> = []
   const normalList: Array<any> = []
   projectStore.projectList.map(item => {
-    if (item.star) {
+    if (item.type === 2) {
       starList.push({
         label: item.name,
         value: item.id,
@@ -72,7 +74,9 @@ const options = computed(() => {
 const change = ($event: any, option: any) => {
   projectStore.changeSelectedProject($event)
 }
-const createGroup = () => {}
+const createGroup = () => {
+  emit('createGroup')
+}
 </script>
 
 <style lang="scss" scoped>

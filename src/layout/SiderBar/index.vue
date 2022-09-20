@@ -18,12 +18,14 @@ import { ref, Component, h, computed } from 'vue'
 import { NIcon, type MenuOption } from 'naive-ui'
 import { PersonSharp } from '@vicons/ionicons5'
 import { useAppStore } from '@/store'
+import { useRender } from '@/hooks'
 import AppLogo from '@/components/AppLogo.vue'
 import { RouteRecordRaw, RouterLink, useRoute } from 'vue-router'
 import { routes } from '@/router'
 
 const appStore = useAppStore()
 const route = useRoute()
+const { renderIcon } = useRender()
 
 const activeKey = computed(() => (route.meta?.activeMenu ? route.meta.activeMenu : route.name) as string)
 const homeRoutes = routes.filter(item => item.path === '/')[0].children as Array<RouteRecordRaw>
@@ -50,11 +52,19 @@ function getMenuOptions(arr: Array<RouteRecordRaw>, result: MenuOption[]) {
         delete menuOption.children
       }
       result.push(menuOption)
+      if (item.name === 'user') {
+        result.push({
+          key: 'divider-1',
+          type: 'divider',
+          props: {
+            style: {
+              marginLeft: '32px'
+            }
+          }
+        })
+      }
     })
   }
-}
-function renderIcon(icon: Component) {
-  return () => h(NIcon, null, { default: () => h(icon) })
 }
 function renderLabel(routeRecordRaw: RouteRecordRaw) {
   return () => {

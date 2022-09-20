@@ -21,7 +21,7 @@
       </div>
       <div class="item">
         <span>已逾期</span>
-        <p style="color: #ff5500">{{ 12 }}</p>
+        <p style="color: #ff5500">{{ expired }}</p>
       </div>
       <div class="line"></div>
       <div class="item" style="flex: 2">
@@ -40,6 +40,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useProjectStore } from '@/store'
+import dayjs from 'dayjs'
 
 const projectStore = useProjectStore()
 const total = computed(() => {
@@ -63,6 +64,15 @@ const done = computed(() => {
   let num = 0
   groups.map(item => {
     num += item.tasks.filter(task => task.complete === true).length
+  })
+  return num
+})
+/** 已经逾期的任务数 */
+const expired = computed(() => {
+  const groups = projectStore.selectedProjectGroups
+  let num = 0
+  groups.map(item => {
+    num += item.tasks.filter(task => dayjs().isAfter(dayjs(task.endDate)) && !task.computed).length
   })
   return num
 })

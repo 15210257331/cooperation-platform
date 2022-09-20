@@ -5,7 +5,8 @@ export interface ProjectStoreType {
 export interface ProjectType {
   id?: number
   name: string
-  star: boolean
+  icon: string
+  type: number
   createDate: string
   // 是否是当前选中的项目
   selected: boolean

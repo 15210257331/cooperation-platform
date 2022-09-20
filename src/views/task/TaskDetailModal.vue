@@ -98,20 +98,21 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { FormInst, useMessage } from 'naive-ui'
-import { TaskType, useProjectStore } from '@/store'
+import { useProjectStore } from '@/store'
+import { TaskType } from '@/interface'
 import { Close } from '@vicons/ionicons5'
 import { priorityOptions } from '@/constant'
 import dayjs from 'dayjs'
 
 const props = defineProps<{
   /** 弹窗显隐 */
-  value: boolean;
-  task: TaskType;
-  complete: boolean;
+  value: boolean
+  task: TaskType
+  complete: boolean
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:value', val: boolean): void;
+  (e: 'update:value', val: boolean): void
 }>()
 
 const projectStore = useProjectStore()

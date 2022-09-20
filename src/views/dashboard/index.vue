@@ -1,7 +1,6 @@
 <template>
   <n-space vertical>
     <UserInfo />
-
     <n-grid x-gap="12" :cols="24">
       <n-gi :span="15">
         <n-space vertical>
@@ -13,7 +12,7 @@
       <n-gi :span="9">
         <n-space vertical>
           <ProjectList />
-          <UserStatus />
+          <ProjectOverview />
         </n-space>
       </n-gi>
     </n-grid>
@@ -28,7 +27,7 @@ import TaskStatistics from './TaskStatistics.vue'
 import TaskTrend from './TaskTrend.vue'
 import ProjectList from './ProjectList.vue'
 import UserRank from './UserRank.vue'
-import UserStatus from './UserStatus.vue'
+import ProjectOverview from './ProjectOverview.vue'
 
 const message = useMessage()
 

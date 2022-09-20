@@ -48,40 +48,13 @@
     >
       <TextDemo />
     </n-card>
-
-    <n-card
-      size="small"
-      title="图标使用"
-      :segmented="{
-        content: true
-      }"
-    >
-      <SvgIcon name="cube" class="icon" />
-      <SvgIcon name="heart" class="icon" />
-      <SvgIcon name="mark" class="icon" />
-      <SvgIcon name="Men" class="icon" />
-      <SvgIcon name="star" class="icon" />
-      <SvgIcon name="user-role" class="icon" />
-    </n-card>
-
-    <n-card
-      size="small"
-      title="钟表"
-      :segmented="{
-        content: true
-      }"
-    >
-      <EchartsClock />
-    </n-card>
   </n-space>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import ImageCode from '@/components/ImageCode.vue'
-import EchartsClock from './EchartsClock.vue'
 import TextDemo from './Text.vue'
-import SvgIcon from './SvgIcon.vue'
 
 const imgCode = ref<string>('')
 </script>

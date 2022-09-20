@@ -194,7 +194,8 @@ async function handleSubmit(e: MouseEvent) {
 
 async function createFlow() {
   const data = Object.assign({}, form.value, {
-    canNew: form.value.canNew == 1 ? true : false
+    canNew: form.value.canNew === 1 ? true : false,
+    projectId: projectStore.selectedProject?.id
   })
   await projectStore.createFlow(data)
   showModal.value = false
@@ -203,7 +204,7 @@ async function createFlow() {
 
 async function updateFlow() {
   const data = Object.assign({}, form.value, {
-    canNew: form.value.canNew == 1 ? true : false
+    canNew: form.value.canNew === 1 ? true : false
   })
   await projectStore.updateFlow(data)
   showModal.value = false

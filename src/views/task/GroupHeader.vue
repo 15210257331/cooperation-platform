@@ -16,7 +16,8 @@
 
 <script setup lang="ts">
 import { useRender } from '@/hooks'
-import { FlowType, useProjectStore } from '@/store'
+import { useProjectStore } from '@/store'
+import { FlowType } from '@/interface'
 import { EllipsisHorizontal, Documents, AddCircleSharp, TrashBin, Close, Duplicate } from '@vicons/ionicons5'
 
 const { renderIcon } = useRender()
@@ -36,7 +37,7 @@ const options = [
     icon: renderIcon(Documents)
   },
   {
-    label: '在此流程新增任务',
+    label: '添加新任务',
     key: 'createTask',
     icon: renderIcon(Duplicate)
   },

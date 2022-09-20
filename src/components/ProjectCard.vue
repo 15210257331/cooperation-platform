@@ -6,11 +6,7 @@
     @click="changeSelectedProject(project.id as number)"
   >
     <div class="project-card">
-      <div class="project-icon">
-        <n-icon size="20">
-          <Documents />
-        </n-icon>
-      </div>
+      <IconSelect only-show :default="project.icon"></IconSelect>
       <div class="project-info">
         <p>
           {{ project.name }}
@@ -20,7 +16,7 @@
       </div>
       <n-dropdown style="margin-right: 15px" trigger="hover" :options="options" @select="handleSelect($event)">
         <n-icon size="20">
-          <EllipsisHorizontal />
+          <EllipsisVertical />
         </n-icon>
       </n-dropdown>
     </div>
@@ -30,11 +26,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRender } from '@/hooks'
-import { EllipsisHorizontal, Documents, TrashBin} from '@vicons/ionicons5'
+import { EllipsisVertical, Documents, TrashBin } from '@vicons/ionicons5'
 import { useProjectStore } from '@/store'
 import { ProjectType } from '@/interface'
 import dayjs from 'dayjs'
 import { useRouter } from 'vue-router'
+import IconSelect from '@/components/IconSelect.vue'
 
 const { renderIcon } = useRender()
 const router = useRouter()
@@ -49,12 +46,12 @@ const createDate = computed(() => {
 })
 const options = [
   {
-    label: '编辑',
+    label: '修改信息',
     key: 'edit',
     icon: renderIcon(Documents)
   },
   {
-    label: '删除',
+    label: '删除项目',
     key: 'delete',
     icon: renderIcon(TrashBin)
   }
@@ -83,17 +80,7 @@ const navigare = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  .project-icon {
-    width: 46px;
-    height: 46px;
-    border-radius: 23px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(46, 51, 56, 0.05);
-    margin-right: 20px;
-  }
+
   .project-info {
     flex: 1;
     p {

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw, RouterView } from 'vue-router'
-import { Grid, CalendarNumber, Layers, PersonSharp, Settings, TrashBin, Aperture } from '@vicons/ionicons5'
+import { Grid, Layers, PersonSharp, Settings, Aperture, LayersSharp, Scale } from '@vicons/ionicons5'
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -49,50 +49,50 @@ export const routes: RouteRecordRaw[] = [
         component: () => import('@/views/task/index.vue')
       },
       {
-        path: '/trash',
-        name: 'trash',
+        path: '/user',
+        name: 'user',
         meta: {
-          title: '回收站',
-          icon: TrashBin
+          title: '用户管理',
+          icon: PersonSharp
         },
-        component: () => import('@/views/trash/index.vue')
+        component: () => import('@/views/user/index.vue')
       },
       {
         path: '/components',
         name: 'components',
         meta: {
           title: '组件示例',
-          icon: Aperture
-        },
-        component: () => import('@/views/components/index.vue')
-      },
-      {
-        path: '/setting',
-        name: 'setting',
-        meta: {
-          title: '系统管理',
-          icon: Settings,
+          icon: Aperture,
           type: 'M'
         },
         component: RouterView,
         children: [
           {
-            path: '/setting/user',
-            name: 'user',
+            path: 'icon',
+            name: 'icon',
             meta: {
-              title: '用户管理',
+              title: '图标组件',
               icon: PersonSharp
             },
-            component: () => import('@/views/system/user/index.vue')
+            component: () => import('@/views/components/Icons/index.vue')
           },
           {
-            path: '/setting/role',
-            name: 'role',
+            path: 'echarts',
+            name: 'echarts',
             meta: {
-              title: '角色管理',
-              icon: PersonSharp
+              title: 'echarts使用',
+              icon: LayersSharp
             },
-            component: () => import('@/views/system/role/index.vue')
+            component: () => import('@/views/components/Echarts/index.vue')
+          },
+          {
+            path: 'test',
+            name: 'test',
+            meta: {
+              title: 'testDemo',
+              icon: Scale
+            },
+            component: () => import('@/views/components/TestDemo/index.vue')
           }
         ]
       }

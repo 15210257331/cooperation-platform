@@ -5,7 +5,7 @@
         <n-avatar round :size="60" :src="userStore.userInfo.avatar" />
         <div style="padding-left: 12px">
           <h3 style="font-size: 18px; font-weight: 600">早安，{{ userStore.nickname }}, 今天又是充满活力的一天！</h3>
-          <p style="line-height: 30px; color: rgb(153, 153, 153)">今日多云转晴，20℃ - 25℃！</p>
+          <p style="line-height: 30px; color: #999999">{{ userStore.userInfo.intro }}</p>
         </div>
       </div>
       <n-space :size="24" :wrap="false">
@@ -25,14 +25,13 @@
 
 <script setup lang="ts">
 import { useUserStore, useProjectStore } from '@/store'
-import dayjs from 'dayjs'
 import { computed, Ref } from 'vue'
 
 interface StatisticData {
-  id: number;
-  label: string;
-  value: number | string;
-  animation: boolean;
+  id: number
+  label: string
+  value: number | string
+  animation: boolean
 }
 
 const userStore = useUserStore()
