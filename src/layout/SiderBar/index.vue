@@ -52,17 +52,17 @@ function getMenuOptions(arr: Array<RouteRecordRaw>, result: MenuOption[]) {
         delete menuOption.children
       }
       result.push(menuOption)
-      if (item.name === 'user') {
-        result.push({
-          key: 'divider-1',
-          type: 'divider',
-          props: {
-            style: {
-              marginLeft: '32px'
-            }
-          }
-        })
-      }
+      // if (item.name === 'user') {
+      //   result.push({
+      //     key: 'divider-1',
+      //     type: 'divider',
+      //     props: {
+      //       style: {
+      //         marginLeft: '32px'
+      //       }
+      //     }
+      //   })
+      // }
     })
   }
 }

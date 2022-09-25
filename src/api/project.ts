@@ -53,3 +53,9 @@ export function taskDetail(taskId: number): Promise<ResType> {
 export function deleteTask(id: any): Promise<ResType> {
   return axiosRequest.get(`/api/task/delete/${id}`)
 }
+
+
+// 任务完成趋势
+export function taskTrend(type: string): Promise<ResType> {
+  return axiosRequest.get(`/api/task/trend?type=${type}`)
+}

@@ -23,12 +23,7 @@ export function sendCode(data: any): Promise<ResType> {
 
 // 用户排行top5
 export function userRank(type: string): Promise<ResType> {
-  return axiosRequest.get(`/api/statistics/userRank?type=${type}`)
-}
-
-// 任务完成趋势
-export function taskTrend(type: string): Promise<ResType> {
-  return axiosRequest.get(`/api/statistics/taskTrend?type=${type}`)
+  return axiosRequest.get(`/api/user/rank?type=${type}`)
 }
 
 // 用户列表
@@ -39,4 +34,9 @@ export function userList(data: any): Promise<ResType> {
 /** 删除用户 */
 export function deleteUser(id: number): Promise<ResType> {
   return axiosRequest.get(`/api/user/delete/${id}`)
+}
+
+/** 修改用户角色 */
+export function updateUserRole(data: any): Promise<ResType> {
+  return axiosRequest.post(`/api/user/setRole`, data)
 }

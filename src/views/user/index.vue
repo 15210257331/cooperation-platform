@@ -29,14 +29,53 @@
     :pagination="{ page: queryParams.pageIndex, pageSize: queryParams.pageSize, itemCount: total }"
     @update:page="pageChange"
   />
+  <n-modal v-model:show="showModal">
+    <n-card
+      :segmented="{
+        content: true,
+        footer: true
+      }"
+      style="width: 520px"
+      :title="'设置角色'"
+      :bordered="false"
+      role="dialog"
+      aria-modal="true"
+    >
+      <template #header-extra>
+        <n-button quaternary circle>
+          <template #icon>
+            <n-icon size="20" @click="showModal = false">
+              <Close />
+            </n-icon>
+          </template>
+        </n-button>
+      </template>
+      <div>
+        <n-radio-group v-model:value="role" name="radiogroup">
+          <n-space>
+            <n-radio v-for="(item, key) in roleMap" :key="key" :value="key">
+              {{ item }}
+            </n-radio>
+          </n-space>
+        </n-radio-group>
+      </div>
+      <template #footer>
+        <n-space horizontal style="float: right">
+          <n-button tertiary @click="showModal = false"> 取消 </n-button>
+          <n-button type="primary" @click="setRole"> 确认 </n-button>
+        </n-space>
+      </template>
+    </n-card>
+  </n-modal>
 </template>
 
 <script setup lang="ts">
 import { h, ref, onMounted, reactive } from 'vue'
-import { deleteUser, userList } from '@/api'
+import { deleteUser, userList, updateUserRole } from '@/api'
 import { DataTableColumns, useMessage, NTag, NButton, useDialog } from 'naive-ui'
 import dayjs from 'dayjs'
-import { SearchSharp, RefreshSharp } from '@vicons/ionicons5'
+import { SearchSharp, RefreshSharp, Close } from '@vicons/ionicons5'
+import { roleMap } from '@/constant'
 
 const message = useMessage()
 const dialog = useDialog()
@@ -47,25 +86,29 @@ type RowData = {
   username: string
   nickname: string
   phone: string
-  role: number
+  role: string
   createDate: string
 }
 const columns: DataTableColumns<RowData> = [
   {
     title: '用户名',
-    key: 'username'
+    key: 'username',
+    align: 'center'
   },
   {
     title: '昵称',
-    key: 'nickname'
+    key: 'nickname',
+    align: 'center'
   },
   {
     title: '手机号',
-    key: 'phone'
+    key: 'phone',
+    align: 'center'
   },
   {
     title: '角色',
     key: 'tags',
+    align: 'center',
     render(row) {
       return h(
         NTag,
@@ -73,11 +116,11 @@ const columns: DataTableColumns<RowData> = [
           style: {
             marginRight: '6px'
           },
-          type: row.role === 1 ? 'error' : 'warning',
+          type: 'info',
           bordered: false
         },
         {
-          default: () => (row.role === 1 ? '管理员' : '普通用户')
+          default: () => roleMap[row.role]
         }
       )
     }
@@ -85,6 +128,7 @@ const columns: DataTableColumns<RowData> = [
   {
     title: '注册时间',
     key: 'createDate',
+    align: 'center',
     render(row) {
       return h('span', null, { default: () => dayjs(row.createDate).format('YYYY年MM月DD日 HH:mm:ss') })
     }
@@ -92,30 +136,37 @@ const columns: DataTableColumns<RowData> = [
   {
     title: '操作',
     key: 'actions',
+    align: 'center',
     render(row) {
-      return h(
-        NButton,
-        {
-          size: 'small',
-          type: 'error',
-          onClick: () => {
-            userDelete(row.id)
-          }
-        },
-        { default: () => '删除' }
-      )
+      return [
+        h(
+          NButton,
+          {
+            size: 'small',
+            type: 'warning',
+            quaternary: true,
+            onClick: () => {
+              showModal.value = true
+              role.value = row.role
+              selectUserId.value = row.id
+            }
+          },
+          { default: () => '配置角色' }
+        ),
+        h(
+          NButton,
+          {
+            size: 'small',
+            type: 'error',
+            quaternary: true,
+            onClick: () => {
+              userDelete(row.id)
+            }
+          },
+          { default: () => '删除' }
+        )
+      ]
     }
-  }
-]
-
-const options = [
-  {
-    label: '普通用户',
-    value: 2
-  },
-  {
-    label: '管理员',
-    value: 1
   }
 ]
 
@@ -127,6 +178,9 @@ const queryParams = reactive({
   pageSize: 4,
   nickname: ''
 })
+const showModal = ref<boolean>(false)
+const role = ref<string>('')
+const selectUserId = ref<number>()
 
 onMounted(() => {
   queryData()
@@ -171,6 +225,16 @@ function userDelete(id: number) {
       })
     },
     onNegativeClick: () => {}
+  })
+}
+
+function setRole() {
+  updateUserRole({ userId: selectUserId.value, role: role.value }).then(res => {
+    if (res.code === 10000) {
+      showModal.value = false
+      message.success(res.message)
+      queryData()
+    }
   })
 }
 </script>

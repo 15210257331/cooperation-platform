@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw, RouterView } from 'vue-router'
-import { Grid, Layers, PersonSharp, Settings, Aperture, LayersSharp, Scale } from '@vicons/ionicons5'
+import { Grid, Layers, PersonSharp, Settings, Aperture, LayersSharp, Scale, TrashBin } from '@vicons/ionicons5'
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -47,6 +47,15 @@ export const routes: RouteRecordRaw[] = [
           icon: Layers
         },
         component: () => import('@/views/task/index.vue')
+      },
+      {
+        path: '/trash',
+        name: 'trash',
+        meta: {
+          title: '回收站',
+          icon: TrashBin
+        },
+        component: () => import('@/views/trash/index.vue')
       },
       {
         path: '/user',

@@ -4,7 +4,7 @@
     <div class="title">
       <p :class="{ complete: complete }">{{ task.name }}</p>
       <n-dropdown trigger="hover" :options="options" @select="handleSelect">
-        <n-icon size="20">
+        <n-icon size="20" style="margin-top: 6px;">
           <EllipsisHorizontal />
         </n-icon>
       </n-dropdown>
@@ -284,7 +284,7 @@ async function setAlarm() {
 
   .title {
     display: flex;
-    align-items: center;
+    // align-items: center;
     p {
       flex: 1;
       line-height: 30px;

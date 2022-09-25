@@ -34,7 +34,7 @@
           <n-input v-model:value="formValue.phone" placeholder="手机号" />
         </n-form-item>
         <n-form-item label="角色:" path="role">
-          <n-select v-model:value="formValue.role" :options="options" />
+          <n-select  v-model:value="formValue.role" disabled :options="options" />
         </n-form-item>
         <n-form-item label="个人简介:" path="intro">
           <n-input v-model:value="formValue.intro" type="textarea" placeholder="个人简介" />
@@ -57,29 +57,27 @@ import { Close } from '@vicons/ionicons5'
 import { FormInst, useMessage } from 'naive-ui'
 import { updateUserInfo } from '@/api'
 import UploadFile from '@/components/UploadFile.vue'
+import { roleMap } from '@/constant'
 interface Props {
   /** 弹窗显隐 */
-  value: boolean;
+  value: boolean
 }
 const props = defineProps<Props>()
 
 interface Emits {
-  (e: 'update:value', val: boolean): void;
+  (e: 'update:value', val: boolean): void
 }
 const emit = defineEmits<Emits>()
 
 const userStore = useUserStore()
 const message = useMessage()
-const options = [
-  {
-    label: '普通用户',
-    value: 1
-  },
-  {
-    label: '管理员',
-    value: 2
+
+const options = Object.keys(roleMap).map(key => {
+  return {
+    label: roleMap[key],
+    value: key
   }
-]
+})
 const formRef = ref<FormInst | null>(null)
 const formValue = computed(() => {
   return userStore.userInfo
