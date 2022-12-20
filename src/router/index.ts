@@ -1,6 +1,14 @@
 import { createRouter, createWebHistory, RouteRecordRaw, RouterView } from 'vue-router'
 import { Grid, Layers, PersonSharp, Settings, Aperture, LayersSharp, Scale, TrashBin } from '@vicons/ionicons5'
 
+import { createVNode, render } from 'vue'
+/** 挂载注册loadingBar组件 */
+import LoadingBarVue from '../views/components/TestDemo/LoadingBar.vue'
+/** 将组件转换成虚拟DOM */
+const Vnode = createVNode(LoadingBarVue)
+/** 将虚拟DOM挂载到真实DOM元素上 */
+render(Vnode, document.body)
+
 export const routes: RouteRecordRaw[] = [
   {
     path: '/login',
@@ -114,8 +122,9 @@ const router = createRouter({
   routes
 })
 
-// 路由拦截器用于户权限判断
+// 路由前置拦截器用于户权限判断
 router.beforeEach((to, from) => {
+  Vnode.component?.exposed?.startLoading()
   // 根据路由修改网站标题
   if (to.meta && to.meta.title) {
     document.title = to.meta.title as string
@@ -127,6 +136,10 @@ router.beforeEach((to, from) => {
     }
   }
   return true
+})
+
+router.afterEach((to, from) => {
+  Vnode.component?.exposed?.endLoading()
 })
 
 export default router

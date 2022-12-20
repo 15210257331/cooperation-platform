@@ -88,6 +88,9 @@ const createGroup = () => {
   justify-content: flex-start;
   align-items: center;
   padding: 0 10px;
+  .nav {
+    flex: 1;
+  }
 }
 .project-change {
   display: flex;

@@ -7,6 +7,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ActionContainer: typeof import('./src/components/ActionContainer.vue')['default']
     AppLogo: typeof import('./src/components/AppLogo.vue')['default']
+    CreateCard: typeof import('./src/components/CreateCard.vue')['default']
     CreateTaskButton: typeof import('./src/components/CreateTaskButton.vue')['default']
     Empty: typeof import('./src/components/Empty.vue')['default']
     IconSelect: typeof import('./src/components/IconSelect.vue')['default']
@@ -56,6 +57,8 @@ declare module '@vue/runtime-core' {
     NStatistic: typeof import('naive-ui')['NStatistic']
     NSwitch: typeof import('naive-ui')['NSwitch']
     NTable: typeof import('naive-ui')['NTable']
+    NTabPane: typeof import('naive-ui')['NTabPane']
+    NTabs: typeof import('naive-ui')['NTabs']
     NTag: typeof import('naive-ui')['NTag']
     NTooltip: typeof import('naive-ui')['NTooltip']
     NUpload: typeof import('naive-ui')['NUpload']
@@ -63,6 +66,10 @@ declare module '@vue/runtime-core' {
     PropsTag: typeof import('./src/components/PropsTag.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SectionArea: typeof import('./src/components/SectionArea.vue')['default']
+    SectionAreaa: typeof import('./src/components/SectionAreaa.vue')['default']
+    SectionTitle: typeof import('./src/components/SectionTitle.vue')['default']
+    Star: typeof import('./src/components/Star.vue')['default']
     TaskTag: typeof import('./src/components/TaskTag.vue')['default']
     UploadFile: typeof import('./src/components/UploadFile.vue')['default']
   }

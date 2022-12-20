@@ -1,5 +1,5 @@
 <template>
-  <n-card size="small">
+  <n-card size="small" style="border-radius: 5px;">
     <div style="display: flex; justify-content: space-between; align-items: center">
       <div style="display: flex; align-items: center">
         <n-avatar round :size="60" :src="userStore.userInfo.avatar" />

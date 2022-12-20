@@ -48,6 +48,39 @@
     >
       <TextDemo />
     </n-card>
+
+    <n-card
+      size="small"
+      title="动画"
+      :segmented="{
+        content: true
+      }"
+    >
+      <Animation />
+    </n-card>
+
+    <n-card
+      size="small"
+      title="全局事件总线"
+      :segmented="{
+        content: true
+      }"
+    >
+      <n-space horizontal>
+        <BusA></BusA>
+        <BusB></BusB>
+      </n-space>
+    </n-card>
+
+    <n-card
+      size="small"
+      title="自定义插件"
+      :segmented="{
+        content: true
+      }"
+    >
+      <TestLoading></TestLoading>
+    </n-card>
   </n-space>
 </template>
 
@@ -55,6 +88,10 @@
 import { ref } from 'vue'
 import ImageCode from '@/components/ImageCode.vue'
 import TextDemo from './Text.vue'
+import Animation from './Animation.vue'
+import BusA from './BusA.vue'
+import BusB from './BusB.vue'
+import TestLoading from './TestLoading.vue'
 
 const imgCode = ref<string>('')
 </script>
