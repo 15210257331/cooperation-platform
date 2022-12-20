@@ -1,5 +1,11 @@
 <template>
   <div class="task">
+    <div
+      class="task-bg"
+      :style="{
+        backgroundImage: 'url(' + cover + ')'
+      }"
+    ></div>
     <TaskHeader @create-group="createGroup"></TaskHeader>
     <div class="task-content">
       <Empty v-if="flowList.length === 0" />
@@ -74,6 +80,7 @@ const showCreateGroupModal = ref<boolean>(false)
 const showCreateTaskModal = ref<boolean>(false)
 const selectedFlowData = ref<FlowType | null>(null)
 const flowList = computed(() => (projectStore.selectedProject ? projectStore.selectedProject.flows : []))
+const cover = computed(() => projectStore.selectedProject?.cover)
 
 /** 新建分组 */
 function createGroup(flow: FlowType) {
@@ -141,63 +148,70 @@ async function change(evt: any, flow: any) {
   height: 100%;
   display: flex;
   flex-direction: column;
-}
-.task-content {
-  flex: 1;
-  width: 100%;
-  border-radius: 3px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: cover;
-  margin-top: 15px;
-
-  .group-add {
-    display: inline-block;
-    width: 280px;
+  position: relative;
+  .task-bg {
+    width: 100%;
     height: 100%;
-    margin: 0 20px 0 0;
-    border-radius: 4px;
-    overflow: hidden;
-    border: 1px dashed #999;
-    color: #999;
-    text-align: center;
-    position: relative;
-    cursor: pointer;
-    background-color: #fdfdfd;
-    &:hover {
-      border: 1px dashed #333;
-    }
-    span {
-      display: inline-block;
-      text-align: center;
-      width: 100%;
-      line-height: 100px;
-      height: 100px;
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50px);
-      font-size: 24px;
-      font-weight: 600;
-    }
+    position: absolute;
+    left: 0;
+    top: 0;
+    filter: blur(2px);
+    background-size: cover;
   }
+  .task-content {
+    flex: 1;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
 
-  .flow-item {
-    display: inline-block;
-    width: 320px;
-    margin: 0 20px 0 0;
-    overflow: hidden;
-    height: 100%;
+    padding: 15px;
 
-    .task-list {
-      width: 100%;
-      flex: 1;
-      overflow-y: auto;
-      height: calc(100% - 45px);
-      margin: 0 auto;
+    .group-add {
+      display: inline-block;
+      width: 280px;
+      height: 100%;
+      margin: 0 20px 0 0;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px dashed #999;
+      color: #999;
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+      background-color: #fdfdfd;
+      &:hover {
+        border: 1px dashed #333;
+      }
+      span {
+        display: inline-block;
+        text-align: center;
+        width: 100%;
+        line-height: 100px;
+        height: 100px;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50px);
+        font-size: 24px;
+        font-weight: 600;
+      }
+    }
+
+    .flow-item {
+      display: inline-block;
+      width: 320px;
+      margin: 0 20px 0 0;
+      overflow: hidden;
+      height: 100%;
+
+      .task-list {
+        width: 100%;
+        flex: 1;
+        overflow-y: auto;
+        height: calc(100% - 45px);
+        margin: 0 auto;
+      }
     }
   }
 }

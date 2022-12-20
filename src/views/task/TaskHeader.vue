@@ -1,8 +1,5 @@
 <template>
-  <n-card
-    style="margin-left: -15px; margin-top: -15px; width: calc(100% + 30px)"
-    :content-style="{ padding: '0 10px' }"
-  >
+  <n-card :content-style="{ padding: '0 10px' }">
     <div class="task-header">
       <n-popselect
         :value="selectedProject?.id"
@@ -88,6 +85,8 @@ const createGroup = () => {
   justify-content: flex-start;
   align-items: center;
   padding: 0 10px;
+  position: relative;
+  border-radius: 0;
   .nav {
     flex: 1;
   }

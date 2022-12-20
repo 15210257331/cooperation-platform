@@ -1,11 +1,13 @@
 <template>
-  <n-data-table
-    :bordered="false"
-    striped
-    :columns="columns"
-    :data="dataList"
-    :pagination="{ itemCount: total, pageSize: queryParams.size }"
-  />
+  <div class="trash">
+    <n-data-table
+      :bordered="false"
+      striped
+      :columns="columns"
+      :data="dataList"
+      :pagination="{ itemCount: total, pageSize: queryParams.size }"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -96,4 +98,8 @@ function deleteData(id: number) {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.trash {
+  padding: 15px;
+}
+</style>

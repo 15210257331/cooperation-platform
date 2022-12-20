@@ -1,8 +1,5 @@
 <template>
-  <n-space vertical>
-    <SectionArea title="基本信息">
-      <UserInfo></UserInfo>
-    </SectionArea>
+  <div class="dashboard">
     <SectionTitle title="快捷操作">
       <CreateCard
         v-for="item in shortcutActionList"
@@ -15,6 +12,14 @@
     </SectionTitle>
     <SectionTitle title="我的项目" :sub-title="'(共' + projectList.length + '个项目)'">
       <template #action>
+        <n-dropdown trigger="hover" :options="orderOptions" @select="handleOrderOptionChange">
+          <n-button icon-placement="right" text style="margin-right: 20px">
+            <template #icon>
+              <n-icon :component="ChevronDown" />
+            </template>
+            {{ selectOrderType }}
+          </n-button>
+        </n-dropdown>
         <n-dropdown trigger="hover" :options="options" @select="handleSelect">
           <n-icon size="20" color="black" :component="showType === 'card' ? Apps : ReorderFour"> </n-icon>
         </n-dropdown>
@@ -31,7 +36,7 @@
       </template>
       <n-data-table v-if="showType === 'list'" :columns="columns" :data="projectList" striped />
     </SectionTitle>
-  </n-space>
+  </div>
   <!-- 新增项目弹窗 -->
   <n-modal v-model:show="showModal">
     <n-card
@@ -61,6 +66,9 @@
         <n-form-item label="项目icon" path="icon">
           <IconSelect v-model="formValue.icon"></IconSelect>
         </n-form-item>
+        <n-form-item label="背景图:" path="cover">
+          <UploadFile v-model:url="formValue.cover" title="点击上传" />
+        </n-form-item>
         <n-form-item label="项目类型" path="type">
           <n-radio-group v-model:value="formValue.type" name="type">
             <n-space>
@@ -73,7 +81,7 @@
       <template #footer>
         <n-space horizontal style="float: right">
           <n-button tertiary @click="showModal = false"> 取消 </n-button>
-          <n-button type="primary" @click="handleValidateClick"> 确认 </n-button>
+          <n-button type="primary" @click="handleSubmit"> 确认 </n-button>
         </n-space>
       </template>
     </n-card>
@@ -83,7 +91,7 @@
 <script setup lang="ts">
 import { computed, ref, h } from 'vue'
 import { useDialog, useMessage, FormInst, DataTableColumns, NButton, NImage, NSpace, NIcon } from 'naive-ui'
-import { Apps, ReorderFour, StarSharp, StarOutline,Close } from '@vicons/ionicons5'
+import { Apps, ReorderFour, StarSharp, StarOutline, Close, ChevronDown } from '@vicons/ionicons5'
 import ProjectCard from './ProjectCard.vue'
 import { useProjectStore } from '@/store'
 import { ProjectType } from '@/interface'
@@ -93,8 +101,8 @@ import { useRouter } from 'vue-router'
 import { useRender } from '@/hooks'
 import SectionTitle from '@/components/SectionArea.vue'
 import CreateCard from '@/components/CreateCard.vue'
-import UserInfo from './UserInfo.vue'
-import SectionArea from '@/components/SectionArea.vue'
+import IconSelect from '@/components/IconSelect.vue'
+import UploadFile from '@/components/UploadFile.vue'
 
 const dialog = useDialog()
 const projectStore = useProjectStore()
@@ -105,10 +113,12 @@ const { renderIcon } = useRender()
 const showModal = ref<boolean>(false)
 const showType = ref<string>('card')
 const formRef = ref<FormInst | null>(null)
+const selectOrderType = ref<string>('打开时间排序')
 const formValue = ref({
   id: null,
   name: '',
   icon: '',
+  cover: '',
   type: 1
 })
 const columns: DataTableColumns<ProjectType> = [
@@ -118,8 +128,8 @@ const columns: DataTableColumns<ProjectType> = [
     align: 'center',
     render(row) {
       return h(NImage, {
-        width: '25',
-        src: img
+        width: '50',
+        src: row.cover
       })
     }
   },
@@ -193,6 +203,27 @@ const options = [
     icon: renderIcon(ReorderFour)
   }
 ]
+const orderOptions = [
+  {
+    type: 'group',
+    label: '排序类型',
+    key: 'sort',
+    children: [
+      {
+        label: '创建时间排序',
+        key: '1'
+      },
+      {
+        label: '打开时间排序',
+        key: '2'
+      },
+      {
+        label: '名称排序',
+        key: '3'
+      }
+    ]
+  }
+]
 const shortcutActionList = [
   {
     title: '新增项目',
@@ -210,10 +241,28 @@ const shortcutActionList = [
     type: 3
   }
 ]
+const rules = {
+  name: {
+    required: true,
+    message: '请输入项目名称',
+    trigger: 'blur'
+  },
+  icon: {
+    required: true,
+    message: '请选择项目icon'
+  },
+  type: {
+    required: true,
+    message: '请选择项目类型'
+  }
+}
 const projectList = computed(() => projectStore.projectList)
 
 function handleSelect(key: string) {
   showType.value = key
+}
+function handleOrderOptionChange(key: string, option: any) {
+  selectOrderType.value = option.label
 }
 function handleShortcutClick(type: number) {
   // 新建任务
@@ -221,14 +270,30 @@ function handleShortcutClick(type: number) {
     showModal.value = true
   }
 }
-
+function handleSubmit(e: MouseEvent) {
+  e.preventDefault()
+  formRef.value?.validate(async errors => {
+    if (!errors) {
+      if (formValue.value.id !== null) {
+        const msg = await projectStore.updateProject(formValue.value)
+        message.success(msg)
+        showModal.value = false
+      } else {
+        const msg = await projectStore.createProject(formValue.value)
+        message.success(msg)
+        showModal.value = false
+      }
+    }
+  })
+}
 function updateProject($event: ProjectType) {
-  // reset()
+  resetForm()
   showModal.value = true
   formValue.value = {
     id: $event.id as any,
     name: $event.name,
     icon: $event.icon,
+    cover: $event.cover,
     type: $event.type
   }
 }
@@ -252,6 +317,20 @@ function deleteProject($event: ProjectType) {
     onNegativeClick: () => {}
   })
 }
+function resetForm() {
+  formRef.value?.restoreValidation()
+  formValue.value = {
+    id: null,
+    name: '',
+    cover: '',
+    icon: '',
+    type: 1
+  }
+}
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.dashboard {
+  padding: 15px;
+}
+</style>

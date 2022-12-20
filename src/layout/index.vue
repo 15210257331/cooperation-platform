@@ -3,10 +3,7 @@
     <SiderBar />
     <n-layout>
       <HeaderBar />
-      <n-layout-content
-        content-style="padding: 15px;"
-        :style="{ 'background-color': appStore.darkTheme ? '#101014ff' : '#f3f5f7' }"
-      >
+      <n-layout-content :style="{ 'background-color': appStore.darkTheme ? '#101014ff' : '#f3f5f7' }">
         <router-view />
       </n-layout-content>
     </n-layout>

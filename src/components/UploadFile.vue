@@ -13,7 +13,7 @@
       }"
       :custom-request="customRequest"
     >
-      <n-button>重新上传</n-button>
+      <n-button>{{ title }}</n-button>
     </n-upload>
   </n-space>
 </template>
@@ -24,12 +24,13 @@ import { UploadCustomRequestOptions } from 'naive-ui'
 import { computed, ref } from 'vue'
 
 interface Props {
-  url: string;
+  url: string
+  title: string
 }
 const props = defineProps<Props>()
 
 interface Emits {
-  (e: 'update:url', val: string): void;
+  (e: 'update:url', val: string): void
 }
 const emit = defineEmits<Emits>()
 

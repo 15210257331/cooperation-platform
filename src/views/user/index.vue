@@ -1,72 +1,79 @@
 <template>
-  <n-card size="small">
-    <n-space>
-      <n-input v-model:value="queryParams.nickname" type="text" placeholder="请输入用户昵称" @keyup.enter="queryData" />
-      <n-button type="success" @click="queryData">
-        <template #icon>
-          <n-icon>
-            <SearchSharp />
-          </n-icon>
-        </template>
-        搜索
-      </n-button>
-      <n-button @click="reset">
-        <template #icon>
-          <n-icon>
-            <RefreshSharp />
-          </n-icon>
-        </template>
-        重置</n-button
-      >
-    </n-space>
-  </n-card>
-  <n-data-table
-    :bordered="false"
-    :columns="columns"
-    :data="dataList"
-    :remote="true"
-    :loading="loading"
-    :pagination="{ page: queryParams.pageIndex, pageSize: queryParams.pageSize, itemCount: total }"
-    @update:page="pageChange"
-  />
-  <n-modal v-model:show="showModal">
-    <n-card
-      :segmented="{
-        content: true,
-        footer: true
-      }"
-      style="width: 520px"
-      :title="'设置角色'"
-      :bordered="false"
-      role="dialog"
-      aria-modal="true"
-    >
-      <template #header-extra>
-        <n-button quaternary circle>
+  <div class="user">
+    <n-card size="small">
+      <n-space>
+        <n-input
+          v-model:value="queryParams.nickname"
+          type="text"
+          placeholder="请输入用户昵称"
+          @keyup.enter="queryData"
+        />
+        <n-button type="success" @click="queryData">
           <template #icon>
-            <n-icon size="20" @click="showModal = false">
-              <Close />
+            <n-icon>
+              <SearchSharp />
             </n-icon>
           </template>
+          搜索
         </n-button>
-      </template>
-      <div>
-        <n-radio-group v-model:value="role" name="radiogroup">
-          <n-space>
-            <n-radio v-for="(item, key) in roleMap" :key="key" :value="key">
-              {{ item }}
-            </n-radio>
-          </n-space>
-        </n-radio-group>
-      </div>
-      <template #footer>
-        <n-space horizontal style="float: right">
-          <n-button tertiary @click="showModal = false"> 取消 </n-button>
-          <n-button type="primary" @click="setRole"> 确认 </n-button>
-        </n-space>
-      </template>
+        <n-button @click="reset">
+          <template #icon>
+            <n-icon>
+              <RefreshSharp />
+            </n-icon>
+          </template>
+          重置</n-button
+        >
+      </n-space>
     </n-card>
-  </n-modal>
+    <n-data-table
+      :bordered="false"
+      :columns="columns"
+      :data="dataList"
+      :remote="true"
+      :loading="loading"
+      :pagination="{ page: queryParams.pageIndex, pageSize: queryParams.pageSize, itemCount: total }"
+      @update:page="pageChange"
+    />
+    <n-modal v-model:show="showModal">
+      <n-card
+        :segmented="{
+          content: true,
+          footer: true
+        }"
+        style="width: 520px"
+        :title="'设置角色'"
+        :bordered="false"
+        role="dialog"
+        aria-modal="true"
+      >
+        <template #header-extra>
+          <n-button quaternary circle>
+            <template #icon>
+              <n-icon size="20" @click="showModal = false">
+                <Close />
+              </n-icon>
+            </template>
+          </n-button>
+        </template>
+        <div>
+          <n-radio-group v-model:value="role" name="radiogroup">
+            <n-space>
+              <n-radio v-for="(item, key) in roleMap" :key="key" :value="key">
+                {{ item }}
+              </n-radio>
+            </n-space>
+          </n-radio-group>
+        </div>
+        <template #footer>
+          <n-space horizontal style="float: right">
+            <n-button tertiary @click="showModal = false"> 取消 </n-button>
+            <n-button type="primary" @click="setRole"> 确认 </n-button>
+          </n-space>
+        </template>
+      </n-card>
+    </n-modal>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -239,4 +246,8 @@ function setRole() {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.user {
+  padding: 15px;
+}
+</style>

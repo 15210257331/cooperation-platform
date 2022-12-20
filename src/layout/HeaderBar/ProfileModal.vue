@@ -22,7 +22,7 @@
       </template>
       <n-form ref="formRef" :label-placement="'left'" :label-width="'auto'" :model="userStore.userInfo" :rules="rules">
         <n-form-item label="头像:" path="avatar">
-          <UploadFile v-model:url="formValue.avatar" />
+          <UploadFile v-model:url="formValue.avatar" title="点击上传" />
         </n-form-item>
         <n-form-item label="用户名:" path="username">
           <n-input v-model:value="formValue.username" disabled placeholder="用户名" />
@@ -34,7 +34,7 @@
           <n-input v-model:value="formValue.phone" placeholder="手机号" />
         </n-form-item>
         <n-form-item label="角色:" path="role">
-          <n-select  v-model:value="formValue.role" disabled :options="options" />
+          <n-select v-model:value="formValue.role" disabled :options="options" />
         </n-form-item>
         <n-form-item label="个人简介:" path="intro">
           <n-input v-model:value="formValue.intro" type="textarea" placeholder="个人简介" />

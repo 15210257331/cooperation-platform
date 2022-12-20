@@ -17,7 +17,9 @@
         </n-icon>
       </n-dropdown>
     </template>
-    <div class="project-cover"></div>
+    <div class="project-cover">
+      <img :src="project.cover" alt="" />
+    </div>
     <template #action>
       <div class="project-footer">
         <span>{{ formatDate(project.createDate) }}</span>
@@ -69,23 +71,23 @@ const handleSelect = ($event: any) => {
   }
 }
 function formatDate(value: any) {
-  return dayjs(value).format('YYYY年MM月DD日')
+  return dayjs(value).format('YYYY年MM月DD日 HH:mm:ss')
 }
 </script>
 
 <style lang="scss" scoped>
 .project-card {
   width: 240px;
-  height: 280px;
-  background-color: white;
   border-radius: 10px;
   margin: 0 15px 15px 0;
   cursor: pointer;
   .project-cover {
-    width: 100%;
-    height: 100%;
-    background-image: url('../../assets/images/login-back.jpg');
-    background-size: cover;
+    img {
+      width: 100%;
+      height: 160px;
+    }
+    // background-image: url('../../assets/images/login-back.jpg');
+    // background-size: cover;
   }
   .project-footer {
     display: flex;

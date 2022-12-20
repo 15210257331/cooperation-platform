@@ -7,6 +7,7 @@ export interface ProjectType {
   name: string
   icon: string
   type: number
+  cover: string
   createDate: string
   // 是否是当前选中的项目
   selected: boolean

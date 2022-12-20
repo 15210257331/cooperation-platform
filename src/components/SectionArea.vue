@@ -29,6 +29,7 @@ const props = defineProps<{
     justify-content: space-between;
     align-items: center;
     padding: 0 10px 0 4px;
+    margin-bottom: 5px;
     .title {
       flex: 1;
       p {
@@ -42,6 +43,7 @@ const props = defineProps<{
         font-size: 12px;
         font-weight: 500;
         color: #666;
+        vertical-align: text-bottom;
       }
     }
   }
