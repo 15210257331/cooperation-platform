@@ -1,40 +1,32 @@
 <template>
-  <n-layout has-sider style="height: 100%">
-    <SiderBar />
-    <n-layout>
-      <HeaderBar />
-      <n-layout-content :style="{ 'background-color': appStore.darkTheme ? '#101014ff' : '#f3f5f7' }">
-        <router-view />
-      </n-layout-content>
-    </n-layout>
+  <n-layout :style="{ height: '100%', 'background-color': appStore.darkTheme ? 'rgb(40, 40, 42)' : '#f4f7fd' }">
+    <TopBar />
+    <n-layout-content :style="{ 'background-color': appStore.darkTheme ? '#101014ff' : '#FFFFFF' }">
+      <router-view />
+    </n-layout-content>
   </n-layout>
 </template>
 
 <script setup lang="ts">
+import TopBar from './components/TopBar.vue'
 import { onMounted, getCurrentInstance } from 'vue'
-import SiderBar from './SiderBar/index.vue'
-import HeaderBar from './HeaderBar/index.vue'
 import { getUserInfo } from '@/api'
 import { useLocalStorage } from '@/hooks'
 import { useAppStore, useUserStore, useProjectStore } from '@/store'
 
-const userStore = useUserStore()
 const appStore = useAppStore()
-const projectStore = useProjectStore()
+const userStore = useUserStore()
+
 const queryParams = {
   pageIndex: 1,
   pageSize: 10
 }
 
-// const { appContext } = getCurrentInstance() as any;
-// console.log('组件实例');
-// console.log(appContext.config.globalProperties.$title);
+queryUserInfo()
 
 onMounted(async () => {
-  queryUserInfo()
   queryNotificationList()
   queryUnreadCount()
-  await queryProjectList()
 })
 
 /** 请求用户信息 */
@@ -46,12 +38,6 @@ function queryUserInfo() {
     }
   })
 }
-
-/** 请求项目列表 */
-async function queryProjectList() {
-  await projectStore.getProjectList()
-}
-
 function queryNotificationList() {
   userStore.queryNotificationList(queryParams)
 }
@@ -60,9 +46,10 @@ function queryUnreadCount() {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .n-layout-content {
-  // background-color: #f3f5f7;
-  height: calc(100% - 56px);
+  height: calc(100% - 70px);
+  margin-top: 10px;
+  padding: 0 25px 25px 25px;
 }
 </style>

@@ -219,6 +219,7 @@ function onSubmit(e: MouseEvent) {
     margin: 20px 0;
     text-align: center;
     width: 100%;
+    color: #18a058;
     h3 {
       font-size: 28px;
       font-weight: 600;

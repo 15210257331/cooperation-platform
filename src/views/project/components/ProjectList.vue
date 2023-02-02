@@ -1,32 +1,34 @@
 <template>
   <n-card
+    v-for="item in data"
+    :key="item.id"
     class="project-card"
-    :title="project.name"
+    :title="item.name"
     size="small"
     hoverable
     :segmented="{
       content: true,
       footer: 'soft'
     }"
-    @click="handleClick"
+    @click="handleClick(item)"
   >
     <template #header-extra>
-      <n-dropdown style="margin-right: 15px" trigger="hover" :options="options" @select="handleSelect($event)">
+      <n-dropdown style="margin-right: 15px" trigger="hover" :options="options" @select="handleSelect($event, item)">
         <n-icon size="20">
           <EllipsisHorizontal />
         </n-icon>
       </n-dropdown>
     </template>
     <div class="project-cover">
-      <img :src="project.cover" alt="" />
+      <img :src="item.cover" alt="" />
     </div>
     <template #action>
       <div class="project-footer">
-        <span>{{ formatDate(project.createDate) }}</span>
+        <span>{{ formatDate(item.createDate) }}</span>
         <n-icon
           size="17"
-          :component="project.type === 2 ? StarSharp : StarOutline"
-          :color="project.type === 2 ? '#efe80eff' : '#999'"
+          :component="item.type === 2 ? StarSharp : StarOutline"
+          :color="item.type === 2 ? '#efe80eff' : '#999'"
         />
       </div>
     </template>
@@ -42,8 +44,9 @@ import { ProjectType } from '@/interface'
 const { renderIcon } = useRender()
 
 const props = defineProps<{
-  project: ProjectType
+  data: Array<ProjectType>
 }>()
+
 const emit = defineEmits(['updateProject', 'deleteProject', 'clickProject'])
 
 const options = [
@@ -59,15 +62,15 @@ const options = [
   }
 ]
 
-function handleClick() {
-  emit('clickProject', props.project)
+function handleClick(project: ProjectType) {
+  emit('clickProject', project)
 }
-const handleSelect = ($event: any) => {
+const handleSelect = ($event: any, project: ProjectType) => {
   console.log($event)
   if ($event === 'edit') {
-    emit('updateProject', props.project)
+    emit('updateProject', project)
   } else if ($event === 'delete') {
-    emit('deleteProject', props.project)
+    emit('deleteProject', project)
   }
 }
 function formatDate(value: any) {

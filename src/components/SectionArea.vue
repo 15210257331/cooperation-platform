@@ -35,7 +35,6 @@ const props = defineProps<{
       p {
         text-align: left;
         font-size: 16px;
-        color: black;
         font-weight: 500;
         display: inline-block;
       }

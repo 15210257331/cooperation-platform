@@ -4,7 +4,7 @@
       <n-icon
         size="25"
         :style="{ transition: 'all 0.3s' }"
-        :class="{ collapse: appStore.siderCollapse }"
+        :class="{ collapse: appStore.sideCollapse }"
         :component="ListSharp"
       />
     </ActionContainer>
@@ -49,12 +49,12 @@ import {
 } from '@vicons/ionicons5'
 import { DropdownOption, NIcon, useDialog } from 'naive-ui'
 import { useRouter } from 'vue-router'
-import Breadcrumb from './Breadcrumb.vue'
+import Breadcrumb from '../../../components/Breadcrumb.vue'
 import { useFullscreen } from '@vueuse/core'
-import ProfileModal from './ProfileModal.vue'
+import ProfileModal from '../../home/components/ProfileModal.vue'
 import ActionContainer from '@/components/ActionContainer.vue'
-import Message from './Message.vue'
-import ThemeSetting from './ThemeSetting.vue'
+import Message from '../../home/components/Message.vue'
+import ThemeSetting from '../../home/components/ThemeSetting.vue'
 import { useRender } from '@/hooks'
 
 const userStore = useUserStore()

@@ -58,7 +58,7 @@ defineExpose({
   .bar {
     height: inherit;
     width: 0;
-    background-color: red;
+    background-color: #999;
   }
 }
 </style>

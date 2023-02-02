@@ -1,13 +1,13 @@
 <template>
-  <div class="empty-container">
-    <n-empty description="暂无数据" size="huge"> </n-empty>
+  <div class="position-container">
+    <slot></slot>
   </div>
 </template>
 
 <script setup lang="ts"></script>
 
 <style lang="scss" scoped>
-.empty-container {
+.position-container {
   width: 100%;
   height: 100%;
   box-sizing: border-box;

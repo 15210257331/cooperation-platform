@@ -13,23 +13,24 @@ export const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/login/index.vue') // 注意这里要带上 文件后缀.vue
+    component: () => import('@/layout/login/index.vue') // 注意这里要带上 文件后缀.vue
+  },
+  {
+    path: '/redirect',
+    name: 'redirect',
+    component: () => import('@/layout/redirect/index.vue') // 注意这里要带上 文件后缀.vue
   },
   {
     path: '/404',
     name: '404',
-    component: () => import('@/views/404/index.vue') // 注意这里要带上 文件后缀.vue
+    component: () => import('@/layout/404/index.vue') // 注意这里要带上 文件后缀.vue
   },
   {
     path: '/',
     name: 'home',
-    component: () => import('@/layout/index.vue'),
-    redirect: '/dashboard',
-    meta: {
-      title: '主页'
-    },
+    component: () => import('@/layout/home/index.vue'),
+    redirect: '/project',
     beforeEnter: (to, from) => {
-      // console.log(to);
       const token = localStorage.getItem('token')
       if (!token) {
         return {
@@ -39,20 +40,18 @@ export const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        path: '/dashboard',
-        name: 'dashboard',
+        path: '/project',
+        name: 'project',
         meta: {
-          title: '概览',
-          icon: Grid
+          title: '项目概览'
         },
-        component: () => import('@/views/dashboard/index.vue')
+        component: () => import('@/views/project/index.vue')
       },
       {
         path: '/task',
         name: 'task',
         meta: {
-          title: '任务',
-          icon: Layers
+          title: '任务看板'
         },
         component: () => import('@/views/task/index.vue')
       },
@@ -64,9 +63,26 @@ export const routes: RouteRecordRaw[] = [
           icon: TrashBin
         },
         component: () => import('@/views/trash/index.vue')
-      },
+      }
+    ]
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: () => import('@/layout/admin/index.vue'),
+    redirect: '/admin/user',
+    beforeEnter: (to, from) => {
+      // console.log(to);
+      const token = localStorage.getItem('token')
+      if (!token) {
+        return {
+          path: '/login'
+        }
+      }
+    },
+    children: [
       {
-        path: '/user',
+        path: 'user',
         name: 'user',
         meta: {
           title: '用户管理',
@@ -75,7 +91,7 @@ export const routes: RouteRecordRaw[] = [
         component: () => import('@/views/user/index.vue')
       },
       {
-        path: '/components',
+        path: 'components',
         name: 'components',
         meta: {
           title: '组件示例',

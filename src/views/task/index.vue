@@ -1,143 +1,151 @@
 <template>
   <div class="task">
-    <div
-      class="task-bg"
-      :style="{
-        backgroundImage: 'url(' + cover + ')'
-      }"
-    ></div>
-    <TaskHeader @create-group="createGroup"></TaskHeader>
-    <div class="task-content">
-      <Empty v-if="flowList.length === 0" />
-      <div v-for="flow in flowList" :key="flow.id" class="flow-item">
-        <GroupHeader
-          :flow="flow"
-          @create-group="createGroup($event)"
-          @edit-group="editGroup($event)"
-          @delete-group="deleteGroup($event)"
-          @create-task="createTask($event)"
-        ></GroupHeader>
-        <div class="task-list">
-          <draggable
-            :delay="0.5"
-            :animation="300"
-            :sort="false"
-            :component-data="{
-              tag: 'ul',
-              name: 'flip-list'
-            }"
-            ghost-class="ghost"
-            drag-class="drag"
-            chosen-class="chosen"
-            :list="flow.tasks"
-            :group="{
-              name: flow.id,
-              put: put,
-              pull: pull
-            }"
-            item-key="id"
-            @change="change($event, flow)"
-          >
-            <template #item="{ element, index }">
-              <TaskItem
-                :task="element"
-                :complete="flow.complete"
-                :flow-id="(flow.id as number)"
-                :index="index"
-              ></TaskItem>
+    <div class="task-header">
+      <div class="toggle">
+        <n-icon :component="Grid" color="#0e7a0d" style="margin-right: 10px" :size="20" />
+        <n-dropdown
+          v-model:value="currenProjectId"
+          size="large"
+          style="width: 300px"
+          :options="options"
+          scrollable
+          @select="handleSelect"
+        >
+          <n-button text icon-placement="right">
+            <template #icon>
+              <n-icon :component="ChevronDown" />
             </template>
-          </draggable>
-          <CreateTaskButton v-if="flow.canNew" @click="createTask(flow)" />
-        </div>
+            <span style="font-weight: 500; font-size: 15px">{{ currenProjectName }}</span>
+          </n-button>
+        </n-dropdown>
+        <n-divider vertical />
+        <!-- <n-icon
+          size="17"
+          :component="selectedProject?.type === 2 ? StarSharp : StarOutline"
+          :color="selectedProject?.type === 2 ? '#efe80eff' : '#999'"
+        /> -->
+      </div>
+      <!-- <NavList /> -->
+      <div class="search">
+        <n-input v-model:value="keywords" round placeholder="搜索任务" @keyup.enter="handleSearch">
+          <template #prefix>
+            <n-icon :component="Search" />
+          </template>
+        </n-input>
       </div>
     </div>
-    <!-- 新增/修改分组dialog -->
-    <CreateGroupModal v-model:value="showCreateGroupModal" :data="selectedFlowData" />
-    <!-- 新增任务modal -->
-    <CreateTaskModal v-model:value="showCreateTaskModal" :flow-id="selectedFlowData?.id"></CreateTaskModal>
+    <n-divider style="margin-top: 0; margin-bottom: 15px" />
+    <div class="task-content">
+      <PositionContainer v-if="loading">
+        <n-spin size="large" description="数据加载中" />
+      </PositionContainer>
+      <PositionContainer v-if="!loading && currenProject?.groups?.length === 0">
+        <n-empty description="暂无数据" size="huge"> </n-empty>
+      </PositionContainer>
+      <GroupList :data="currenProject?.groups" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import Empty from '@/components/Empty.vue'
-import draggable from 'vuedraggable'
-import TaskItem from './TaskItem.vue'
 import { useAppStore, useProjectStore } from '@/store'
-import { FlowType } from '@/interface'
 import { useMessage, useDialog, FormInst } from 'naive-ui'
-import CreateGroupModal from './CreateGroupModal.vue'
-import CreateTaskModal from './CreateTaskModal.vue'
-import CreateTaskButton from '@/components/CreateTaskButton.vue'
-import GroupHeader from './GroupHeader.vue'
-import TaskHeader from './TaskHeader.vue'
+import { getFlowList, getProjectList } from '@/api'
+import { Apps, ReorderFour, Search, StarOutline, Close, ChevronDown, Grid } from '@vicons/ionicons5'
+import GroupList from './components/GroupList.vue'
+import NavList from '../../layout/home/components/NavList.vue'
+import { GroupType, ProjectType } from '@/interface'
+import PositionContainer from '@/components/PositionContainer.vue'
 
+const appStore = useAppStore()
 const projectStore = useProjectStore()
 const message = useMessage()
 const dialog = useDialog()
 
+const projectList = ref<Array<ProjectType>>([])
+const loading = ref<boolean>(false)
+const keywords = ref<string>('')
+
 const showCreateGroupModal = ref<boolean>(false)
 const showCreateTaskModal = ref<boolean>(false)
-const selectedFlowData = ref<FlowType | null>(null)
-const flowList = computed(() => (projectStore.selectedProject ? projectStore.selectedProject.flows : []))
-const cover = computed(() => projectStore.selectedProject?.cover)
+const selectedGroupData = ref<GroupType | null>(null)
 
-/** 新建分组 */
-function createGroup(flow: FlowType) {
-  showCreateGroupModal.value = true
-  selectedFlowData.value = null
-}
-/** 编辑分组 */
-function editGroup(flow: FlowType) {
-  showCreateGroupModal.value = true
-  selectedFlowData.value = flow
-}
-/** 删除分组 */
-function deleteGroup(flow: FlowType) {
-  if (flow.tasks.length > 0) {
-    message.error('删除流程前请保证该流程下无任务！')
-    return
+const currenProject = computed(() => projectStore.currentProject)
+const currenProjectId = computed(() => {
+  if (projectStore.currentProject) {
+    return projectStore.currentProject.id
   }
-  dialog.warning({
-    title: '警告',
-    content: '你确定删除当前流程吗？',
-    positiveText: '确定',
-    negativeText: '取消',
-    onPositiveClick: async () => {
-      await projectStore.deleteFlow(flow.id as number)
-      message.success('流程已删除！')
+  return null
+})
+const currenProjectName = computed(() => {
+  if (projectStore.currentProject) {
+    return projectStore.currentProject.name
+  }
+  return '暂无项目'
+})
+const options = computed(() => {
+  const starList: Array<any> = []
+  const normalList: Array<any> = []
+  projectList.value.map(item => {
+    if (item.type === 2) {
+      starList.push({
+        label: item.name,
+        key: item.id,
+        star: true
+      })
+    } else {
+      normalList.push({ label: item.name, key: item.id, star: false })
+    }
+  })
+  return [
+    {
+      type: 'group',
+      label: '星标项目',
+      key: 'star',
+      children: starList
     },
-    onNegativeClick: () => {}
+    {
+      type: 'group',
+      label: '普通项目',
+      key: 'normal',
+      children: normalList
+    }
+  ]
+})
+
+queryProjectList()
+
+function queryProjectList() {
+  getProjectList().then(res => {
+    if (res.code === 10000) {
+      projectList.value = res.data || []
+      if (!currenProject.value && projectList.value.length > 0) {
+        queryProjectDetail(projectList.value[0].id as number)
+        return
+      }
+      queryProjectDetail(currenProject.value?.id as number)
+    }
   })
 }
-/** 新建任务 */
-function createTask(flow: FlowType) {
-  showCreateTaskModal.value = true
-  selectedFlowData.value = flow
+/** 查询项目详情 */
+function queryProjectDetail(projectId: number | string, keyword?: string) {
+  loading.value = true
+  projectStore.queryProjectDetail(projectId as number).finally(() => {
+    loading.value = false
+  })
 }
-// 判断是否可以从其他流程拖拽过来
-function put(to: any, from: any) {
-  return true
+
+/** 更改当前选中的项目 */
+function handleSelect(key: string | number, option: any) {
+  // console.log(key, option)
+  queryProjectDetail(key)
 }
-// 判断是否可以拖拽到其他流程返回可以拖拽进去的流程的group值列表 | true | false
-function pull(to: any, from: any) {
-  const fromGroupId = from.options.group.name
-  const fromGroup = flowList.value.find(item => item.id === fromGroupId)
-  // console.log(fromGroup?.range.map(item => Number(item)))
-  return fromGroup?.range.map(item => Number(item))
-}
-// 更新任务流程
-async function change(evt: any, flow: any) {
-  if (Object.keys(evt).includes('added')) {
-    const taskId = evt.added.element.id
-    const newFlowId = flow.id
-    const newFlowComplete = flow.complete
-    await projectStore.updateTaskProps(taskId, 'flow', newFlowId)
-    // 如果进入的流程标记为已完成则将任务状态改成已完成
-    if (newFlowComplete === true) {
-      await projectStore.updateTaskProps(taskId, 'complete', true)
-    }
-    message.success('状态已更新')
+
+function handleSearch() {
+  // console.log(keywords.value)
+  if (currenProject.value) {
+    queryProjectDetail(currenProject.value?.id as number, keywords.value)
   }
 }
 </script>
@@ -149,23 +157,25 @@ async function change(evt: any, flow: any) {
   display: flex;
   flex-direction: column;
   position: relative;
-  .task-bg {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    filter: blur(2px);
-    background-size: cover;
+  .task-header {
+    height: 65px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // border-bottom: 1px solid rgb(239, 239, 245);
+    // margin-bottom: 15px;
+    .toggle {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
   }
   .task-content {
-    flex: 1;
+    height: 100%;
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
-
-    padding: 15px;
 
     .group-add {
       display: inline-block;
@@ -197,41 +207,6 @@ async function change(evt: any, flow: any) {
         font-weight: 600;
       }
     }
-
-    .flow-item {
-      display: inline-block;
-      width: 320px;
-      margin: 0 20px 0 0;
-      overflow: hidden;
-      height: 100%;
-
-      .task-list {
-        width: 100%;
-        flex: 1;
-        overflow-y: auto;
-        height: calc(100% - 45px);
-        margin: 0 auto;
-      }
-    }
   }
-}
-
-// // 选中的样式
-// .chosen {
-//   opacity: 0.8;
-//   background: #c8ebfb;
-// }
-// 移动的样式
-.drag {
-  opacity: 0.9;
-  background: #c8ebfb;
-}
-// 占位符的样式
-.ghost {
-  opacity: 0.2;
-}
-// 任务子项动画效果
-.flip-list-move {
-  transition: transform 0.2s linear;
 }
 </style>

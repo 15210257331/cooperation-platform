@@ -66,6 +66,8 @@ export default class AxiosRequest {
           } else {
             showErrorNotification(description, content)
           }
+        } else {
+          showErrorNotification(axiosError.name, axiosError.message)
         }
         return axiosError
       }
@@ -120,7 +122,7 @@ export function showErrorNotification(description: string, content: any) {
 
 const config: AxiosRequestConfig = {
   baseURL: import.meta.env.VITE_APP_BASE_API,
-  timeout: 10000
+  timeout: 30000
 }
 // console.log(import.meta.env);
 export const axiosRequest: AxiosRequest = new AxiosRequest(config)

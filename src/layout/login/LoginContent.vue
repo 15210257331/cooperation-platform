@@ -1,9 +1,6 @@
 <template>
-  <n-card :content-style="{ padding: '15px 30px 15px 30px', width: '100%' }" class="login">
-    <div class="title">
-      <h3>用户登录</h3>
-      <span>简易任务管理器</span>
-    </div>
+  <n-card :content-style="{ padding: '15px 30px 25px 30px', width: '100%' }" class="login">
+    <h3 class="title">用户登录</h3>
     <n-form ref="formRef" class="login-form" :model="form" :rules="rules" :show-label="false">
       <n-form-item path="username">
         <n-input v-model:value="form.username" placeholder="请输入用户名">
@@ -30,24 +27,68 @@
         <n-button type="primary" size="large" :block="true" :round="true" @click="handleSubmit"> 登录 </n-button>
       </n-space>
     </n-form>
+    <n-divider>其它登录方式</n-divider>
+    <n-space justify="space-around">
+      <n-tooltip trigger="hover">
+        <template #trigger>
+          <n-icon
+            size="26"
+            style="cursor: pointer"
+            color="#0e7a0d"
+            :component="LogoWechat"
+            @click="handleWechatAuth"
+          ></n-icon>
+        </template>
+        微信登录
+      </n-tooltip>
+      <n-tooltip trigger="hover">
+        <template #trigger>
+          <n-icon
+            size="26"
+            color="rgb(118, 124, 130)"
+            style="cursor: pointer"
+            :component="LogoGithub"
+            @click="handleGithubAuth"
+          ></n-icon>
+        </template>
+        Github登录
+      </n-tooltip>
+      <n-tooltip trigger="hover">
+        <template #trigger>
+          <n-icon
+            size="26"
+            style="cursor: pointer"
+            color="#fcb040"
+            :component="LogoGitlab"
+            @click="handleGitlabAuth"
+          ></n-icon>
+        </template>
+        Gitlab登录
+      </n-tooltip>
+    </n-space>
   </n-card>
 </template>
 
 <script setup lang="ts">
 import { FormInst, FormRules, useMessage } from 'naive-ui'
 import { reactive, ref, onMounted } from 'vue'
-import { login } from '@/api'
-import { useRouter } from 'vue-router'
-import { FlashOutline, LockClosed, Person, Close } from '@vicons/ionicons5'
+import { login, githubAuthorize } from '@/api'
+import { useRouter, useRoute } from 'vue-router'
+import { useAppStore } from '@/store'
+import { LockClosed, Person, Close, LogoWechat, LogoGithub, LogoGitlab } from '@vicons/ionicons5'
 
 interface Emits {
-  (e: 'change'): void;
+  (e: 'change'): void
 }
-
 const emit = defineEmits<Emits>()
 
 const message = useMessage()
 const router = useRouter()
+const route = useRoute()
+const appStore = useAppStore()
+
+const githubCode = ref<string>('')
+const thirdLoginLoading = ref<boolean>(false)
 const formRef = ref<(HTMLElement & FormInst) | null>(null)
 const rememberMe = ref<boolean>(false)
 const form = reactive({
@@ -78,6 +119,21 @@ onMounted(() => {
   }
 })
 
+/** github 授权 */
+function handleGithubAuth() {
+  githubAuthorize().then(res => {
+    window.location.href = res.data
+  })
+}
+/** gitlab 授权 */
+function handleGitlabAuth() {
+  message.info('规划中...')
+}
+/** 微信 授权 */
+function handleWechatAuth() {
+  message.info('规划中...')
+}
+
 function register() {
   emit('change')
 }
@@ -106,7 +162,6 @@ function handleSubmit(e: MouseEvent) {
     if (!errors) {
       const { username, password } = form
       login({ username, password }).then(res => {
-        console.log(res)
         if (res.code === 10000) {
           if (rememberMe.value === true) {
             rememberPass()
@@ -114,15 +169,19 @@ function handleSubmit(e: MouseEvent) {
             deletePass()
           }
           localStorage.setItem('token', res.data.token)
-          router.push({
-            name: 'home'
-          })
-          message.success('登录成功', {
-            keepAliveOnHover: true
-          })
+          successLogin()
         }
       })
     }
+  })
+}
+
+function successLogin() {
+  router.push({
+    name: 'home'
+  })
+  message.success('登录成功', {
+    keepAliveOnHover: true
   })
 }
 </script>
@@ -130,7 +189,7 @@ function handleSubmit(e: MouseEvent) {
 <style lang="scss" scoped>
 .login {
   width: 420px;
-  height: 390px;
+  height: auto;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -138,19 +197,16 @@ function handleSubmit(e: MouseEvent) {
   position: absolute;
   left: 50%;
   top: 50%;
-  margin-left: -210px;
-  margin-top: -195px;
+  transform: translate(-50%, -50%);
   z-index: 999;
 
   .title {
     margin: 20px 0;
     text-align: center;
     width: 100%;
-    h3 {
-      font-size: 28px;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
+    font-size: 28px;
+    color: #18a058;
+    font-weight: 600;
     span {
       color: #3e3e3e;
       font-size: 12px;

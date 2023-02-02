@@ -1,9 +1,9 @@
 <template>
-  <n-layout-sider bordered collapse-mode="width" :collapsed-width="64" :width="210" :collapsed="appStore.siderCollapse">
+  <n-layout-sider bordered collapse-mode="width" :collapsed-width="64" :width="210" :collapsed="appStore.sideCollapse">
     <AppLogo />
     <n-menu
       :value="activeKey"
-      :collapsed="appStore.siderCollapse"
+      :collapsed="appStore.sideCollapse"
       :collapsed-width="64"
       :collapsed-icon-size="22"
       :options="menuOptions"
@@ -28,7 +28,7 @@ const route = useRoute()
 const { renderIcon } = useRender()
 
 const activeKey = computed(() => (route.meta?.activeMenu ? route.meta.activeMenu : route.name) as string)
-const homeRoutes = routes.filter(item => item.path === '/')[0].children as Array<RouteRecordRaw>
+const homeRoutes = routes.filter(item => item.path === '/admin')[0].children as Array<RouteRecordRaw>
 const menuOptions = computed(() => {
   const result: Array<MenuOption> = []
   getMenuOptions(homeRoutes, result)

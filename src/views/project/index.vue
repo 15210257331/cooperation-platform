@@ -27,8 +27,8 @@
       <ProjectList
         v-if="showType === 'card'"
         :data="projectList"
-        @update-project="updateProject"
-        @delete-project="deleteProject"
+        @update-project="handleUpdateProject"
+        @delete-project="removeProject"
         @click-project="clickProject"
       />
       <n-data-table v-if="showType === 'list'" :columns="columns" :data="projectList" striped />
@@ -89,10 +89,11 @@
 </template>
 
 <script setup lang="ts">
+import { useAppStore } from '@/store'
 import { computed, ref, h } from 'vue'
 import { useDialog, useMessage, FormInst, DataTableColumns, NButton, NImage, NSpace, NIcon } from 'naive-ui'
 import { Apps, ReorderFour, StarSharp, StarOutline, Close, ChevronDown } from '@vicons/ionicons5'
-import ProjectList from '../../project/components/ProjectList.vue'
+import ProjectList from './components/ProjectList.vue'
 import { useProjectStore } from '@/store'
 import { ProjectType } from '@/interface'
 import dayjs from 'dayjs'
@@ -103,7 +104,9 @@ import SectionTitle from '@/components/SectionArea.vue'
 import CreateCard from '@/components/CreateCard.vue'
 import IconSelect from '@/components/IconSelect.vue'
 import UploadFile from '@/components/UploadFile.vue'
+import { getProjectList, deleteProject, updateProject, createProject } from '@/api'
 
+const appStore = useAppStore()
 const dialog = useDialog()
 const projectStore = useProjectStore()
 const message = useMessage()
@@ -168,9 +171,21 @@ const columns: DataTableColumns<ProjectType> = [
           {
             quaternary: true,
             size: 'small',
+            type: 'primary',
+            onClick: () => {
+              clickProject(row)
+            }
+          },
+          { default: () => '详情' }
+        ),
+        h(
+          NButton,
+          {
+            quaternary: true,
+            size: 'small',
             type: 'info',
             onClick: () => {
-              updateProject(row)
+              handleUpdateProject(row)
             }
           },
           { default: () => '编辑' }
@@ -182,7 +197,7 @@ const columns: DataTableColumns<ProjectType> = [
             size: 'small',
             type: 'error',
             onClick: () => {
-              deleteProject(row)
+              removeProject(row)
             }
           },
           { default: () => '删除' }
@@ -256,8 +271,19 @@ const rules = {
     message: '请选择项目类型'
   }
 }
-const projectList = computed(() => projectStore.projectList)
-console.log(projectList)
+
+const projectList = ref([])
+
+queryProjectList()
+
+function queryProjectList() {
+  getProjectList().then(res => {
+    if (res.code === 10000) {
+      projectList.value = res.data || []
+      console.log(projectList)
+    }
+  })
+}
 
 function handleSelect(key: string) {
   showType.value = key
@@ -276,18 +302,26 @@ function handleSubmit(e: MouseEvent) {
   formRef.value?.validate(async errors => {
     if (!errors) {
       if (formValue.value.id !== null) {
-        const msg = await projectStore.updateProject(formValue.value)
-        message.success(msg)
-        showModal.value = false
+        updateProject(formValue.value).then(res => {
+          if (res.code === 10000) {
+            message.success('操作成功')
+            showModal.value = false
+            queryProjectList()
+          }
+        })
       } else {
-        const msg = await projectStore.createProject(formValue.value)
-        message.success(msg)
-        showModal.value = false
+        createProject(formValue.value).then(res => {
+          if (res.code === 10000) {
+            message.success('项目创建成功')
+            showModal.value = false
+            queryProjectList()
+          }
+        })
       }
     }
   })
 }
-function updateProject($event: ProjectType) {
+function handleUpdateProject($event: ProjectType) {
   resetForm()
   showModal.value = true
   formValue.value = {
@@ -299,12 +333,12 @@ function updateProject($event: ProjectType) {
   }
 }
 function clickProject($event: ProjectType) {
-  projectStore.changeSelectedProject($event.id as number)
   router.push({
     name: 'task'
   })
+  projectStore.setCurrentProject($event)
 }
-function deleteProject($event: ProjectType) {
+function removeProject($event: ProjectType) {
   const id = $event.id
   dialog.warning({
     title: '警告',
@@ -312,8 +346,11 @@ function deleteProject($event: ProjectType) {
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
-      await projectStore.deleteProject(id as number)
-      message.success('项目已删除！')
+      deleteProject(id as number).then(res => {
+        if (res.code === 10000) {
+          message.success('项目删除成功！')
+        }
+      })
     },
     onNegativeClick: () => {}
   })
@@ -330,13 +367,24 @@ function resetForm() {
 }
 </script>
 
-<style scoped lang="scss">
-.dashboard {
-  padding: 15px;
+<style lang="scss" scoped>
+.n-layout-content {
+  // background-color: #f3f5f7;
+  height: calc(100% - 55px);
+  margin-top: 10px;
+  padding: 25px;
 }
-.empty {
+header {
+  height: 65px;
+  //   border-bottom: 1px solid #ccc;
+  background-color: white;
   text-align: center;
-  width: 100%;
-  margin-top: 160px;
+  ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

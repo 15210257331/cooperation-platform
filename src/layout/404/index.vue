@@ -14,7 +14,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 function goDashboard() {
   router.push({
-    name: 'dashboard'
+    name: 'project'
   })
 }
 </script>

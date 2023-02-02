@@ -4,18 +4,18 @@ import { themes } from '@/constant'
 
 interface AppState {
   /** 应用主题是否为暗色主题 */
-  darkTheme: boolean;
+  darkTheme: boolean
   /** 侧边栏折叠状态 */
-  siderCollapse: boolean;
+  sideCollapse: boolean
   /** 应用的自定义主题 */
-  theme: string;
+  theme: string
 }
 
 export const useAppStore = defineStore({
   id: 'app',
   state: (): AppState => ({
     darkTheme: false,
-    siderCollapse: false,
+    sideCollapse: false,
     theme: themes[0].name
   }),
   actions: {
@@ -23,7 +23,7 @@ export const useAppStore = defineStore({
       this.darkTheme = !this.darkTheme
     },
     toggleCollapse() {
-      this.siderCollapse = !this.siderCollapse
+      this.sideCollapse = !this.sideCollapse
     },
     /** 设置主题 */
     setTheme(theme: string) {

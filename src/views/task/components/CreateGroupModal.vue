@@ -72,13 +72,13 @@
 import { ref, computed, watch } from 'vue'
 import { FormInst, useMessage } from 'naive-ui'
 import { useProjectStore } from '@/store'
-import { FlowType } from '@/interface'
+import { GroupType } from '@/interface'
 import { Close } from '@vicons/ionicons5'
 
 interface Props {
   /** 弹窗显隐 */
   value: boolean
-  data: FlowType | null
+  data: GroupType | null
 }
 const props = defineProps<Props>()
 
@@ -90,7 +90,7 @@ const emit = defineEmits<Emits>()
 const projectStore = useProjectStore()
 const message = useMessage()
 const formRef = ref<FormInst | null>(null)
-const form = ref<FlowType>({
+const form = ref<GroupType>({
   name: '',
   canNew: 1,
   sort: props.data ? props.data.sort + 1 : 0,
@@ -135,10 +135,10 @@ const isEdit = computed(() => {
 })
 
 const rangeList = computed(() => {
-  const arr = projectStore.selectedProject ? projectStore.selectedProject.flows : []
+  const arr = projectStore.currentProject ? projectStore.currentProject.groups : []
   arr.sort((a: { sort: number }, b: { sort: number }) => a.sort - b.sort)
   arr.map((flow: any) => {
-    if (flow.id === (props.data as FlowType).id) {
+    if (flow.id === (props.data as GroupType).id) {
       flow.disabled = true
     } else {
       flow.disabled = false
@@ -152,7 +152,7 @@ watch(
   newValue => {
     if (newValue) {
       console.log(newValue)
-      const data = props.data as FlowType
+      const data = props.data as GroupType
       form.value = {
         id: data.id,
         name: data.name,
@@ -195,9 +195,9 @@ async function handleSubmit(e: MouseEvent) {
 async function createFlow() {
   const data = Object.assign({}, form.value, {
     canNew: form.value.canNew === 1 ? true : false,
-    projectId: projectStore.selectedProject?.id
+    projectId: projectStore.currentProject?.id
   })
-  await projectStore.createFlow(data)
+  await projectStore.createGroup(data)
   showModal.value = false
   message.success('操作成功')
 }
@@ -206,7 +206,7 @@ async function updateFlow() {
   const data = Object.assign({}, form.value, {
     canNew: form.value.canNew === 1 ? true : false
   })
-  await projectStore.updateFlow(data)
+  await projectStore.updateGroup(data)
   showModal.value = false
   message.success('操作成功')
 }

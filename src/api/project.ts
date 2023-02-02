@@ -4,6 +4,9 @@ import { axiosRequest, ResType } from './http'
 export function getProjectList(): Promise<ResType> {
   return axiosRequest.get(`/api/project/list`)
 }
+export function getProjectDetail(id: string | number): Promise<ResType> {
+  return axiosRequest.get(`/api/project/detail/${id}`)
+}
 export function createProject(data: any): Promise<ResType> {
   return axiosRequest.post(`/api/project/create`, data)
 }
@@ -15,7 +18,7 @@ export function deleteProject(id: number): Promise<ResType> {
 }
 
 /** 分组 */
-export function getFlowList(projectId: number, name: string): Promise<ResType> {
+export function getFlowList(projectId: number | string, name: string): Promise<ResType> {
   return axiosRequest.get(`/api/flow/list?name=${name}&projectId=${projectId}`)
 }
 export function getAllFlows(): Promise<ResType> {
@@ -53,7 +56,6 @@ export function taskDetail(taskId: number): Promise<ResType> {
 export function deleteTask(id: any): Promise<ResType> {
   return axiosRequest.get(`/api/task/delete/${id}`)
 }
-
 
 // 任务完成趋势
 export function taskTrend(type: string): Promise<ResType> {

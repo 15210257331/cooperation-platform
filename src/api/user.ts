@@ -4,6 +4,21 @@ import { axiosRequest, ResType } from './http'
 export function login(data: any): Promise<ResType> {
   return axiosRequest.post('/api/user/login', data)
 }
+
+/** github授权 */
+export function githubAuthorize(): Promise<ResType> {
+  return axiosRequest.get('/api/user/github/authorize')
+}
+/** github登录 */
+export function githubLogin(data: any): Promise<ResType> {
+  return axiosRequest.post('/api/user/github/login', data)
+}
+
+
+/** 微信登录 */
+export function wechatLogin(data: any): Promise<ResType> {
+  return axiosRequest.get('/api/user/login/wechat')
+}
 /** 注册 */
 export function register(data: any): Promise<ResType> {
   return axiosRequest.post(`/api/user/register`, data)
@@ -39,4 +54,9 @@ export function deleteUser(id: number): Promise<ResType> {
 /** 修改用户角色 */
 export function updateUserRole(data: any): Promise<ResType> {
   return axiosRequest.post(`/api/user/setRole`, data)
+}
+
+/** 退出登录 */
+export function logout(data: any): Promise<ResType> {
+  return axiosRequest.post(`/api/user/logout`, data)
 }

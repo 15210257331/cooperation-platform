@@ -1,5 +1,5 @@
 export interface ProjectStoreType {
-  projectList: Array<ProjectType>
+  currentProject: ProjectType | null;
 }
 
 export interface ProjectType {
@@ -9,13 +9,11 @@ export interface ProjectType {
   type: number
   cover: string
   createDate: string
-  // 是否是当前选中的项目
-  selected: boolean
   // 项目下的任务分组
-  flows: Array<FlowType>
+  groups: Array<GroupType>
 }
-
-export interface FlowType {
+/** group type */
+export interface GroupType {
   id?: number
   name: string
   sort: number
