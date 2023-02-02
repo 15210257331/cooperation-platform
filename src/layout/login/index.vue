@@ -46,7 +46,7 @@ function toggleTheme() {
   width: 100%;
   height: 100%;
   // background-color: #18a058;
-  background-image: url('../assets/images/login_bg1.jpg');
+  background-image: url('../../assets/images/login_bg1.jpg');
   background-size: cover;
   position: relative;
   .header {

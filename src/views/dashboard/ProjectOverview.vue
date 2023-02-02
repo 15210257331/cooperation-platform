@@ -56,12 +56,12 @@ const pieOptions = computed<ECOption>(() => {
         labelLine: {
           show: false
         },
-        data: projectStore.selectedProjectGroups.map(item => {
-          return {
-            value: item.tasks.length,
-            name: item.name
-          }
-        })
+        // data: projectStore.selectedProjectGroups.map(item => {
+        //   return {
+        //     value: item.tasks.length,
+        //     name: item.name
+        //   }
+        // })
       }
     ]
   }

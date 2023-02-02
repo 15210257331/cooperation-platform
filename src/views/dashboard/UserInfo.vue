@@ -42,7 +42,8 @@ const statistic: Ref<Array<StatisticData>> = computed(() => {
     {
       id: 0,
       label: '项目数',
-      value: projectStore.total,
+      // value: projectStore.total,
+      value: 0,
       animation: true
     },
     {

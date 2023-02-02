@@ -4,7 +4,7 @@
     <div class="title">
       <p :class="{ complete: complete }">{{ task.name }}</p>
       <n-dropdown trigger="hover" :options="options" @select="handleSelect">
-        <n-icon size="20" style="margin-top: 6px;">
+        <n-icon size="20" style="margin-top: 6px">
           <EllipsisHorizontal />
         </n-icon>
       </n-dropdown>
@@ -234,11 +234,11 @@ function taskDetail() {
 
 async function handleSelect(key: string | number) {
   if (key === 'next') {
-    const index = projectStore.selectedProjectGroups.findIndex(item => item.id === props.flowId)
+    const index = projectStore.currentProject?.groups.findIndex(item => item.id === props.flowId)
     let newFlowId
-    if (index < projectStore.selectedProjectGroups.length - 1) {
-      newFlowId = projectStore.selectedProjectGroups[index + 1].id
-    }
+    // if (index && index < projectStore.currentProject?.groups.length - 1) {
+    //   newFlowId = projectStore.selectedProjectGroups[index + 1].id
+    // }
     await projectStore.updateTaskProps(props.task.id, 'flow', newFlowId)
   } else if (key === 'copy') {
     message.info('任务已复制')
