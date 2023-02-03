@@ -12,7 +12,7 @@ const speed = ref<number>(0)
 const timer = ref<number>(0)
 
 const startLoading = () => {
-  console.log('kaishi')
+  // console.log('kaishi')
   const dom = bar.value as HTMLElement
   speed.value = 1
   timer.value = window.requestAnimationFrame(function fn() {
@@ -29,7 +29,7 @@ const startLoading = () => {
 }
 
 const endLoading = () => {
-  console.log('jieshu')
+  // console.log('jieshu')
   const dom = bar.value as HTMLElement
   setTimeout(() => {
     window.requestAnimationFrame(() => {

@@ -2,7 +2,18 @@
   <div class="task">
     <div class="task-header">
       <div class="toggle">
-        <n-icon :component="Grid" color="#0e7a0d" style="margin-right: 10px" :size="20" />
+        <n-tooltip placement="top" trigger="hover">
+          <span>点击返回项目概览</span>
+          <template #trigger>
+            <n-icon
+              :component="AppsSharp"
+              color="#0e7a0d"
+              style="margin-right: 10px"
+              :size="20"
+              @click="handleNavigate"
+            />
+          </template>
+        </n-tooltip>
         <n-dropdown
           v-model:value="currenProjectId"
           size="large"
@@ -25,7 +36,6 @@
           :color="selectedProject?.type === 2 ? '#efe80eff' : '#999'"
         /> -->
       </div>
-      <!-- <NavList /> -->
       <div class="search">
         <n-input v-model:value="keywords" round placeholder="搜索任务" @keyup.enter="handleSearch">
           <template #prefix>
@@ -36,12 +46,12 @@
     </div>
     <n-divider style="margin-top: 0; margin-bottom: 15px" />
     <div class="task-content">
-      <PositionContainer v-if="loading">
+      <PlaceholderContainer v-if="loading">
         <n-spin size="large" description="数据加载中" />
-      </PositionContainer>
-      <PositionContainer v-if="!loading && currenProject?.groups?.length === 0">
+      </PlaceholderContainer>
+      <PlaceholderContainer v-if="!loading && currenProject?.groups?.length === 0">
         <n-empty description="暂无数据" size="huge"> </n-empty>
-      </PositionContainer>
+      </PlaceholderContainer>
       <GroupList :data="currenProject?.groups" />
     </div>
   </div>
@@ -52,16 +62,17 @@ import { ref, onMounted, computed } from 'vue'
 import { useAppStore, useProjectStore } from '@/store'
 import { useMessage, useDialog, FormInst } from 'naive-ui'
 import { getFlowList, getProjectList } from '@/api'
-import { Apps, ReorderFour, Search, StarOutline, Close, ChevronDown, Grid } from '@vicons/ionicons5'
+import { AppsSharp, Search, ChevronDown } from '@vicons/ionicons5'
 import GroupList from './components/GroupList.vue'
-import NavList from '../../layout/home/components/NavList.vue'
 import { GroupType, ProjectType } from '@/interface'
-import PositionContainer from '@/components/PositionContainer.vue'
+import PlaceholderContainer from '@/components/PlaceholderContainer.vue'
+import { useRouter } from 'vue-router'
 
 const appStore = useAppStore()
 const projectStore = useProjectStore()
 const message = useMessage()
 const dialog = useDialog()
+const router = useRouter()
 
 const projectList = ref<Array<ProjectType>>([])
 const loading = ref<boolean>(false)
@@ -147,6 +158,12 @@ function handleSearch() {
   if (currenProject.value) {
     queryProjectDetail(currenProject.value?.id as number, keywords.value)
   }
+}
+
+function handleNavigate() {
+  router.push({
+    name: 'project'
+  })
 }
 </script>
 

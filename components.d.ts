@@ -56,6 +56,8 @@ declare module '@vue/runtime-core' {
     NTag: typeof import('naive-ui')['NTag']
     NTooltip: typeof import('naive-ui')['NTooltip']
     NUpload: typeof import('naive-ui')['NUpload']
+    PlaceholderContaier: typeof import('./src/components/PlaceholderContaier.vue')['default']
+    PlaceholderContainer: typeof import('./src/components/PlaceholderContainer.vue')['default']
     PositionContainer: typeof import('./src/components/PositionContainer.vue')['default']
     PropsTag: typeof import('./src/components/PropsTag.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

@@ -6,9 +6,11 @@
         <h2>个人任务待办</h2>
       </div>
       <div class="header-right">
-        <n-button quaternary @click="toggleTheme"> {{ appStore.darkTheme === true ? '深色' : '浅色' }} </n-button>
-        <n-button quaternary> GitHub </n-button>
-        <n-button quaternary> 1.1.3 </n-button>
+        <n-space>
+          <n-button quaternary @click="toggleTheme"> {{ appStore.darkTheme === true ? '深色' : '浅色' }} </n-button>
+          <n-button quaternary> GitHub </n-button>
+          <n-button quaternary> 1.1.3 </n-button>
+        </n-space>
       </div>
     </n-layout-header>
     <transition :name="showLogin ? 'slide-right' : 'slide-left'" mode="out-in">

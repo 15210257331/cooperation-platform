@@ -1,5 +1,5 @@
 <template>
-  <n-card hoverable :content-style="{ padding: '0', width: '100%'}" class="create-card">
+  <n-card hoverable :content-style="{ padding: '0', width: '100%' }" class="create-card">
     <div class="create-card-content" @click="handleClick">
       <img :src="icon" alt="" />
       <span>{{ title }}</span>

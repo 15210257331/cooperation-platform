@@ -1,42 +1,44 @@
 <template>
   <n-layout-header bordered>
-    <ActionContainer :tooltip-content="'折叠'" @click="toggleCollapse">
-      <n-icon
-        size="25"
-        :style="{ transition: 'all 0.3s' }"
-        :class="{ collapse: appStore.sideCollapse }"
-        :component="ListSharp"
-      />
-    </ActionContainer>
-
-    <Breadcrumb />
-
-    <ActionContainer :tooltip-content="'全屏'" @click="toggleFullScreen">
-      <n-icon size="25" :component="isFullscreen ? ContractSharp : ExpandSharp" />
-    </ActionContainer>
-
+    <AppLogo />
+    <ul class="nav_list">
+      <li
+        v-for="item in list"
+        :key="item.title"
+        :class="{ active: route.name === item.route ? true : false }"
+        @click="navigate(item.route)"
+      >
+        {{ item.title }}
+      </li>
+    </ul>
     <ActionContainer :tooltip-content="'主题模式'" @click="toggleTheme">
       <n-icon size="25" :component="appStore.darkTheme === true ? Moon : SunnyOutline" />
     </ActionContainer>
-
+    <ActionContainer :tooltip-content="'全屏'" @click="toggleFullScreen">
+      <n-icon size="25" :component="isFullscreen ? ContractSharp : ExpandSharp" />
+    </ActionContainer>
     <Message />
-
     <n-dropdown :options="options" @select="handleSelect">
       <ActionContainer>
         <n-avatar round size="small" :src="userStore.userInfo.avatar" />
         <span class="user-name">{{ userStore.nickname }}</span>
       </ActionContainer>
     </n-dropdown>
-
     <ProfileModal v-model:value="showProfileModal" />
     <ThemeSetting v-model:value="showThemeSettingModal" />
   </n-layout-header>
 </template>
 
 <script setup lang="ts">
-import { ref, h } from 'vue'
-import type { Component } from 'vue'
+import AppLogo from '@/components/AppLogo.vue'
+import Message from './Message.vue'
+import ProfileModal from './ProfileModal.vue'
+import ThemeSetting from './ThemeSetting.vue'
+import ActionContainer from '@/components/ActionContainer.vue'
 import { useAppStore, useUserStore } from '@/store'
+import { useFullscreen } from '@vueuse/core'
+import { ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import {
   SunnyOutline,
   Moon,
@@ -45,27 +47,44 @@ import {
   ContractSharp,
   PersonCircleOutline,
   ColorPalette,
-  LogOutOutline
+  LogOutOutline,
+  CogSharp
 } from '@vicons/ionicons5'
-import { DropdownOption, NIcon, useDialog } from 'naive-ui'
-import { useRouter } from 'vue-router'
-import Breadcrumb from '../../../components/Breadcrumb.vue'
-import { useFullscreen } from '@vueuse/core'
-import ProfileModal from '../../home/components/ProfileModal.vue'
-import ActionContainer from '@/components/ActionContainer.vue'
-import Message from '../../home/components/Message.vue'
-import ThemeSetting from '../../home/components/ThemeSetting.vue'
 import { useRender } from '@/hooks'
+import { DropdownOption, useDialog } from 'naive-ui'
 
 const userStore = useUserStore()
 const appStore = useAppStore()
 const router = useRouter()
+const route = useRoute()
+const { renderIcon } = useRender()
 const { isFullscreen, toggle } = useFullscreen()
 const dialog = useDialog()
-const { renderIcon } = useRender()
-
 const showProfileModal = ref<boolean>(false)
 const showThemeSettingModal = ref<boolean>(false)
+const list = ref<
+  Array<{
+    title: string
+    route: string
+  }>
+>([
+  {
+    title: '项目概览',
+    route: 'project'
+  },
+  {
+    title: '任务看板',
+    route: 'task'
+  },
+  {
+    title: '用户',
+    route: 'user'
+  },
+  {
+    title: '组件示例',
+    route: 'components'
+  }
+])
 
 function toggleTheme() {
   appStore.toggleTheme()
@@ -117,6 +136,18 @@ function handleSelect(key: string | number, option: DropdownOption) {
   if (key === 'themeSetting') {
     showThemeSettingModal.value = true
   }
+
+  if (key === 'admin') {
+    router.push({
+      name: 'admin'
+    })
+  }
+}
+
+function navigate(name: string) {
+  router.push({
+    name: name
+  })
 }
 </script>
 
@@ -126,16 +157,47 @@ function handleSelect(key: string | number, option: DropdownOption) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 56px;
+  height: 60px;
   box-sizing: border-box;
+  position: relative;
+}
+.nav_list {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  li {
+    height: 60px;
+    line-height: 60px;
+    color: #888;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 20px;
+    cursor: pointer;
+    position: relative;
+    &:hover {
+      color: #18a058;
+    }
+  }
+  li.active {
+    color: #18a058;
+    &::after {
+      content: '';
+      width: calc(100% + 10px);
+      height: 2px;
+      border-radius: 1px;
+      background-color: #18a058;
+      position: absolute;
+      bottom: 0;
+      left: -5px;
+    }
+  }
 }
 span.user-name {
   font-weight: 500;
   font-size: 16px;
   padding-left: 8px;
   vertical-align: super;
-}
-.collapse {
-  transform: rotate(180deg);
 }
 </style>

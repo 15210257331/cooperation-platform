@@ -6,7 +6,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 export default defineComponent({
-  name: 'TextDemo',
+  name: 'GlobalProperty',
   data() {
     return {
       testName: 'text'

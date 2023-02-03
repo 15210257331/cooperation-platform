@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard">
-    <SectionTitle title="快捷操作">
-      <CreateCard
+    <SectionArea title="快捷操作">
+      <ShortcutItem
         v-for="item in shortcutActionList"
         :key="item.title"
         :icon="item.icon"
@@ -9,8 +9,8 @@
         :type="item.type"
         @card:click="handleShortcutClick(item.type)"
       />
-    </SectionTitle>
-    <SectionTitle title="我的项目" :sub-title="'(共' + projectList.length + '个项目)'">
+    </SectionArea>
+    <SectionArea title="我的项目" :sub-title="'(共' + projectList.length + '个项目)'">
       <template #action>
         <n-dropdown trigger="hover" :options="orderOptions" @select="handleOrderOptionChange">
           <n-button icon-placement="right" text style="margin-right: 20px">
@@ -24,188 +24,55 @@
           <n-icon size="20" :component="showType === 'card' ? Apps : ReorderFour"> </n-icon>
         </n-dropdown>
       </template>
-      <ProjectList
+      <PlaceholderContainer v-if="projectList.length === 0">
+        <n-empty size="huge" description="暂无数据"></n-empty>
+      </PlaceholderContainer>
+      <ProjectCardList
         v-if="showType === 'card'"
         :data="projectList"
         @update-project="handleUpdateProject"
         @delete-project="removeProject"
         @click-project="clickProject"
       />
-      <n-data-table v-if="showType === 'list'" :columns="columns" :data="projectList" striped />
-      <div v-if="projectList.length === 0" class="empty">
-        <n-empty></n-empty>
-      </div>
-    </SectionTitle>
+      <ProjectTableList
+        v-if="showType === 'list'"
+        :data="projectList"
+        @update-project="handleUpdateProject"
+        @delete-project="removeProject"
+        @click-project="clickProject"
+      />
+    </SectionArea>
   </div>
-  <!-- 新增项目弹窗 -->
-  <n-modal v-model:show="showModal">
-    <n-card
-      :segmented="{
-        content: true,
-        footer: true
-      }"
-      style="width: 620px"
-      :title="'新增任务'"
-      :bordered="false"
-      role="dialog"
-      aria-modal="true"
-    >
-      <template #header-extra>
-        <n-button quaternary circle>
-          <template #icon>
-            <n-icon size="20" @click="showModal = false">
-              <Close />
-            </n-icon>
-          </template>
-        </n-button>
-      </template>
-      <n-form ref="formRef" label-placement="left" :label-width="80" :model="formValue" :rules="rules">
-        <n-form-item label="项目名称" path="name">
-          <n-input v-model:value="formValue.name" placeholder="输入姓名" />
-        </n-form-item>
-        <n-form-item label="项目icon" path="icon">
-          <IconSelect v-model="formValue.icon"></IconSelect>
-        </n-form-item>
-        <n-form-item label="背景图:" path="cover">
-          <UploadFile v-model:url="formValue.cover" title="点击上传" />
-        </n-form-item>
-        <n-form-item label="项目类型" path="type">
-          <n-radio-group v-model:value="formValue.type" name="type">
-            <n-space>
-              <n-radio :value="1"> 普通 </n-radio>
-              <n-radio :value="2"> 星标 </n-radio>
-            </n-space>
-          </n-radio-group>
-        </n-form-item>
-      </n-form>
-      <template #footer>
-        <n-space horizontal style="float: right">
-          <n-button tertiary @click="showModal = false"> 取消 </n-button>
-          <n-button type="primary" @click="handleSubmit"> 确认 </n-button>
-        </n-space>
-      </template>
-    </n-card>
-  </n-modal>
+  <!-- 新增/修改项目弹窗 -->
+  <CreateProjectModal ref="createProjectModalRef" @result="result" />
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from '@/store'
 import { computed, ref, h } from 'vue'
-import { useDialog, useMessage, FormInst, DataTableColumns, NButton, NImage, NSpace, NIcon } from 'naive-ui'
-import { Apps, ReorderFour, StarSharp, StarOutline, Close, ChevronDown } from '@vicons/ionicons5'
-import ProjectList from './components/ProjectList.vue'
+import { useDialog, useMessage, NButton, NIcon } from 'naive-ui'
+import { Apps, ReorderFour, ChevronDown } from '@vicons/ionicons5'
+import ProjectCardList from './components/ProjectCardList.vue'
+import ProjectTableList from './components/ProjectTableList.vue'
+import ShortcutItem from './components/ShortcutItem.vue'
 import { useProjectStore } from '@/store'
 import { ProjectType } from '@/interface'
-import dayjs from 'dayjs'
-import img from '../../assets/images/login-back.jpg'
 import { useRouter } from 'vue-router'
 import { useRender } from '@/hooks'
-import SectionTitle from '@/components/SectionArea.vue'
-import CreateCard from '@/components/CreateCard.vue'
-import IconSelect from '@/components/IconSelect.vue'
-import UploadFile from '@/components/UploadFile.vue'
-import { getProjectList, deleteProject, updateProject, createProject } from '@/api'
+import SectionArea from '@/components/SectionArea.vue'
+import { getProjectList, deleteProject } from '@/api'
+import PlaceholderContainer from '@/components/PlaceholderContainer.vue'
+import CreateProjectModal from './components/CreateProjectModal.vue'
 
-const appStore = useAppStore()
 const dialog = useDialog()
 const projectStore = useProjectStore()
 const message = useMessage()
 const router = useRouter()
 const { renderIcon } = useRender()
 
-const showModal = ref<boolean>(false)
+const createProjectModalRef = ref<InstanceType<typeof CreateProjectModal> | null>(null)
 const showType = ref<string>('card')
-const formRef = ref<FormInst | null>(null)
 const selectOrderType = ref<string>('打开时间排序')
-const formValue = ref({
-  id: null,
-  name: '',
-  icon: '',
-  cover: '',
-  type: 1
-})
-const columns: DataTableColumns<ProjectType> = [
-  {
-    title: '项目封面',
-    key: 'name',
-    align: 'center',
-    render(row) {
-      return h(NImage, {
-        width: '50',
-        src: row.cover
-      })
-    }
-  },
-  {
-    title: '项目名称',
-    key: 'name',
-    align: 'center'
-  },
-  {
-    title: '是否标星',
-    key: 'type',
-    align: 'center',
-    render(row) {
-      return h(NIcon, {
-        component: row.type === 2 ? StarSharp : StarOutline,
-        color: row.type === 2 ? '#efe80eff' : '#999'
-      })
-    }
-  },
-  {
-    title: '创建时间',
-    key: 'createDate',
-    align: 'center',
-    render(row) {
-      return h('span', null, { default: () => dayjs(row.createDate).format('YYYY年MM月DD日 HH:mm:ss') })
-    }
-  },
-  {
-    title: '操作',
-    align: 'center',
-    key: 'actions',
-    render(row) {
-      return [
-        h(
-          NButton,
-          {
-            quaternary: true,
-            size: 'small',
-            type: 'primary',
-            onClick: () => {
-              clickProject(row)
-            }
-          },
-          { default: () => '详情' }
-        ),
-        h(
-          NButton,
-          {
-            quaternary: true,
-            size: 'small',
-            type: 'info',
-            onClick: () => {
-              handleUpdateProject(row)
-            }
-          },
-          { default: () => '编辑' }
-        ),
-        h(
-          NButton,
-          {
-            quaternary: true,
-            size: 'small',
-            type: 'error',
-            onClick: () => {
-              removeProject(row)
-            }
-          },
-          { default: () => '删除' }
-        )
-      ]
-    }
-  }
-]
+
 const options = [
   {
     label: '卡片模式',
@@ -256,21 +123,6 @@ const shortcutActionList = [
     type: 3
   }
 ]
-const rules = {
-  name: {
-    required: true,
-    message: '请输入项目名称',
-    trigger: 'blur'
-  },
-  icon: {
-    required: true,
-    message: '请选择项目icon'
-  },
-  type: {
-    required: true,
-    message: '请选择项目类型'
-  }
-}
 
 const projectList = ref([])
 
@@ -292,45 +144,18 @@ function handleOrderOptionChange(key: string, option: any) {
   selectOrderType.value = option.label
 }
 function handleShortcutClick(type: number) {
-  // 新建任务
+  // 新建项目
   if (type === 1) {
-    showModal.value = true
+    createProjectModalRef.value?.show()
   }
 }
-function handleSubmit(e: MouseEvent) {
-  e.preventDefault()
-  formRef.value?.validate(async errors => {
-    if (!errors) {
-      if (formValue.value.id !== null) {
-        updateProject(formValue.value).then(res => {
-          if (res.code === 10000) {
-            message.success('操作成功')
-            showModal.value = false
-            queryProjectList()
-          }
-        })
-      } else {
-        createProject(formValue.value).then(res => {
-          if (res.code === 10000) {
-            message.success('项目创建成功')
-            showModal.value = false
-            queryProjectList()
-          }
-        })
-      }
-    }
-  })
-}
+
 function handleUpdateProject($event: ProjectType) {
-  resetForm()
-  showModal.value = true
-  formValue.value = {
-    id: $event.id as any,
-    name: $event.name,
-    icon: $event.icon,
-    cover: $event.cover,
-    type: $event.type
-  }
+  createProjectModalRef.value?.show($event)
+}
+
+function result() {
+  queryProjectList()
 }
 function clickProject($event: ProjectType) {
   router.push({
@@ -349,21 +174,12 @@ function removeProject($event: ProjectType) {
       deleteProject(id as number).then(res => {
         if (res.code === 10000) {
           message.success('项目删除成功！')
+          queryProjectList()
         }
       })
     },
     onNegativeClick: () => {}
   })
-}
-function resetForm() {
-  formRef.value?.restoreValidation()
-  formValue.value = {
-    id: null,
-    name: '',
-    cover: '',
-    icon: '',
-    type: 1
-  }
 }
 </script>
 
