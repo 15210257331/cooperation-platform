@@ -177,9 +177,7 @@ function handleSubmit(e: MouseEvent) {
 }
 
 function successLogin() {
-  router.push({
-    name: 'home'
-  })
+  router.push('/')
   message.success('登录成功', {
     keepAliveOnHover: true
   })
