@@ -199,6 +199,7 @@ async function createFlow() {
   })
   await projectStore.createGroup(data)
   showModal.value = false
+  resetForm()
   message.success('操作成功')
 }
 
@@ -208,7 +209,20 @@ async function updateFlow() {
   })
   await projectStore.updateGroup(data)
   showModal.value = false
+  resetForm()
   message.success('操作成功')
+}
+
+function resetForm() {
+  formRef.value?.restoreValidation()
+  form.value = {
+    name: '',
+    canNew: 1,
+    sort: props.data ? props.data.sort + 1 : 0,
+    complete: false,
+    range: [],
+    tasks: []
+  }
 }
 
 function handleClose() {

@@ -20,7 +20,7 @@
       </template>
       <n-form ref="formRef" label-placement="left" :label-width="80" :model="formValue" :rules="rules">
         <n-form-item label="项目名称" path="name">
-          <n-input v-model:value="formValue.name" placeholder="输入姓名" />
+          <n-input v-model:value="formValue.name" placeholder="请输入项目名称" />
         </n-form-item>
         <n-form-item label="项目icon" path="icon">
           <IconSelect v-model="formValue.icon"></IconSelect>

@@ -179,9 +179,9 @@ function createTask(flow: GroupType) {
 function put(to: any, from: any) {
   return true
 }
-// 判断是否可以拖拽到其他流程返回可以拖拽进去的流程的group值列表 | true | false
+// 判断是否可以拖拽到其他分组 返回可以拖拽目标分组的id值列表 | true | false
 function pull(to: any, from: any) {
-  const fromGroupId = from.options.group.name
+  const fromGroupId = from.options.group.id
   const fromGroup = groupList.value.find(item => item.id === fromGroupId)
   // console.log(fromGroup?.range.map(item => Number(item)))
   return fromGroup?.range.map(item => Number(item))
