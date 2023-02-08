@@ -7,12 +7,12 @@ import { h } from 'vue'
 import { ProjectType } from '@/interface'
 import { DataTableColumns, NButton, NIcon, NImage } from 'naive-ui'
 import { StarOutline, StarSharp } from '@vicons/ionicons5'
-import dayjs from 'dayjs'
+import { formatDate } from '@/utils'
 
 const props = defineProps<{
   data: Array<ProjectType>
 }>()
-const emit = defineEmits(['updateProject', 'deleteProject', 'clickProject'])
+const emit = defineEmits(['updateProject', 'deleteProject', 'clickProject', 'toggleStar'])
 
 const columns: DataTableColumns<ProjectType> = [
   {
@@ -37,8 +37,11 @@ const columns: DataTableColumns<ProjectType> = [
     align: 'center',
     render(row) {
       return h(NIcon, {
-        component: row.type === 2 ? StarSharp : StarOutline,
-        color: row.type === 2 ? '#efe80eff' : '#999'
+        component: row.star ? StarSharp : StarOutline,
+        color: row.star ? '#efe80eff' : '#999',
+        onClick: () => {
+          emit('toggleStar', row)
+        }
       })
     }
   },
@@ -47,7 +50,7 @@ const columns: DataTableColumns<ProjectType> = [
     key: 'createDate',
     align: 'center',
     render(row) {
-      return h('span', null, { default: () => dayjs(row.createDate).format('YYYY年MM月DD日 HH:mm:ss') })
+      return h('span', null, { default: () => formatDate(row.createDate) })
     }
   },
   {

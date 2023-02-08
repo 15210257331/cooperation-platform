@@ -41,7 +41,7 @@
           <TaskItem
             :task="element"
             :complete="group.complete"
-            :flow-id="(group.id as number)"
+            :flow-id="(group.id as string)"
             :index="index"
           ></TaskItem>
         </template>
@@ -158,7 +158,7 @@ function deleteGroup(group: GroupType) {
     negativeText: '取消',
     onPositiveClick: async () => {
       projectStore
-        .deleteGroup(group.id as number)
+        .deleteGroup(group.id as string)
         .then(res => {
           message.success('分组删除成功！')
         })

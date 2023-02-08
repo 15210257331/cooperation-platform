@@ -67,7 +67,7 @@
 import { ref, computed, watch } from 'vue'
 import { FormInst, useMessage } from 'naive-ui'
 import { useProjectStore } from '@/store'
-import {TaskType} from '@/interface'
+import { TaskType } from '@/interface'
 import { Close } from '@vicons/ionicons5'
 import { priorityOptions } from '@/constant'
 import dayjs from 'dayjs'
@@ -147,11 +147,25 @@ async function createTask() {
   }
   await projectStore.createTask(data)
   showModal.value = false
+  formRef.value?.restoreValidation()
   message.success('操作成功')
+}
+
+function resetForm() {
+  formValue.value = {
+    name: '',
+    description: '',
+    startDate: new Date().getTime(),
+    endDate: new Date().getTime(),
+    priority: null,
+    progress: 0
+  }
+  formRef.value?.restoreValidation()
 }
 
 function handleClose() {
   showModal.value = false
+  resetForm()
 }
 </script>
 

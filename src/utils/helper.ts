@@ -1,4 +1,4 @@
-import { resolve } from 'path'
+import * as path from 'path'
 import dayjs from 'dayjs'
 
 /**
@@ -6,7 +6,7 @@ import dayjs from 'dayjs'
  * @descrition 结尾不带斜杠
  */
 export function getRootPath() {
-  return resolve(process.cwd())
+  return path.resolve(process.cwd())
 }
 
 /**
@@ -20,6 +20,9 @@ export function getSrcPath(srcName = 'src') {
   return `${rootPath}/${srcName}`
 }
 
-export function formatDate(value: Date | string | any) {
-  return dayjs(value).format('YYYY年MM月DD日 HH:mm:ss')
+export function formatDate(value: Date | string | any, format = 'YYYY年MM月DD日 HH:mm:ss') {
+  if (value) {
+    return dayjs(value).format(format)
+  }
+  return ''
 }

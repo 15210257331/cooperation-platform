@@ -1,20 +1,20 @@
 export interface ProjectStoreType {
-  currentProject: ProjectType | null;
+  currentProject: ProjectType | null
 }
 
 export interface ProjectType {
-  id?: number
+  id?: string
   name: string
   icon: string
-  type: number
+  type: string
+  star: boolean
   cover: string
   createDate: string
-  // 项目下的任务分组
   groups: Array<GroupType>
 }
 /** group type */
 export interface GroupType {
-  id?: number
+  id?: string
   name: string
   sort: number
   canNew: number

@@ -37,6 +37,7 @@ const props = defineProps<{
         font-size: 16px;
         font-weight: 500;
         display: inline-block;
+        // color: var(--nice-primary-color);
       }
       span {
         font-size: 12px;

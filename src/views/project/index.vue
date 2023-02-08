@@ -12,27 +12,37 @@
     </SectionArea>
     <SectionArea title="我的项目" :sub-title="'(共' + projectList.length + '个项目)'">
       <template #action>
-        <n-dropdown trigger="hover" :options="orderOptions" @select="handleOrderOptionChange">
-          <n-button icon-placement="right" text style="margin-right: 20px">
+        <n-dropdown
+          v-model:value="selectOrderType.key"
+          trigger="hover"
+          :options="orderOptions"
+          @select="handleOrderOptionChange"
+        >
+          <n-button icon-placement="right" text style="margin-right: 20px; font-weight: 500">
             <template #icon>
               <n-icon :component="ChevronDown" />
             </template>
-            {{ selectOrderType }}
+            {{ selectOrderType?.label }}
           </n-button>
         </n-dropdown>
         <n-dropdown trigger="hover" :options="options" @select="handleSelect">
           <n-icon size="20" :component="showType === 'card' ? Apps : ReorderFour"> </n-icon>
         </n-dropdown>
       </template>
-      <PlaceholderContainer v-if="projectList.length === 0">
-        <n-empty size="huge" description="暂无数据"></n-empty>
+      <PlaceholderContainer v-if="projectList.length === 0 && !loading">
+        <n-empty size="huge" description="暂无数据" />
       </PlaceholderContainer>
+      <PlaceholderContainer v-if="loading">
+        <n-spin size="large" description="数据加载中" />
+      </PlaceholderContainer>
+
       <ProjectCardList
         v-if="showType === 'card'"
         :data="projectList"
         @update-project="handleUpdateProject"
         @delete-project="removeProject"
         @click-project="clickProject"
+        @toggle-star="toggleStar"
       />
       <ProjectTableList
         v-if="showType === 'list'"
@@ -40,6 +50,7 @@
         @update-project="handleUpdateProject"
         @delete-project="removeProject"
         @click-project="clickProject"
+        @toggle-star="toggleStar"
       />
     </SectionArea>
   </div>
@@ -49,7 +60,7 @@
 
 <script setup lang="ts">
 import { computed, ref, h } from 'vue'
-import { useDialog, useMessage, NButton, NIcon } from 'naive-ui'
+import { useDialog, useMessage, NButton, NIcon, DropdownOption } from 'naive-ui'
 import { Apps, ReorderFour, ChevronDown } from '@vicons/ionicons5'
 import ProjectCardList from './components/ProjectCardList.vue'
 import ProjectTableList from './components/ProjectTableList.vue'
@@ -59,7 +70,7 @@ import { ProjectType } from '@/interface'
 import { useRouter } from 'vue-router'
 import { useRender } from '@/hooks'
 import SectionArea from '@/components/SectionArea.vue'
-import { getProjectList, deleteProject } from '@/api'
+import { getProjectList, deleteProject, projectToggleStar } from '@/api'
 import PlaceholderContainer from '@/components/PlaceholderContainer.vue'
 import CreateProjectModal from './components/CreateProjectModal.vue'
 
@@ -71,8 +82,29 @@ const { renderIcon } = useRender()
 
 const createProjectModalRef = ref<InstanceType<typeof CreateProjectModal> | null>(null)
 const showType = ref<string>('card')
-const selectOrderType = ref<string>('打开时间排序')
-
+const orderOptions = [
+  {
+    type: 'group',
+    label: '排序类型',
+    key: 'sort',
+    children: [
+      {
+        label: '创建时间排序',
+        key: 'createDate'
+      },
+      {
+        label: '修改时间排序',
+        key: 'updateDate'
+      },
+      {
+        label: '按名称排序',
+        key: 'name'
+      }
+    ]
+  }
+]
+const selectOrderType = ref<DropdownOption>(orderOptions[0].children[0])
+const loading = ref<boolean>(true)
 const options = [
   {
     label: '卡片模式',
@@ -85,27 +117,7 @@ const options = [
     icon: renderIcon(ReorderFour)
   }
 ]
-const orderOptions = [
-  {
-    type: 'group',
-    label: '排序类型',
-    key: 'sort',
-    children: [
-      {
-        label: '创建时间排序',
-        key: '1'
-      },
-      {
-        label: '打开时间排序',
-        key: '2'
-      },
-      {
-        label: '名称排序',
-        key: '3'
-      }
-    ]
-  }
-]
+
 const shortcutActionList = [
   {
     title: '新增项目',
@@ -124,24 +136,30 @@ const shortcutActionList = [
   }
 ]
 
-const projectList = ref([])
+const projectList = ref<ProjectType[]>([])
 
 queryProjectList()
 
-function queryProjectList() {
-  getProjectList().then(res => {
-    if (res.code === 10000) {
-      projectList.value = res.data || []
-      console.log(projectList)
-    }
-  })
+function queryProjectList(sort = '') {
+  loading.value = true
+  getProjectList(sort)
+    .then(res => {
+      if (res.code === 10000) {
+        projectList.value = res.data || []
+        console.log(projectList)
+      }
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 function handleSelect(key: string) {
   showType.value = key
 }
-function handleOrderOptionChange(key: string, option: any) {
-  selectOrderType.value = option.label
+function handleOrderOptionChange(key: string, option: DropdownOption) {
+  ;(selectOrderType.value as DropdownOption) = option
+  queryProjectList(key)
 }
 function handleShortcutClick(type: number) {
   // 新建项目
@@ -155,7 +173,15 @@ function handleUpdateProject($event: ProjectType) {
 }
 
 function result() {
-  queryProjectList()
+  queryProjectList(selectOrderType.value.key as string)
+}
+function toggleStar($event: ProjectType) {
+  projectToggleStar({ id: $event.id as string, star: !$event.star }).then(res => {
+    if (res.code === 10000) {
+      message.success(res.message)
+      queryProjectList(selectOrderType.value.key as string)
+    }
+  })
 }
 function clickProject($event: ProjectType) {
   router.push({
@@ -164,14 +190,14 @@ function clickProject($event: ProjectType) {
   projectStore.setCurrentProject($event)
 }
 function removeProject($event: ProjectType) {
-  const id = $event.id
+  const id = $event.id as string
   dialog.warning({
     title: '警告',
     content: '你确定删除当前项目吗？',
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
-      deleteProject(id as number).then(res => {
+      deleteProject(id).then(res => {
         if (res.code === 10000) {
           message.success('项目删除成功！')
           queryProjectList()
@@ -184,23 +210,7 @@ function removeProject($event: ProjectType) {
 </script>
 
 <style lang="scss" scoped>
-.n-layout-content {
-  // background-color: #f3f5f7;
-  height: calc(100% - 55px);
-  margin-top: 10px;
-  padding: 25px;
-}
-header {
-  height: 65px;
-  //   border-bottom: 1px solid #ccc;
-  background-color: white;
-  text-align: center;
-  ul {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-  }
+.dashboard {
+  padding-top: 5px;
 }
 </style>

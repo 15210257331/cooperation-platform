@@ -1,5 +1,5 @@
 <template>
-  <n-space vertical style="margin-top: 20px">
+  <n-space vertical style="margin-top: 15px">
     <n-card
       size="small"
       title="图片验证码"

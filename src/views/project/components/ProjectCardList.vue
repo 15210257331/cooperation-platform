@@ -20,15 +20,16 @@
       </n-dropdown>
     </template>
     <div class="project-cover">
-      <img :src="item.cover" alt="" />
+      <img :src="item.cover" alt="项目背景" />
     </div>
     <template #action>
       <div class="project-footer">
         <span>{{ formatDate(item.createDate) }}</span>
         <n-icon
           size="17"
-          :component="item.type === 2 ? StarSharp : StarOutline"
-          :color="item.type === 2 ? '#efe80eff' : '#999'"
+          :component="item.star ? StarSharp : StarOutline"
+          :color="item.star ? '#efe80eff' : '#999'"
+          @click.stop="handleStar(item)"
         />
       </div>
     </template>
@@ -38,7 +39,7 @@
 <script setup lang="ts">
 import { StarSharp, StarOutline, Documents, TrashBin, EllipsisHorizontal } from '@vicons/ionicons5'
 import { useRender } from '@/hooks'
-import dayjs from 'dayjs'
+import { formatDate } from '@/utils'
 import { ProjectType } from '@/interface'
 
 const { renderIcon } = useRender()
@@ -47,7 +48,7 @@ const props = defineProps<{
   data: Array<ProjectType>
 }>()
 
-const emit = defineEmits(['updateProject', 'deleteProject', 'clickProject'])
+const emit = defineEmits(['updateProject', 'deleteProject', 'clickProject', 'toggleStar'])
 
 const options = [
   {
@@ -61,7 +62,9 @@ const options = [
     icon: renderIcon(TrashBin)
   }
 ]
-
+function handleStar(project: ProjectType) {
+  emit('toggleStar', project)
+}
 function handleClick(project: ProjectType) {
   emit('clickProject', project)
 }
@@ -73,14 +76,11 @@ const handleSelect = ($event: any, project: ProjectType) => {
     emit('deleteProject', project)
   }
 }
-function formatDate(value: any) {
-  return dayjs(value).format('YYYY年MM月DD日 HH:mm:ss')
-}
 </script>
 
 <style lang="scss" scoped>
 .project-card {
-  width: 240px;
+  width: 270px;
   border-radius: 10px;
   margin: 0 15px 15px 0;
   cursor: pointer;

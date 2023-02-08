@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ProjectStoreType, ProjectType } from '@/interface'
+import { GroupType, ProjectStoreType, ProjectType } from '@/interface'
 import { createFlow, createTask, deleteFlow, getProjectDetail, updateFlow, updateTaskProps } from '@/api'
 
 export const useProjectStore = defineStore('project', {
@@ -18,10 +18,13 @@ export const useProjectStore = defineStore('project', {
         getProjectDetail(projectId)
           .then(res => {
             if (res.code === 10000) {
-              this.setCurrentProject(res.data)
-              // const flowList = res.data.sort((a: any, b: any) => a.sort - b.sort)
-              // const selectedIndex = this.projectList.findIndex(item => item.selected)
-              // this.projectList[selectedIndex].flows = flowList
+              // 分组排序和筛选操作
+              const projectData: ProjectType = res.data
+              projectData.groups = this.groupSort(projectData.groups)
+              projectData.groups.map(group => {
+                group.tasks = group.tasks.filter(task => task.name.includes(keywords))
+              })
+              this.setCurrentProject(projectData)
               resolve(true)
             } else {
               reject(false)
@@ -32,20 +35,20 @@ export const useProjectStore = defineStore('project', {
           })
       })
     },
-    /** 设置当前项目数据 */
-    setCurrentProject(project: ProjectType) {
-      this.currentProject = project
-    },
+
     /**
      * 新增分组
      */
-    createGroup(data: any) {
+    createGroup(data: string) {
       return new Promise((resolve, reject) => {
         createFlow(data).then(res => {
           if (res.code === 10000) {
-            const index = this.currentProject?.groups.findIndex(item => item.id === data.id) as number
-            this.currentProject?.groups.splice(index, 0, res.data)
-            resolve(true)
+            if (this.currentProject) {
+              this.currentProject.groups.push(res.data)
+              this.currentProject.groups = this.groupSort(this.currentProject?.groups)
+              resolve(true)
+            }
+            reject(false)
           } else {
             reject(false)
           }
@@ -57,10 +60,12 @@ export const useProjectStore = defineStore('project', {
       return new Promise((resolve, reject) => {
         updateFlow(data).then(res => {
           if (res.code === 10000) {
-            const index = this.currentProject?.groups.findIndex(item => item.id === data.id) as number
-            this.currentProject?.groups.splice(index, 1, res.data)
-            // this.selectedProject.flows = this.selectedProject?.flows.sort((a, b) => a.sort - b.sort)
-            resolve(true)
+            if (this.currentProject) {
+              const index = this.currentProject?.groups.findIndex(item => item.id === data.id) as number
+              this.currentProject?.groups.splice(index, 1, res.data)
+              this.currentProject.groups = this.groupSort(this.currentProject?.groups)
+              resolve(true)
+            }
           } else {
             reject(false)
           }
@@ -71,7 +76,7 @@ export const useProjectStore = defineStore('project', {
      * 删除项目中的分组
      * @param id  分组ID
      */
-    deleteGroup(id: number) {
+    deleteGroup(id: string) {
       return new Promise((resolve, reject) => {
         deleteFlow(id).then(res => {
           if (res.code === 10000) {
@@ -144,6 +149,14 @@ export const useProjectStore = defineStore('project', {
           }
         })
       })
+    },
+    /** 设置当前项目数据 */
+    setCurrentProject(project: ProjectType) {
+      this.currentProject = project
+    },
+    /** 分组排序 */
+    groupSort(groups: Array<GroupType>): Array<GroupType> {
+      return groups.sort((a: GroupType, b: GroupType) => a.sort - b.sort)
     }
   },
   getters: {

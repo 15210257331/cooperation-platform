@@ -48,8 +48,10 @@ function queryUnreadCount() {
 
 <style lang="scss" scoped>
 .n-layout-content {
-  height: calc(100% - 70px);
-  margin-top: 10px;
-  padding: 0 25px 25px 25px;
+  height: calc(100% - 80px);
+  margin: 10px 0;
+  ::v-deep(.n-layout-scroll-container) {
+    padding: 0 25px;
+  }
 }
 </style>

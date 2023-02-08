@@ -137,7 +137,7 @@ import { progressColors, leftBorderColors, priorityOptions, remindOptions } from
 const props = defineProps<{
   task: TaskType
   complete: boolean
-  flowId: number
+  flowId: string
 }>()
 const { renderIcon } = useRender()
 const message = useMessage()

@@ -48,6 +48,7 @@ function handleClick() {
     flex: 1;
     // color: rgb(51, 54, 57);
     font-size: 14px;
+    font-weight: 500;
   }
 }
 </style>

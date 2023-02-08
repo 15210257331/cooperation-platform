@@ -11,11 +11,11 @@
         {{ item.title }}
       </li>
     </ul>
-    <ActionContainer :tooltip-content="'主题模式'" @click="toggleTheme">
-      <n-icon size="25" :component="appStore.darkTheme === true ? Moon : SunnyOutline" />
-    </ActionContainer>
     <ActionContainer :tooltip-content="'全屏'" @click="toggleFullScreen">
       <n-icon size="25" :component="isFullscreen ? ContractSharp : ExpandSharp" />
+    </ActionContainer>
+    <ActionContainer :tooltip-content="'主题模式'" @click="toggleTheme">
+      <n-icon size="25" :component="appStore.darkTheme === true ? Moon : SunnyOutline" />
     </ActionContainer>
     <Message />
     <n-dropdown :options="options" @select="handleSelect">
@@ -177,17 +177,17 @@ function navigate(name: string) {
     cursor: pointer;
     position: relative;
     &:hover {
-      color: #18a058;
+      color: var(--nice-primary-color);
     }
   }
   li.active {
-    color: #18a058;
+    color: var(--nice-primary-color);
     &::after {
       content: '';
       width: calc(100% + 10px);
       height: 2px;
       border-radius: 1px;
-      background-color: #18a058;
+      background-color: var(--nice-primary-color);
       position: absolute;
       bottom: 0;
       left: -5px;

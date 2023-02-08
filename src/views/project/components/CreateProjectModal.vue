@@ -6,7 +6,7 @@
         footer: true
       }"
       style="width: 620px"
-      :title="'新建项目'"
+      :title="title"
       :bordered="false"
       role="dialog"
       aria-modal="true"
@@ -31,10 +31,13 @@
         <n-form-item label="项目类型" path="type">
           <n-radio-group v-model:value="formValue.type" name="type">
             <n-space>
-              <n-radio :value="1"> 普通 </n-radio>
-              <n-radio :value="2"> 星标 </n-radio>
+              <n-radio value="group"> group </n-radio>
+              <n-radio value="general"> general </n-radio>
             </n-space>
           </n-radio-group>
+        </n-form-item>
+        <n-form-item label="标星项目" path="star">
+          <n-switch v-model:value="formValue.star" />
         </n-form-item>
       </n-form>
       <template #footer>
@@ -65,11 +68,12 @@ const showModal = ref<boolean>(false)
 const formRef = ref<FormInst | null>(null)
 const title = ref<string>('新建项目')
 const formValue = ref({
-  id: null,
+  id: '',
   name: '',
-  icon: '',
   cover: '',
-  type: 1
+  icon: '',
+  type: '',
+  star: false
 })
 const rules = {
   name: {
@@ -80,6 +84,14 @@ const rules = {
   icon: {
     required: true,
     message: '请选择项目icon'
+  },
+  cover: {
+    required: true,
+    message: '请选择项目背景图'
+  },
+  star: {
+    required: true,
+    message: '是否星标项目必填'
   },
   type: {
     required: true,
@@ -92,24 +104,29 @@ function show(data?: ProjectType) {
   showModal.value = true
   if (data) {
     title.value = '修改项目'
+    const { id, name, icon, cover, type, star } = data
     formValue.value = {
-      id: data.id as any,
-      name: data.name,
-      icon: data.icon,
-      cover: data.cover,
-      type: data.type
+      id: id as string,
+      name: name,
+      icon: icon,
+      cover: cover,
+      type: type,
+      star: star
     }
+  } else {
+    title.value = '新建项目'
   }
 }
 
 function resetForm() {
   formRef.value?.restoreValidation()
   formValue.value = {
-    id: null,
+    id: '',
     name: '',
     cover: '',
     icon: '',
-    type: 1
+    type: '',
+    star: false
   }
 }
 
@@ -117,7 +134,7 @@ function handleSubmit(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate(async errors => {
     if (!errors) {
-      if (formValue.value.id !== null) {
+      if (formValue.value.id) {
         updateProject(formValue.value).then(res => {
           if (res.code === 10000) {
             message.success('操作成功')

@@ -1,10 +1,10 @@
 import { axiosRequest, ResType } from './http'
 
 /** 项目 */
-export function getProjectList(): Promise<ResType> {
-  return axiosRequest.get(`/api/project/list`)
+export function getProjectList(sort: string): Promise<ResType> {
+  return axiosRequest.get(`/api/project/list?sort=${sort}`)
 }
-export function getProjectDetail(id: string | number): Promise<ResType> {
+export function getProjectDetail(id: number): Promise<ResType> {
   return axiosRequest.get(`/api/project/detail/${id}`)
 }
 export function createProject(data: any): Promise<ResType> {
@@ -13,12 +13,15 @@ export function createProject(data: any): Promise<ResType> {
 export function updateProject(data: any): Promise<ResType> {
   return axiosRequest.post(`/api/project/update`, data)
 }
-export function deleteProject(id: number): Promise<ResType> {
+export function projectToggleStar(data: { id: string; star: boolean }): Promise<ResType> {
+  return axiosRequest.post(`/api/project/star`, data)
+}
+export function deleteProject(id: string): Promise<ResType> {
   return axiosRequest.get(`/api/project/delete/${id}`)
 }
 
 /** 分组 */
-export function getFlowList(projectId: number | string, name: string): Promise<ResType> {
+export function getFlowList(projectId: string, name: string): Promise<ResType> {
   return axiosRequest.get(`/api/flow/list?name=${name}&projectId=${projectId}`)
 }
 export function getAllFlows(): Promise<ResType> {
@@ -30,7 +33,7 @@ export function createFlow(data: any): Promise<ResType> {
 export function updateFlow(data: any): Promise<ResType> {
   return axiosRequest.post(`/api/flow/update`, data)
 }
-export function deleteFlow(id: number): Promise<ResType> {
+export function deleteFlow(id: string): Promise<ResType> {
   return axiosRequest.get(`/api/flow/delete/${id}`)
 }
 
@@ -49,11 +52,11 @@ export function updateTaskProps(data: any): Promise<ResType> {
  * @param taskId
  * @returns
  */
-export function taskDetail(taskId: number): Promise<ResType> {
+export function taskDetail(taskId: string): Promise<ResType> {
   return axiosRequest.get(`/api/task/detail?taskId=${taskId}`)
 }
 /** 删除任务 */
-export function deleteTask(id: any): Promise<ResType> {
+export function deleteTask(id: string): Promise<ResType> {
   return axiosRequest.get(`/api/task/delete/${id}`)
 }
 

@@ -248,6 +248,6 @@ function setRole() {
 
 <style lang="scss" scoped>
 .user {
-  padding: 15px;
+  padding: 15px 0;
 }
 </style>

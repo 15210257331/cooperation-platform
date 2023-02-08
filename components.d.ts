@@ -39,6 +39,7 @@ declare module '@vue/runtime-core' {
     NModal: typeof import('naive-ui')['NModal']
     NNotificationProvider: typeof import('naive-ui')['NNotificationProvider']
     NPopover: typeof import('naive-ui')['NPopover']
+    NPopselect: typeof import('naive-ui')['NPopselect']
     NProgress: typeof import('naive-ui')['NProgress']
     NRadio: typeof import('naive-ui')['NRadio']
     NRadioGroup: typeof import('naive-ui')['NRadioGroup']
@@ -58,6 +59,7 @@ declare module '@vue/runtime-core' {
     SectionArea: typeof import('./src/components/SectionArea.vue')['default']
     Star: typeof import('./src/components/Star.vue')['default']
     TaskTag: typeof import('./src/components/TaskTag.vue')['default']
+    TaskTrend: typeof import('./src/components/TaskTrend.vue')['default']
     UploadFile: typeof import('./src/components/UploadFile.vue')['default']
   }
 }
