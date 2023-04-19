@@ -1,3 +1,5 @@
+const { off } = require("process");
+
 module.exports = {
   root: true,
   env: {
@@ -48,6 +50,7 @@ module.exports = {
     'no-empty': 'warn',
     // 禁止不必要的括号
     'no-extra-parens': 'off',
+    'no-undef': 'off',
     // 禁止对 function 声明重新赋值
     'no-func-assign': 'warn',
     // 禁止在 return、throw、continue 和 break 语句之后出现不可达代码

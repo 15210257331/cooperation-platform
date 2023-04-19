@@ -12,3 +12,5 @@ declare module 'vue-particles';
 declare const PROJECT_BUILD_TIME: string
 
 declare module 'gsap'
+
+declare type Demo = string | boolean | number 

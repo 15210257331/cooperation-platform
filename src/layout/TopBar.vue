@@ -1,16 +1,11 @@
 <template>
   <n-layout-header bordered>
     <AppLogo />
-    <ul class="nav_list">
-      <li
-        v-for="item in list"
-        :key="item.title"
-        :class="{ active: route.name === item.route ? true : false }"
-        @click="navigate(item.route)"
-      >
-        {{ item.title }}
-      </li>
-    </ul>
+    <nav class="nav_list">
+      <router-link v-for="item in routes" :key="item.path" active-class="active" :to="item.path">
+        {{ item.meta.title }}
+      </router-link>
+    </nav>
     <ActionContainer :tooltip-content="'全屏'" @click="toggleFullScreen">
       <n-icon size="25" :component="isFullscreen ? ContractSharp : ExpandSharp" />
     </ActionContainer>
@@ -42,13 +37,11 @@ import { useRoute, useRouter } from 'vue-router'
 import {
   SunnyOutline,
   Moon,
-  ListSharp,
   ExpandSharp,
   ContractSharp,
   PersonCircleOutline,
   ColorPalette,
-  LogOutOutline,
-  CogSharp
+  LogOutOutline
 } from '@vicons/ionicons5'
 import { useRender } from '@/hooks'
 import { DropdownOption, useDialog } from 'naive-ui'
@@ -56,45 +49,12 @@ import { DropdownOption, useDialog } from 'naive-ui'
 const userStore = useUserStore()
 const appStore = useAppStore()
 const router = useRouter()
-const route = useRoute()
 const { renderIcon } = useRender()
 const { isFullscreen, toggle } = useFullscreen()
 const dialog = useDialog()
 const showProfileModal = ref<boolean>(false)
 const showThemeSettingModal = ref<boolean>(false)
-const list = ref<
-  Array<{
-    title: string
-    route: string
-  }>
->([
-  {
-    title: '项目概览',
-    route: 'project'
-  },
-  {
-    title: '任务看板',
-    route: 'task'
-  },
-  {
-    title: '用户',
-    route: 'user'
-  },
-  {
-    title: '组件示例',
-    route: 'components'
-  }
-])
-
-function toggleTheme() {
-  appStore.toggleTheme()
-}
-function toggleCollapse() {
-  appStore.toggleCollapse()
-}
-function toggleFullScreen() {
-  toggle()
-}
+const routes = router.getRoutes().filter(item => item.meta?.show)
 const options = [
   {
     label: '编辑用户资料',
@@ -112,6 +72,12 @@ const options = [
     icon: renderIcon(LogOutOutline)
   }
 ]
+function toggleTheme() {
+  appStore.toggleTheme()
+}
+function toggleFullScreen() {
+  toggle()
+}
 function handleSelect(key: string | number, option: DropdownOption) {
   if (key === 'logout') {
     dialog.warning({
@@ -132,22 +98,9 @@ function handleSelect(key: string | number, option: DropdownOption) {
   if (key === 'profile') {
     showProfileModal.value = true
   }
-
   if (key === 'themeSetting') {
     showThemeSettingModal.value = true
   }
-
-  if (key === 'admin') {
-    router.push({
-      name: 'admin'
-    })
-  }
-}
-
-function navigate(name: string) {
-  router.push({
-    name: name
-  })
 }
 </script>
 
@@ -167,8 +120,9 @@ function navigate(name: string) {
   align-items: center;
   justify-content: center;
   position: relative;
-  li {
+  a {
     height: 60px;
+    list-style: none;
     line-height: 60px;
     color: #888;
     font-size: 14px;
@@ -180,7 +134,7 @@ function navigate(name: string) {
       color: var(--nice-primary-color);
     }
   }
-  li.active {
+  a.active {
     color: var(--nice-primary-color);
     &::after {
       content: '';

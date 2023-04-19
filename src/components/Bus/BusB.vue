@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import BUS from '../../../Bus'
+import BUS from './index'
 const flag = ref<boolean>(false)
 BUS.on('on-click', (f: boolean) => {
   flag.value = f

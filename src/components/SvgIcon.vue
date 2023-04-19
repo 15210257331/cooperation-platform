@@ -3,7 +3,15 @@
     <use :xlink:href="symbolId" :fill="color" />
   </svg>
 </template>
-
+<!-- 
+     使用示例
+     <SvgIcon name="cube" class="icon" />
+      <SvgIcon name="heart" class="icon" />
+      <SvgIcon name="mark" class="icon" />
+      <SvgIcon name="Men" class="icon" />
+      <SvgIcon name="star" class="icon" />
+      <SvgIcon name="user-role" class="icon" />
+ -->
 <script setup lang="ts">
 import { computed } from 'vue'
 

@@ -1,4 +1,5 @@
 <template>
+  <!-- 全局路由切换进度条 -->
   <div class="wrap">
     <div ref="bar" class="bar"></div>
   </div>

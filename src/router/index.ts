@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw, RouterView } from 'vue-
 import { Grid, Layers, PersonSharp, Settings, Aperture, LayersSharp, Scale, TrashBin } from '@vicons/ionicons5'
 import { createVNode, render } from 'vue'
 /** 挂载注册ProgressBar组件 */
-import ProgressBar from '../views/components/ProgressBar/index.vue'
+import ProgressBar from '../components/ProgressBar.vue'
 /** 将组件转换成虚拟DOM */
 const Vnode = createVNode(ProgressBar)
 /** 将虚拟DOM挂载到真实DOM元素上 */
@@ -42,6 +42,7 @@ export const routes: RouteRecordRaw[] = [
         path: '/project',
         name: 'project',
         meta: {
+          show: true,
           title: '项目概览'
         },
         component: () => import('@/views/project/index.vue')
@@ -50,28 +51,29 @@ export const routes: RouteRecordRaw[] = [
         path: '/task',
         name: 'task',
         meta: {
+          show: true,
           title: '任务看板'
         },
         component: () => import('@/views/task/index.vue')
-      },
-      {
-        path: 'user',
-        name: 'user',
-        meta: {
-          title: '用户管理',
-          icon: PersonSharp
-        },
-        component: () => import('@/views/user/index.vue')
-      },
-      {
-        path: '/components',
-        name: 'components',
-        meta: {
-          title: '组件示例',
-          icon: TrashBin
-        },
-        component: () => import('@/views/components/index.vue')
       }
+      // {
+      //   path: 'user',
+      //   name: 'user',
+      //   meta: {
+      //     title: '用户管理',
+      //     icon: PersonSharp
+      //   },
+      //   component: () => import('@/views/user/index.vue')
+      // },
+      // {
+      //   path: '/components',
+      //   name: 'components',
+      //   meta: {
+      //     title: '组件示例',
+      //     icon: TrashBin
+      //   },
+      //   component: () => import('@/views/components/index.vue')
+      // }
     ]
   }
 ]

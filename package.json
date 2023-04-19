@@ -12,6 +12,7 @@
     "deploy": "node deploy"
   },
   "dependencies": {
+    "@sentry/vue": "^7.47.0",
     "@vueuse/core": "^8.7.5",
     "axios": "^0.27.2",
     "chalk": "^4.1.2",
@@ -23,6 +24,7 @@
     "pinia": "^2.0.14",
     "vue": "^3.2.25",
     "vue-router": "^4.0.16",
+    "vue3-dialog-c": "^0.0.5",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
