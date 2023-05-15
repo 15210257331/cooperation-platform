@@ -56,24 +56,6 @@ export const routes: RouteRecordRaw[] = [
         },
         component: () => import('@/views/task/index.vue')
       }
-      // {
-      //   path: 'user',
-      //   name: 'user',
-      //   meta: {
-      //     title: '用户管理',
-      //     icon: PersonSharp
-      //   },
-      //   component: () => import('@/views/user/index.vue')
-      // },
-      // {
-      //   path: '/components',
-      //   name: 'components',
-      //   meta: {
-      //     title: '组件示例',
-      //     icon: TrashBin
-      //   },
-      //   component: () => import('@/views/components/index.vue')
-      // }
     ]
   }
 ]

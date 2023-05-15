@@ -1,31 +1,24 @@
 <template>
-  <div class="user">
-    <n-card size="small">
-      <n-space>
-        <n-input
-          v-model:value="queryParams.nickname"
-          type="text"
-          placeholder="请输入用户昵称"
-          @keyup.enter="queryData"
-        />
-        <n-button type="success" @click="queryData">
-          <template #icon>
-            <n-icon>
-              <SearchSharp />
-            </n-icon>
-          </template>
-          搜索
-        </n-button>
-        <n-button @click="reset">
-          <template #icon>
-            <n-icon>
-              <RefreshSharp />
-            </n-icon>
-          </template>
-          重置</n-button
-        >
-      </n-space>
-    </n-card>
+  <n-card size="small">
+    <n-space>
+      <n-input v-model:value="queryParams.nickname" type="text" placeholder="请输入用户昵称" @keyup.enter="queryData" />
+      <n-button type="success" @click="queryData">
+        <template #icon>
+          <n-icon>
+            <SearchSharp />
+          </n-icon>
+        </template>
+        搜索
+      </n-button>
+      <n-button @click="reset">
+        <template #icon>
+          <n-icon>
+            <RefreshSharp />
+          </n-icon>
+        </template>
+        重置</n-button
+      >
+    </n-space>
     <n-data-table
       :bordered="false"
       :columns="columns"
@@ -73,7 +66,7 @@
         </template>
       </n-card>
     </n-modal>
-  </div>
+  </n-card>
 </template>
 
 <script setup lang="ts">
@@ -248,6 +241,6 @@ function setRole() {
 
 <style lang="scss" scoped>
 .user {
-  padding: 15px 0;
+  padding: 10px;
 }
 </style>
