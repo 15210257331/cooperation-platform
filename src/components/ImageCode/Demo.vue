@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
+// import { ElMessage } from 'element-plus'
 import ImageCode from '../../../packages/ImageCode/index.vue'
 
 const code = ref<string>('2345')
@@ -18,9 +18,9 @@ const imageCode = ref<InstanceType<typeof ImageCode>>()
 function validate() {
   const result = imageCode.value!.validateCode(userCode.value)
   if (result) {
-    ElMessage.success('验证成功')
+    // ElMessage.success('验证成功')
   } else {
-    ElMessage.error('验证失败')
+    // ElMessage.error('验证失败')
   }
   // if(userCode.value && userCode.value === code.value) {
   //     ElMessage.success('验证成功')
