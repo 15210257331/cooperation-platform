@@ -1,49 +1,20 @@
 <template>
-  <div class="task">
+  <div class="task-board">
     <div class="task-header">
-      <div class="toggle">
-        <n-tooltip placement="top" trigger="hover">
-          <span>点击返回项目概览</span>
-          <template #trigger>
-            <n-icon
-              :component="AppsSharp"
-              :color="nicePrimaryColor"
-              style="margin-right: 10px; cursor: pointer"
-              :size="20"
-              @click="handleNavigate"
-            />
-          </template>
-        </n-tooltip>
-        <n-dropdown
-          v-model:value="currenProjectId"
-          size="large"
-          style="width: 280px"
-          :options="options"
-          scrollable
-          @select="handleSelect"
-        >
-          <n-button text icon-placement="right">
-            <template #icon>
-              <n-icon :component="ChevronDown" />
-            </template>
-            <span style="font-weight: 500; font-size: 15px">{{ currenProjectName }}</span>
-          </n-button>
-        </n-dropdown>
-      </div>
+      <p class="project-name">{{ projectDetail?.name }}</p>
       <div class="search">
-        <n-input v-model:value="keywords" round placeholder="搜索任务" @keyup.enter="handleSearch">
+        <n-input v-model:value="keywords" placeholder="搜索任务" size="small" @keyup.enter="handleSearch">
           <template #prefix>
             <n-icon :component="Search" />
           </template>
         </n-input>
       </div>
     </div>
-    <n-divider style="margin-top: 0; margin-bottom: 15px" />
     <div class="task-content">
       <PlaceholderContainer v-if="loading">
         <n-spin size="large" description="数据加载中" />
       </PlaceholderContainer>
-      <GroupList :data="currenProject?.groups" />
+      <GroupList :data="projectDetail?.groups" />
     </div>
   </div>
 </template>
@@ -51,67 +22,21 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue'
 import { useAppStore, useProjectStore } from '@/store'
-import { getProjectList } from '@/api'
 import { AppsSharp, Search, ChevronDown } from '@vicons/ionicons5'
 import GroupList from './components/GroupList.vue'
 import { ProjectType } from '@/interface'
 import PlaceholderContainer from '@/components/PlaceholderContainer.vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useCssVariable } from '@/hooks'
 
 const projectStore = useProjectStore()
 const appStore = useAppStore()
 const router = useRouter()
-
-const projectList = ref<Array<ProjectType>>([])
-const loading = ref<boolean>(true)
-const keywords = ref<string>('')
-const nicePrimaryColor = ref<string>()
-
-const currenProject = computed(() => projectStore.currentProject)
-const currenProjectId = computed(() => {
-  if (projectStore.currentProject) {
-    return projectStore.currentProject.id
-  }
-  return null
-})
-const currenProjectName = computed(() => {
-  if (projectStore.currentProject) {
-    return projectStore.currentProject.name
-  }
-  return '暂无项目'
-})
-const options = computed(() => {
-  const starList: Array<any> = []
-  const normalList: Array<any> = []
-  projectList.value.map(item => {
-    if (item.star) {
-      starList.push({
-        label: item.name,
-        key: item.id,
-        star: true
-      })
-    } else {
-      normalList.push({ label: item.name, key: item.id, star: false })
-    }
-  })
-  return [
-    {
-      type: 'group',
-      label: '星标项目',
-      key: 'star',
-      children: starList
-    },
-    {
-      type: 'group',
-      label: '普通项目',
-      key: 'normal',
-      children: normalList
-    }
-  ]
-})
+const route = useRoute()
 
 /** 切换主题是动态重新获取一下最新的主题颜色 */
+const nicePrimaryColor = ref<string>()
+const loading = ref<boolean>(true)
 watch(
   () => appStore.theme,
   () => {
@@ -121,74 +46,70 @@ watch(
     immediate: true
   }
 )
-
-queryProjectList()
-
-function queryProjectList() {
-  getProjectList('').then(res => {
-    if (res.code === 10000) {
-      projectList.value = res.data || []
-      if (!currenProject.value && projectList.value.length > 0) {
-        queryProjectDetail(projectList.value[0].id as string)
-        return
-      }
-      queryProjectDetail(currenProject.value?.id as string)
+/** 监听路由变化请求项目详情 */
+watch(
+  () => route.params.id,
+  value => {
+    if (value) {
+      queryProjectDetail(value as string)
     }
-  })
-}
+  },
+  {
+    immediate: true
+  }
+)
+
+const projectDetail = computed(() => projectStore.currentProject)
+
 /** 查询项目详情 */
-function queryProjectDetail(projectId: number | string, keyword = '') {
+
+function queryProjectDetail(projectId: string, keyword = '') {
   loading.value = true
-  projectStore.queryProjectDetail(projectId as number, keyword).finally(() => {
+  projectStore.queryProjectDetail(projectId, keyword).finally(() => {
     loading.value = false
   })
 }
 
-/** 更改当前选中的项目 */
-function handleSelect(key: string | number, option: any) {
-  // console.log(key, option)
-  queryProjectDetail(key)
-}
-
 /** 任务搜索 */
+const keywords = ref<string>('')
 function handleSearch() {
-  if (currenProject.value) {
-    queryProjectDetail(currenProject.value?.id as string, keywords.value)
+  if (projectDetail.value) {
+    queryProjectDetail(projectDetail.value?.id as string, keywords.value)
   }
-}
-
-function handleNavigate() {
-  router.push({
-    name: 'project'
-  })
 }
 </script>
 
 <style lang="scss" scoped>
-.task {
-  width: 100%;
+.task-board {
+  flex: 1;
   height: 100%;
+  margin-right: 24px;
+  overflow: hidden;
+  position: relative;
   display: flex;
   flex-direction: column;
-  position: relative;
-  .task-header {
-    height: 65px;
+}
+.task-header {
+  height: 65px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .project-name {
+    font-size: 27px;
+    color: black;
+    font-weight: 700px;
+  }
+  .toggle {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    .toggle {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-    }
+    justify-content: flex-start;
   }
-  .task-content {
-    height: 100%;
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    padding-bottom: 15px;
-  }
+}
+.task-content {
+  flex: 1;
+  width: 100%;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 </style>

@@ -6,12 +6,12 @@ import { computed, ref } from 'vue'
 export function useLocalStorage(key: string) {
   const value = getItem(key)
 
-  function setItem(key: string, value: any) {
+  function setItem(key: string, value: any): void {
     localStorage.setItem(key, value)
   }
 
-  function getItem(key: string) {
-    localStorage.getItem(key)
+  function getItem(key: string): string {
+    return localStorage.getItem(key) || ''
   }
 
   return {

@@ -1,11 +1,14 @@
 <template>
   <n-layout-header bordered>
     <AppLogo />
-    <nav class="nav_list">
+    <!-- <nav class="nav_list">
       <router-link v-for="item in routes" :key="item.path" active-class="active" :to="item.path">
         {{ item.meta.title }}
       </router-link>
-    </nav>
+    </nav> -->
+    <div style="flex: 1; display: flex; justify-content: center; align-items: center">
+      <slot></slot>
+    </div>
     <ActionContainer :tooltip-content="'全屏'" @click="toggleFullScreen">
       <n-icon size="25" :component="isFullscreen ? ContractSharp : ExpandSharp" />
     </ActionContainer>
@@ -30,7 +33,8 @@ import Message from './Message.vue'
 import ProfileModal from './ProfileModal.vue'
 import ThemeSetting from './ThemeSetting.vue'
 import ActionContainer from '@/components/ActionContainer.vue'
-import { useAppStore, useUserStore } from '@/store'
+import { AppsSharp, Search, ChevronDown } from '@vicons/ionicons5'
+import { useAppStore, useUserStore, useProjectStore } from '@/store'
 import { useFullscreen } from '@vueuse/core'
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -48,6 +52,7 @@ import { DropdownOption, useDialog } from 'naive-ui'
 
 const userStore = useUserStore()
 const appStore = useAppStore()
+const projectStore = useProjectStore()
 const router = useRouter()
 const { renderIcon } = useRender()
 const { isFullscreen, toggle } = useFullscreen()
@@ -55,6 +60,11 @@ const dialog = useDialog()
 const showProfileModal = ref<boolean>(false)
 const showThemeSettingModal = ref<boolean>(false)
 const routes = router.getRoutes().filter(item => item.meta?.show)
+const keywords = ref<string>('')
+function handleSearch(params: any) {
+  console.log(params)
+}
+
 const options = [
   {
     label: '编辑用户资料',
@@ -106,13 +116,16 @@ function handleSelect(key: string | number, option: DropdownOption) {
 
 <style lang="scss" scoped>
 .n-layout-header {
-  padding: 0 15px 0 0;
+  padding: 0 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 60px;
+  height: 56px;
   box-sizing: border-box;
   position: relative;
+}
+.view-list {
+  flex: 1;
 }
 .nav_list {
   flex: 1;
@@ -121,9 +134,9 @@ function handleSelect(key: string | number, option: DropdownOption) {
   justify-content: center;
   position: relative;
   a {
-    height: 60px;
+    height: 56px;
     list-style: none;
-    line-height: 60px;
+    line-height: 56px;
     color: #888;
     font-size: 14px;
     font-weight: 500;

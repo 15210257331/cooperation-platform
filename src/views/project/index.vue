@@ -1,71 +1,75 @@
 <template>
-  <div class="dashboard">
-    <SectionArea title="快捷操作">
-      <ShortcutItem
-        v-for="item in shortcutActionList"
-        :key="item.title"
-        :icon="item.icon"
-        :title="item.title"
-        :type="item.type"
-        @card:click="handleShortcutClick(item.type)"
-      />
-    </SectionArea>
-    <SectionArea title="我的项目" :sub-title="'(共' + projectList.length + '个项目)'">
-      <template #action>
-        <n-dropdown
-          v-model:value="selectOrderType.key"
-          trigger="hover"
-          :options="orderOptions"
-          @select="handleOrderOptionChange"
-        >
-          <n-button icon-placement="right" text style="margin-right: 20px; font-weight: 500">
-            <template #icon>
-              <n-icon :component="ChevronDown" />
-            </template>
-            {{ selectOrderType?.label }}
-          </n-button>
-        </n-dropdown>
-        <n-dropdown trigger="hover" :options="options" @select="handleSelect">
-          <n-icon size="20" :component="showType === 'card' ? Apps : ReorderFour"> </n-icon>
-        </n-dropdown>
-      </template>
-      <PlaceholderContainer v-if="projectList.length === 0 && !loading">
-        <n-empty size="huge" description="暂无数据" />
-      </PlaceholderContainer>
-      <PlaceholderContainer v-if="loading">
-        <n-spin size="large" description="数据加载中" />
-      </PlaceholderContainer>
+  <TopBar />
+  <n-layout-content :style="{ 'background-color': appStore.darkTheme ? '#101014ff' : 'rgba(236, 241, 250,0)' }">
+    <div class="dashboard">
+      <SectionArea title="快捷操作">
+        <ShortcutItem
+          v-for="item in shortcutActionList"
+          :key="item.title"
+          :icon="item.icon"
+          :title="item.title"
+          :type="item.type"
+          @card:click="handleShortcutClick(item.type)"
+        />
+      </SectionArea>
+      <SectionArea title="我的项目" :sub-title="'(共' + projectList.length + '个项目)'">
+        <template #action>
+          <n-dropdown
+            v-model:value="selectOrderType.key"
+            trigger="hover"
+            :options="orderOptions"
+            @select="handleOrderOptionChange"
+          >
+            <n-button icon-placement="right" text style="margin-right: 20px; font-weight: 500">
+              <template #icon>
+                <n-icon :component="ChevronDown" />
+              </template>
+              {{ selectOrderType?.label }}
+            </n-button>
+          </n-dropdown>
+          <n-dropdown trigger="hover" :options="options" @select="handleSelect">
+            <n-icon size="20" :component="showType === 'card' ? Apps : ReorderFour"> </n-icon>
+          </n-dropdown>
+        </template>
+        <PlaceholderContainer v-if="projectList.length === 0 && !loading">
+          <n-empty size="huge" description="暂无数据" />
+        </PlaceholderContainer>
+        <PlaceholderContainer v-if="loading">
+          <n-spin size="large" description="数据加载中" />
+        </PlaceholderContainer>
 
-      <ProjectCardList
-        v-if="showType === 'card'"
-        :data="projectList"
-        @update-project="handleUpdateProject"
-        @delete-project="removeProject"
-        @click-project="clickProject"
-        @toggle-star="toggleStar"
-      />
-      <ProjectTableList
-        v-if="showType === 'list'"
-        :data="projectList"
-        @update-project="handleUpdateProject"
-        @delete-project="removeProject"
-        @click-project="clickProject"
-        @toggle-star="toggleStar"
-      />
-    </SectionArea>
-  </div>
-  <!-- 新增/修改项目弹窗 -->
-  <CreateProjectModal ref="createProjectModalRef" @result="result" />
+        <ProjectCardList
+          v-if="showType === 'card'"
+          :data="projectList"
+          @update-project="handleUpdateProject"
+          @delete-project="removeProject"
+          @click-project="clickProject"
+          @toggle-star="toggleStar"
+        />
+        <ProjectTableList
+          v-if="showType === 'list'"
+          :data="projectList"
+          @update-project="handleUpdateProject"
+          @delete-project="removeProject"
+          @click-project="clickProject"
+          @toggle-star="toggleStar"
+        />
+      </SectionArea>
+    </div>
+    <!-- 新增/修改项目弹窗 -->
+    <CreateProjectModal ref="createProjectModalRef" @result="result" />
+  </n-layout-content>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, h } from 'vue'
 import { useDialog, useMessage, NButton, NIcon, DropdownOption } from 'naive-ui'
 import { Apps, ReorderFour, ChevronDown } from '@vicons/ionicons5'
+import TopBar from '../../layout/TopBar.vue'
 import ProjectCardList from './components/ProjectCardList.vue'
 import ProjectTableList from './components/ProjectTableList.vue'
 import ShortcutItem from './components/ShortcutItem.vue'
-import { useProjectStore } from '@/store'
+import { useAppStore, useProjectStore } from '@/store'
 import { ProjectType } from '@/interface'
 import { useRouter } from 'vue-router'
 import { useRender } from '@/hooks'
@@ -76,6 +80,7 @@ import CreateProjectModal from './components/CreateProjectModal.vue'
 
 const dialog = useDialog()
 const projectStore = useProjectStore()
+const appStore = useAppStore()
 const message = useMessage()
 const router = useRouter()
 const { renderIcon } = useRender()
@@ -211,6 +216,8 @@ function removeProject($event: ProjectType) {
 
 <style lang="scss" scoped>
 .dashboard {
-  padding-top: 5px;
+  width: 100%;
+  height: 100%;
+  padding: 24px;
 }
 </style>

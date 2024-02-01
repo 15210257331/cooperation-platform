@@ -4,7 +4,7 @@ import { axiosRequest, ResType } from './http'
 export function getProjectList(sort: string): Promise<ResType> {
   return axiosRequest.get(`/api/project/list?sort=${sort}`)
 }
-export function getProjectDetail(id: number): Promise<ResType> {
+export function getProjectDetail(id: string): Promise<ResType> {
   return axiosRequest.get(`/api/project/detail/${id}`)
 }
 export function createProject(data: any): Promise<ResType> {

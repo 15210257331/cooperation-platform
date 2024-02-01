@@ -1,21 +1,14 @@
 <template>
-  <div
-    v-for="group in groupList"
-    :key="group.id"
-    class="group-item"
-    :style="{ 'background-color': appStore.darkTheme ? 'rgb(40, 40, 42)' : '#f4f7fd' }"
-  >
-    <n-card :content-style="{ padding: '0 10px' }">
-      <div class="group-header">
-        <div class="name">
-          <p>{{ group.name }}</p>
-          <span>({{ group.tasks.length }}/{{ totalTask }})</span>
-        </div>
-        <n-dropdown trigger="hover" :options="options" @select="handleSelect($event, group)">
-          <n-icon size="20" :component="EllipsisHorizontal"></n-icon>
-        </n-dropdown>
+  <div v-for="group in groupList" :key="group.id" class="group-item">
+    <div class="group-header">
+      <div class="name">
+        <p>{{ group.name }}</p>
+        <span>({{ group.tasks.length }}/{{ totalTask }})</span>
       </div>
-    </n-card>
+      <n-dropdown trigger="hover" :options="options" @select="handleSelect($event, group)">
+        <n-icon size="20" :component="EllipsisHorizontal"></n-icon>
+      </n-dropdown>
+    </div>
     <div class="task-list">
       <draggable
         :delay="0.5"
@@ -49,10 +42,8 @@
       <CreateTaskButton v-if="group.canNew" @click="createTask(group)" />
     </div>
   </div>
-  <div class="group-item" :style="{ 'background-color': appStore.darkTheme ? 'rgb(40, 40, 42)' : '#f4f7fd' }">
-    <n-card hoverable :content-style="{ padding: '0 10px' }" @click="createGroup()">
-      <span class="group-add">新增分组</span>
-    </n-card>
+  <div class="group-item">
+    <span class="group-add" @click="createGroup()">新增分组</span>
   </div>
 
   <!-- 新增/修改分组dialog -->
@@ -204,9 +195,7 @@ async function change(evt: any, flow: any) {
 
 <style lang="scss" scoped>
 .group-item {
-  background-color: #f4f7fd;
-  padding: 12px;
-  border-radius: 2px;
+  border-radius: 4px;
   display: inline-block;
   width: 320px;
   margin: 0 20px 0 0;

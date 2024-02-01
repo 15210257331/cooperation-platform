@@ -1,5 +1,6 @@
 export interface ProjectStoreType {
-  currentProject: ProjectType | null
+  currentProject: ProjectType | null;
+  currentTaskView: string;
 }
 
 export interface ProjectType {

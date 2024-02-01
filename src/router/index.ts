@@ -43,16 +43,16 @@ export const routes: RouteRecordRaw[] = [
         name: 'project',
         meta: {
           show: true,
-          title: '项目概览'
+          title: '项目'
         },
         component: () => import('@/views/project/index.vue')
       },
       {
-        path: '/task',
+        path: '/task/:id',
         name: 'task',
         meta: {
           show: true,
-          title: '任务看板'
+          title: '任务'
         },
         component: () => import('@/views/task/index.vue')
       }

@@ -151,7 +151,7 @@ class App {
         sudo docker rm  ${projectName} || true
         sudo docker rmi  ${projectName} || true
         sudo docker build -t  ${projectName} .
-        sudo docker run -d -p 80:80 --name ${projectName} ${projectName}
+        sudo docker run -d -p 8020:80 --name ${projectName} ${projectName}
         docker ps
         exit
       `

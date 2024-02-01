@@ -1,11 +1,15 @@
 import { defineStore } from 'pinia'
 import { GroupType, ProjectStoreType, ProjectType } from '@/interface'
 import { createFlow, createTask, deleteFlow, getProjectDetail, updateFlow, updateTaskProps } from '@/api'
+import { useLocalStorage } from '@/hooks'
+
+const { setItem, value } = useLocalStorage('currentTaskView')
 
 export const useProjectStore = defineStore('project', {
   state: (): ProjectStoreType => {
     return {
-      currentProject: null
+      currentProject: null,
+      currentTaskView: value
     }
   },
   actions: {
@@ -13,7 +17,7 @@ export const useProjectStore = defineStore('project', {
      * 根据项目ID查询项目详情
      * @param name
      */
-    queryProjectDetail(projectId: number, keywords = '') {
+    queryProjectDetail(projectId: string, keywords = '') {
       return new Promise((resolve, reject) => {
         getProjectDetail(projectId)
           .then(res => {
@@ -157,6 +161,10 @@ export const useProjectStore = defineStore('project', {
     /** 分组排序 */
     groupSort(groups: Array<GroupType>): Array<GroupType> {
       return groups.sort((a: GroupType, b: GroupType) => a.sort - b.sort)
+    },
+    setCurrentTaskView(viewName: string) {
+      this.currentTaskView = viewName
+      setItem('currentTaskView', viewName)
     }
   },
   getters: {
