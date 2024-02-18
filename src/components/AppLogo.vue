@@ -27,10 +27,10 @@ const appstore = useAppStore()
 .app-logo {
   transition: width 0.3s;
   position: relative;
-  height: 56px;
-  line-height: 56px;
+  height: 45px;
+  min-height: 45px;
+  line-height: 45px;
   width: 210px;
-  padding: 0 17px;
   box-sizing: border-box;
   text-decoration: none;
   overflow: hidden;

@@ -1,6 +1,17 @@
 import { defineStore } from 'pinia'
 import { GroupType, ProjectStoreType, ProjectType } from '@/interface'
-import { createFlow, createTask, deleteFlow, getProjectDetail, updateFlow, updateTaskProps } from '@/api'
+import {
+  createFlow,
+  createTask,
+  deleteFlow,
+  getProjectDetail,
+  updateFlow,
+  updateTaskProps,
+  getProjectList,
+  deleteProject,
+  createProject,
+  updateProject
+} from '@/api'
 import { useLocalStorage } from '@/hooks'
 
 const { setItem, value } = useLocalStorage('currentTaskView')
@@ -9,10 +20,43 @@ export const useProjectStore = defineStore('project', {
   state: (): ProjectStoreType => {
     return {
       currentProject: null,
-      currentTaskView: value
+      projectList: []
     }
   },
   actions: {
+    // 查询项目列表
+    queryProjectList() {
+      return new Promise((resolve, reject) => {
+        getProjectList('')
+          .then(res => {
+            if (res.code === 10000) {
+              this.projectList = res.data || []
+              resolve(true)
+            } else {
+              reject(false)
+            }
+          })
+          .catch(err => {
+            reject(false)
+          })
+      })
+    },
+    createProject() {},
+    updateProject() {},
+    // 删除项目
+    deleteProject(id: string) {
+      return new Promise((resolve, reject) => {
+        deleteProject(id).then(res => {
+          if (res.code === 10000) {
+            const index = this.projectList.findIndex(item => item.id === id)
+            this.projectList.splice(index, 1)
+            resolve(true)
+          } else {
+            reject(false)
+          }
+        })
+      })
+    },
     /**
      * 根据项目ID查询项目详情
      * @param name

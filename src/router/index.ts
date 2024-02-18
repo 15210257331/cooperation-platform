@@ -1,5 +1,15 @@
 import { createRouter, createWebHistory, RouteRecordRaw, RouterView } from 'vue-router'
-import { Grid, Layers, PersonSharp, Settings, Aperture, LayersSharp, Scale, TrashBin } from '@vicons/ionicons5'
+import {
+  Grid,
+  Layers,
+  PersonSharp,
+  Settings,
+  Aperture,
+  LayersSharp,
+  PeopleSharp,
+  AppsSharp,
+  Calendar
+} from '@vicons/ionicons5'
 import { createVNode, render } from 'vue'
 /** 挂载注册ProgressBar组件 */
 import ProgressBar from '../components/ProgressBar.vue'
@@ -43,12 +53,36 @@ export const routes: RouteRecordRaw[] = [
         name: 'project',
         meta: {
           show: true,
-          title: '项目'
+          type: 'static',
+          title: '全部项目',
+          icon: AppsSharp
         },
         component: () => import('@/views/project/index.vue')
       },
       {
-        path: '/task/:id',
+        path: '/member',
+        name: 'member',
+        meta: {
+          show: true,
+          type: 'static',
+          title: '成员',
+          icon: PeopleSharp
+        },
+        component: () => import('@/views/project/index.vue')
+      },
+      {
+        path: '/calendar',
+        name: 'calendar',
+        meta: {
+          show: true,
+          type: 'static',
+          title: '项目日历',
+          icon: Calendar
+        },
+        component: () => import('@/views/calendar/index.vue')
+      },
+      {
+        path: '/project/:id',
         name: 'task',
         meta: {
           show: true,

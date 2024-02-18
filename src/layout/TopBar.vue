@@ -1,16 +1,10 @@
 <template>
   <n-layout-header bordered>
-    <AppLogo />
-    <!-- <nav class="nav_list">
-      <router-link v-for="item in routes" :key="item.path" active-class="active" :to="item.path">
-        {{ item.meta.title }}
-      </router-link>
-    </nav> -->
-    <div style="flex: 1; display: flex; justify-content: center; align-items: center">
+    <div style="flex: 1; display: flex; align-items: center">
       <slot></slot>
     </div>
     <ActionContainer :tooltip-content="'全屏'" @click="toggleFullScreen">
-      <n-icon size="25" :component="isFullscreen ? ContractSharp : ExpandSharp" />
+      <n-icon size="22" :component="isFullscreen ? ContractSharp : ExpandSharp" />
     </ActionContainer>
     <ActionContainer :tooltip-content="'主题模式'" @click="toggleTheme">
       <n-icon size="25" :component="appStore.darkTheme === true ? Moon : SunnyOutline" />
@@ -19,7 +13,10 @@
     <n-dropdown :options="options" @select="handleSelect">
       <ActionContainer>
         <n-avatar round size="small" :src="userStore.userInfo.avatar" />
-        <span class="user-name">{{ userStore.nickname }}</span>
+        <div class="user-info">
+          <div class="nickname">{{ userStore.userInfo.nickname }}</div>
+          <span class="username">@{{ userStore.userInfo.username }}</span>
+        </div>
       </ActionContainer>
     </n-dropdown>
     <ProfileModal v-model:value="showProfileModal" />
@@ -116,11 +113,11 @@ function handleSelect(key: string | number, option: DropdownOption) {
 
 <style lang="scss" scoped>
 .n-layout-header {
-  padding: 0 24px;
+  padding: 0 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 56px;
+  height: 45px;
   box-sizing: border-box;
   position: relative;
 }
@@ -161,10 +158,26 @@ function handleSelect(key: string | number, option: DropdownOption) {
     }
   }
 }
-span.user-name {
-  font-weight: 500;
-  font-size: 16px;
-  padding-left: 8px;
-  vertical-align: super;
+.user-info {
+  height: 30px;
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  .nickname {
+    font-size: 14px;
+    color: black;
+    font-weight: 500px;
+    line-height: 16px;
+  }
+  .username {
+    color: #888;
+    display: inline-block;
+    height: 15px;
+    font-size: 13px;
+    line-height: 14px;
+    font-weight: 500;
+  }
 }
 </style>

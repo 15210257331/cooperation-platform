@@ -3,7 +3,8 @@
     <template #trigger>
       <ActionContainer :tooltip-content="'消息通知'">
         <n-icon size="25" :component="Notifications" />
-        <n-badge :value="unreadCount" :max="99" style="position: absolute; top: 10px; right: 2px" />
+        <n-badge :value="unreadCount" dot style="position: absolute; top: 10px; right: 12px; z-index: 99;" >
+        </n-badge>
       </ActionContainer>
     </template>
     <div style="width: 370px; height: 400px; overflow: auto; padding: 10px 10px 0 0">

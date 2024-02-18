@@ -1,9 +1,14 @@
 <template>
+  <TopBar></TopBar>
   <div class="task-board">
     <div class="task-header">
-      <p class="project-name">{{ projectDetail?.name }}</p>
+      <div class="project-name">
+        <IconSelect :default="projectDetail?.icon" only-show></IconSelect>
+        <span>{{ projectDetail?.name }}</span>
+      </div>
+      <div class="placeholder"></div>
       <div class="search">
-        <n-input v-model:value="keywords" placeholder="搜索任务" size="small" @keyup.enter="handleSearch">
+        <n-input v-model:value="keywords" placeholder="搜索任务" round @keyup.enter="handleSearch">
           <template #prefix>
             <n-icon :component="Search" />
           </template>
@@ -22,10 +27,12 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue'
 import { useAppStore, useProjectStore } from '@/store'
-import { AppsSharp, Search, ChevronDown } from '@vicons/ionicons5'
+import { AppsSharp, Search, ChevronDown, LogoBuffer, StarSharp, StarOutline } from '@vicons/ionicons5'
 import GroupList from './components/GroupList.vue'
+import TopBar from '../../layout/TopBar.vue'
 import { ProjectType } from '@/interface'
 import PlaceholderContainer from '@/components/PlaceholderContainer.vue'
+import IconSelect from '@/components/IconSelect.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCssVariable } from '@/hooks'
 
@@ -62,7 +69,6 @@ watch(
 const projectDetail = computed(() => projectStore.currentProject)
 
 /** 查询项目详情 */
-
 function queryProjectDetail(projectId: string, keyword = '') {
   loading.value = true
   projectStore.queryProjectDetail(projectId, keyword).finally(() => {
@@ -77,39 +83,52 @@ function handleSearch() {
     queryProjectDetail(projectDetail.value?.id as string, keywords.value)
   }
 }
+
+function handleStar() {}
 </script>
 
 <style lang="scss" scoped>
 .task-board {
-  flex: 1;
-  height: 100%;
-  margin-right: 24px;
+  width: 100%;
+  height: calc(100% - 45px);
+  padding: 16px 24px 4px 24px;
   overflow: hidden;
   position: relative;
   display: flex;
   flex-direction: column;
-}
-.task-header {
-  height: 65px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  .project-name {
-    font-size: 27px;
-    color: black;
-    font-weight: 700px;
-  }
-  .toggle {
+  .task-header {
     display: flex;
-    align-items: center;
     justify-content: flex-start;
+    align-items: center;
+    .project-name {
+      display: flex;
+      height: 40px;
+      align-items: center;
+      max-width: 210px;
+      span {
+        font-size: 16px;
+        margin-left: 8px;
+        color: rgb(51, 54, 57);
+        font-weight: 500;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+    .placeholder {
+      flex: 1;
+    }
+    .search {
+      // flex: 1;
+    }
   }
-}
-.task-content {
-  flex: 1;
-  width: 100%;
-  white-space: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
+  .task-content {
+    flex: 1;
+    width: 100%;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
 }
 </style>

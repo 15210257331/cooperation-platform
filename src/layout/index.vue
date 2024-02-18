@@ -1,8 +1,7 @@
 <template>
-  <n-layout :style="styleObj">
-    <TopBar />
+  <n-layout has-sider :style="styleObj">
+    <SideBar />
     <n-layout-content :style="{ 'background-color': appStore.darkTheme ? '#101014ff' : 'rgba(236, 241, 250,0)' }">
-      <SideBar />
       <router-view />
     </n-layout-content>
   </n-layout>
@@ -21,7 +20,7 @@ const userStore = useUserStore()
 const styleObj = computed(() => {
   return {
     height: '100%',
-    background: appStore.darkTheme ? 'rgb(40, 40, 42)' : 'linear-gradient(180deg, #fccae7, #dbe0ed)'
+    background: appStore.darkTheme ? 'rgb(40, 40, 42)' : '#F5F5F5'
   }
 })
 
@@ -56,13 +55,12 @@ function queryUnreadCount() {
 
 <style lang="scss" scoped>
 .n-layout-content {
-  height: calc(100% - 56px);
+  height: 100%;
   width: 100%;
   box-sizing: border-box;
-  padding: 24px 0;
   ::v-deep(.n-layout-scroll-container) {
     width: 100%;
-    display: flex;
+    // display: flex;
     // overflow: hidden;
   }
 }

@@ -45,7 +45,6 @@
   <div class="group-item">
     <span class="group-add" @click="createGroup()">新增分组</span>
   </div>
-
   <!-- 新增/修改分组dialog -->
   <CreateGroupModal v-model:value="showCreateGroupModal" :data="selectedGroupData" />
   <!-- 新增任务modal -->

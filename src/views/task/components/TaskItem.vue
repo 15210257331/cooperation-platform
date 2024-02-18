@@ -259,7 +259,7 @@ async function setAlarm() {
 <style lang="scss" scoped>
 .task-item {
   cursor: pointer;
-  margin: 10px 0px;
+  margin-bottom: 10px;
   min-height: 70px;
   position: relative;
 

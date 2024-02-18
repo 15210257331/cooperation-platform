@@ -1,27 +1,22 @@
 <template>
   <div class="icon-select">
-    <div v-if="onlyShow" class="icon-item" :style="{ backgroundColor: selectedIcon.bgColor }">
-      <n-icon size="20" :color="selectedIcon.color" :component="selectedIcon.component" />
-    </div>
-    <div
-      v-for="item in icons"
-      v-else
-      :key="item.name"
-      class="icon-item"
-      :style="{ backgroundColor: item.bgColor }"
-      @click="selectItem(item.name)"
-    >
-      <n-icon size="20" :color="item.color" :component="item.component" />
-      <label class="no-selected" :class="{ selected: item.name === modelValue }" for="choose">
-        <input style="width: 0; height: 0" type="checkbox" clsss="choose" />
-      </label>
-    </div>
+    <template v-if="onlyShow">
+      <n-icon size="17" color="#338fe4" :component="selectedIcon.component" />
+    </template>
+    <template v-else>
+      <div v-for="item in icons" :key="item.name" class="icon-item" @click="selectItem(item.name)">
+        <n-icon size="20" color="#338fe4" :component="item.component" />
+        <label class="no-selected" :class="{ selected: item.name === modelValue }" for="choose">
+          <input style="width: 0; height: 0" type="checkbox" clsss="choose" />
+        </label>
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Documents, Rocket, ShieldCheckmark, BookmarksSharp, CloudDone } from '@vicons/ionicons5'
+import { FileTrayFull, LogoBuffer, ShieldCheckmark, BookmarksSharp, CloudDone } from '@vicons/ionicons5'
 
 const props = defineProps({
   modelValue: {
@@ -46,33 +41,23 @@ const selectedIcon = computed(() => {
 
 const icons = [
   {
-    name: 'Documents',
-    color: '#FF8210',
-    bgColor: '#FFF3Ec',
-    component: Documents
+    name: 'FileTrayFull',
+    component: FileTrayFull
   },
   {
-    name: 'Rocket',
-    color: '#07A0F6',
-    bgColor: '#EAF8FF',
-    component: Rocket
+    name: 'LogoBuffer',
+    component: LogoBuffer
   },
   {
     name: 'ShieldCheckmark',
-    color: '#8901BC',
-    bgColor: '#FCF3FF',
     component: ShieldCheckmark
   },
   {
     name: 'BookmarksSharp',
-    color: '#66C969',
-    bgColor: '#C0F8DA',
     component: BookmarksSharp
   },
   {
     name: 'CloudDone',
-    color: '#F444EA',
-    bgColor: '#E79AEA',
     component: CloudDone
   }
 ]
