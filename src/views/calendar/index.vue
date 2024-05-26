@@ -1,5 +1,4 @@
 <template>
-  <TopBar />
   <div class="calendar">
     <n-calendar
       v-model:value="value"
@@ -40,7 +39,7 @@ function isDateDisabled(timestamp: number) {
 <style lang="scss" scoped>
 .calendar {
   width: 100%;
-  height: calc(100% - 45px);
+  height: 100%;
   padding: 24px;
   overflow: auto;
 }

@@ -205,10 +205,6 @@ export const useProjectStore = defineStore('project', {
     /** 分组排序 */
     groupSort(groups: Array<GroupType>): Array<GroupType> {
       return groups.sort((a: GroupType, b: GroupType) => a.sort - b.sort)
-    },
-    setCurrentTaskView(viewName: string) {
-      this.currentTaskView = viewName
-      setItem('currentTaskView', viewName)
     }
   },
   getters: {

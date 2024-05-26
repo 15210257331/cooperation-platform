@@ -65,6 +65,7 @@
           :tooltip-content="'该任务标记为已完成'"
         />
       </n-space>
+      <n-avatar round size="small" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
     </div>
 
     <!-- 任务详情modal -->
@@ -332,6 +333,11 @@ async function setAlarm() {
         }
       }
     }
+  }
+  .tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   .indicator {
     display: flex;

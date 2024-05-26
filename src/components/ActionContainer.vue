@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showTooltip" :class="['action-item', appStore.darkTheme ? 'dark' : 'light']">
+  <div v-if="showTooltip" :class="['action-item', appStore.darkTheme ? 'dark' : 'light']" @click="handleClick">
     <n-tooltip :placement="placement" trigger="hover">
       <template #trigger>
         <div>
@@ -21,9 +21,9 @@ import { useAppStore } from '@/store'
 
 interface Props {
   /** tooltip显示文本 */
-  tooltipContent?: string;
+  tooltipContent?: string
   /** tooltip的位置 */
-  placement?: PopoverPlacement;
+  placement?: PopoverPlacement
 }
 
 const appStore = useAppStore()
@@ -34,10 +34,14 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  (e: 'handleClick'): void;
+  (e: 'onClick'): void
 }>()
 
 const showTooltip = computed(() => Boolean(props.tooltipContent))
+
+function handleClick() {
+  emit('onClick')
+}
 </script>
 
 <style scoped lang="scss">

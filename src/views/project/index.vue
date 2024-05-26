@@ -1,5 +1,4 @@
 <template>
-  <TopBar />
   <div class="dashboard">
     <SectionArea title="快捷操作">
       <ShortcutItem
@@ -215,7 +214,7 @@ function removeProject($event: ProjectType) {
 <style lang="scss" scoped>
 .dashboard {
   width: 100%;
-  height: calc(100% - 45px);
+  height: 100%;
   padding: 24px;
   overflow: auto;
 }

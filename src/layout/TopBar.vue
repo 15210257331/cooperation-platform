@@ -1,5 +1,6 @@
 <template>
   <n-layout-header bordered>
+    <AppLogo />
     <div style="flex: 1; display: flex; align-items: center">
       <slot></slot>
     </div>
@@ -12,7 +13,8 @@
     <Message />
     <n-dropdown :options="options" @select="handleSelect">
       <ActionContainer>
-        <n-avatar round size="small" :src="userStore.userInfo.avatar" />
+        <!-- <n-avatar round size="small" :src="userStore.userInfo.avatar" /> -->
+        <n-avatar round size="small">{{ userStore.userInfo.nickname.slice(0, 1) }}</n-avatar>
         <div class="user-info">
           <div class="nickname">{{ userStore.userInfo.nickname }}</div>
           <span class="username">@{{ userStore.userInfo.username }}</span>
@@ -113,11 +115,11 @@ function handleSelect(key: string | number, option: DropdownOption) {
 
 <style lang="scss" scoped>
 .n-layout-header {
-  padding: 0 12px;
+  padding: 0 12px 0 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 45px;
+  height: 55px;
   box-sizing: border-box;
   position: relative;
 }

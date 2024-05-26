@@ -1,7 +1,7 @@
 <template>
   <router-link :class="{ 'app-logo': true, 'app-logo-collapse': appstore.sideCollapse }" to="/">
     <img class="logo-img" src="../assets/logo.png" />
-    <h2 class="logo-title">任务管理平台</h2>
+    <h2 class="logo-title">蜂鸟协作</h2>
   </router-link>
 </template>
 <script setup lang="ts">

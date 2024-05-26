@@ -4,11 +4,11 @@
     :collapsed-width="0"
     :width="240"
     show-trigger="arrow-circle"
-    content-style="padding: 0px 12px;display:flex;flex-direction: column;justify-content: flex-start; overflow: hidden"
+    content-style="padding: 20px 12px;display:flex;flex-direction: column;justify-content: flex-start; overflow: hidden"
     bordered
   >
-    <AppLogo />
-    <n-divider style="margin: 12px 0" />
+    <!-- <AppLogo /> -->
+    <!-- <n-divider style="margin: 12px 0" /> -->
     <div class="title">工作台</div>
     <ul class="nav-list">
       <li

@@ -2,23 +2,23 @@ import { getNotificationList, getUnreadCount, readNotification } from '@/api'
 import { defineStore } from 'pinia'
 
 export interface UserInfoType {
-  id: number | null;
-  username: string;
-  nickname: string;
-  phone: any;
-  avatar: string;
-  role: number;
-  intro: string;
+  id: number | null
+  username: string
+  nickname: string
+  phone: any
+  avatar: string
+  role: number
+  intro: string
 }
 
 export interface NotificationType {
-  [key: string]: any;
+  [key: string]: any
 }
 
 export interface UserType {
-  userInfo: UserInfoType;
-  unReadCount: number;
-  notificationList: Array<NotificationType>;
+  userInfo: UserInfoType
+  unReadCount: number
+  notificationList: Array<NotificationType>
 }
 
 function initUserInfo(): UserInfoType {
@@ -57,17 +57,24 @@ export const useUserStore = defineStore('user', {
       })
     },
     readNotification(data: any) {
-      readNotification(data).then(res => {
-        if (res.code === 10000) {
-          if (this.unReadCount > 0) {
-            this.unReadCount -= 1
-            this.notificationList.map(item => {
-              if (item.id === data.id) {
-                item.read = 1
+      return new Promise((resolve, reject) => {
+        readNotification(data)
+          .then(res => {
+            if (res.code === 10000) {
+              if (this.unReadCount > 0) {
+                this.unReadCount -= 1
+                this.notificationList.map(item => {
+                  if (item.id === data.id) {
+                    item.read = 1
+                  }
+                })
+                resolve(true)
               }
-            })
-          }
-        }
+            }
+          })
+          .catch(() => {
+            reject(false)
+          })
       })
     },
     setUserInfo(userInfo: UserInfoType) {
