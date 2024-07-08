@@ -1,9 +1,8 @@
 <template>
-  <div class="task-calendar">
+  <div class="task-calendar" :style="{ backgroundColor: appStore.darkTheme ? 'rgba(255, 255, 255, 0.12)' : '#f9f9f9' }">
     <n-calendar
       v-model:value="value"
       #="{ year, month, date }"
-      style="background-color: white; padding: 12px"
       :is-date-disabled="isDateDisabled"
       @update:value="handleUpdateValue"
     >
@@ -19,7 +18,9 @@ import { Apps, ReorderFour, ChevronDown } from '@vicons/ionicons5'
 import TopBar from '../../layout/TopBar.vue'
 import { useRouter } from 'vue-router'
 import SectionArea from '@/components/SectionArea.vue'
+import { useAppStore } from '@/store'
 
+const appStore = useAppStore()
 const dialog = useDialog()
 const message = useMessage()
 const router = useRouter()
@@ -43,6 +44,5 @@ function isDateDisabled(timestamp: number) {
   padding: 16px;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #f9f9f9;
 }
 </style>

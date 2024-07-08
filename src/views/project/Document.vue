@@ -1,8 +1,14 @@
 <template>
-  <div class="task-document">this is a Documents</div>
+  <div class="task-document" :style="{ backgroundColor: appStore.darkTheme ? 'rgba(255, 255, 255, 0.12)' : '#f9f9f9' }">
+    this is a Documents
+  </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useAppStore } from '@/store'
+
+const appStore = useAppStore()
+</script>
 
 <style lang="scss" scoped>
 .task-document {
@@ -11,6 +17,5 @@
   padding: 16px;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #f9f9f9;
 }
 </style>

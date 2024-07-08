@@ -15,6 +15,7 @@ declare module '@vue/runtime-core' {
     CreateTaskButton: typeof import('./src/components/CreateTaskButton.vue')['default']
     CustomLoading: typeof import('./src/components/CustomLoading.vue')['default']
     Demo: typeof import('./src/components/ImageCode/Demo.vue')['default']
+    FullScreen: typeof import('./src/components/FullScreen.vue')['default']
     GlobalProperty: typeof import('./src/components/GlobalProperty.vue')['default']
     IconSelect: typeof import('./src/components/IconSelect.vue')['default']
     IconWrap: typeof import('./src/components/IconWrap.vue')['default']

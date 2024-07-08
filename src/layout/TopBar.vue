@@ -4,32 +4,22 @@
       <n-breadcrumb>
         <n-breadcrumb-item> <n-icon :component="Home" :size="15" /> 主页 </n-breadcrumb-item>
         <n-breadcrumb-item>
-          <n-icon :component="AppsSharp" :size="15" />
+          <n-icon :component="currentRoute.meta.icon" :size="15" />
           {{ currentRoute.meta.title }}
         </n-breadcrumb-item>
       </n-breadcrumb>
     </div>
-
-    <n-tooltip trigger="hover">
-      全屏展示
-      <template #trigger>
-        <n-button tertiary circle style="margin: 0 8px" @click="toggleFullScreen">
-          <template #icon>
-            <n-icon :component="isFullscreen ? ContractSharp : ExpandSharp" />
-          </template>
-        </n-button>
-      </template>
-    </n-tooltip>
-
+    <FullScreen />
     <Message />
-
     <ThemeSwitch />
-
     <n-dropdown :options="options" @select="handleSelect">
-      <div class="action-wrap">
+      <div
+        class="action-wrap"
+        :style="{ backgroundColor: appStore.darkTheme ? 'rgb(40, 40, 42)' : 'rgba(46, 51, 56, .05)' }"
+      >
         <n-avatar round size="small">{{ userStore.userInfo.nickname.slice(0, 1) }}</n-avatar>
         <div class="nickname">{{ userStore.userInfo.nickname }}</div>
-        <n-icon size="20" :component="ChevronDownOutline" />
+        <n-icon :size="18" :component="ChevronDownOutline" />
       </div>
     </n-dropdown>
     <ProfileModal v-model:value="showProfileModal" />
@@ -38,19 +28,15 @@
 </template>
 
 <script setup lang="ts">
-import AppLogo from '@/components/AppLogo.vue'
 import Message from './Message.vue'
+import FullScreen from '@/components/FullScreen.vue'
 import ProfileModal from './ProfileModal.vue'
 import ThemeSetting from './ThemeSetting.vue'
-import ActionContainer from '@/components/ActionContainer.vue'
-import { AppsSharp, Search, ChevronDown, Add, Home } from '@vicons/ionicons5'
 import { useAppStore, useUserStore, useProjectStore } from '@/store'
-import { useFullscreen } from '@vueuse/core'
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
-  SunnyOutline,
-  Moon,
+  Home,
   ExpandSharp,
   ContractSharp,
   PersonCircleOutline,
@@ -67,9 +53,7 @@ const appStore = useAppStore()
 const projectStore = useProjectStore()
 const router = useRouter()
 const route = useRoute()
-console.log(route.matched)
 const { renderIcon } = useRender()
-const { isFullscreen, toggle } = useFullscreen()
 const dialog = useDialog()
 const showProfileModal = ref<boolean>(false)
 const showThemeSettingModal = ref<boolean>(false)
@@ -104,12 +88,6 @@ const options = [
     icon: renderIcon(LogOutOutline)
   }
 ]
-function toggleTheme() {
-  appStore.toggleTheme()
-}
-function toggleFullScreen() {
-  toggle()
-}
 function handleSelect(key: string | number, option: DropdownOption) {
   if (key === 'logout') {
     dialog.warning({
@@ -192,7 +170,6 @@ function handleSelect(key: string | number, option: DropdownOption) {
   align-items: flex-start;
 
   .username {
-    color: #888;
     display: inline-block;
     height: 15px;
     font-size: 13px;
@@ -204,8 +181,7 @@ function handleSelect(key: string | number, option: DropdownOption) {
 .action-wrap {
   min-width: 38px;
   width: auto;
-  height: 38px;
-  background-color: #f6f6f6ff;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -215,7 +191,6 @@ function handleSelect(key: string | number, option: DropdownOption) {
 .nickname {
   font-size: 14px;
   margin: 0 4px 0 8px;
-  color: black;
   font-weight: 500;
   line-height: 16px;
 }

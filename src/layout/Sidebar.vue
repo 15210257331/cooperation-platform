@@ -38,7 +38,6 @@ import { ProjectType } from '@/interface'
 import { useRouter, useRoute } from 'vue-router'
 import AppLogo from '@/components/AppLogo.vue'
 import IconSelect from '@/components/IconSelect.vue'
-import CreateProjectModal from '@/views/project/components/CreateProjectModal.vue'
 import {
   EllipsisHorizontal,
   TrashBin,

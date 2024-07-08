@@ -1,6 +1,6 @@
 <template>
   <TaskFilter />
-  <div class="task-board">
+  <div class="task-board" :style="{ backgroundColor: appStore.darkTheme ? 'rgba(255, 255, 255, 0.12)' : '#f9f9f9' }">
     <div v-for="(group, index) in groupList" :key="group.id" class="group-item">
       <n-card :content-style="{ padding: '10px 15px' }">
         <div class="group-header">

@@ -1,6 +1,6 @@
 <template>
   <TaskFilter />
-  <div class="task-list">
+  <div class="task-list" :style="{ backgroundColor: appStore.darkTheme ? 'rgba(255, 255, 255, 0.12)' : '#f9f9f9' }">
     <n-data-table :columns="columns" :data="data" :pagination="pagination" default-expand-all />
   </div>
 </template>
@@ -10,6 +10,7 @@ import { h, defineComponent } from 'vue'
 import { NTag, NButton, useMessage } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import TaskFilter from './TaskFilter.vue'
+import { useAppStore } from '@/store'
 
 type RowData = {
   key: number
@@ -20,6 +21,7 @@ type RowData = {
 }
 
 const message = useMessage()
+const appStore = useAppStore()
 
 const data = [
   {
@@ -132,6 +134,5 @@ function createColumns({ sendMail }: { sendMail: (rowData: RowData) => void }): 
   padding: 16px;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #f9f9f9;
 }
 </style>

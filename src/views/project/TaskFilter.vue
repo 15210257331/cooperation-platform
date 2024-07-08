@@ -1,5 +1,10 @@
 <template>
-  <div class="task-filter">
+  <div
+    class="task-filter"
+    :style="{
+      borderBottom: appStore.darkTheme ? '1px solid rgba(255, 255, 255, 0.09)' : '1px solid rgb(239, 239, 245)'
+    }"
+  >
     <n-popselect v-model:value="taskType" :options="taskTypeList" trigger="click">
       <n-button icon-placement="right" size="tiny" text>
         {{ taskType || '全部任务' }}
@@ -44,7 +49,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { Search, ChevronDownOutline, FilterCircleSharp } from '@vicons/ionicons5'
-import { useProjectStore } from '@/store'
+import { useAppStore, useProjectStore } from '@/store'
 
 interface Emits {
   (e: 'onSearch', val: string): void
@@ -52,6 +57,7 @@ interface Emits {
 const emit = defineEmits<Emits>()
 
 const projectStore = useProjectStore()
+const appStore = useAppStore()
 const projectDetail = computed(() => projectStore.currentProject)
 
 const taskType = ref<string>('全部任务')
@@ -94,7 +100,6 @@ function handleClose() {}
 <style lang="scss" scoped>
 .task-filter {
   height: 40px;
-  border-bottom: 1px solid rgb(239, 239, 245);
   display: flex;
   align-items: center;
   justify-content: flex-start;

@@ -1,6 +1,12 @@
 <template>
-  <div class="theme-switch">
-    <span class="theme-bg" :style="{ left: isDarkTheme ? '3px' : '46px' }"></span>
+  <div class="theme-switch" :style="{ backgroundColor: appStore.darkTheme ? 'rgb(40, 40, 42)' : 'rgba(46, 51, 56, .05)' }">
+    <span
+      class="theme-bg"
+      :style="{
+        left: isDarkTheme ? '6px' : '46px',
+        backgroundColor: appStore.darkTheme ? 'rgb(24, 24, 28)' : '#FFFFFF'
+      }"
+    ></span>
     <n-icon size="20" :component="Moon" class="theme-item" @click="toggleTheme" />
     <n-icon size="20" :component="SunnyOutline" class="theme-item" @click="toggleTheme" />
   </div>
@@ -39,8 +45,7 @@ function toggleTheme() {
 <style lang="scss" scoped>
 .theme-switch {
   width: auto;
-  height: 38px;
-  background-color: #f6f6f6ff;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -58,7 +63,6 @@ function toggleTheme() {
     position: absolute;
     width: 28px;
     height: 28px;
-    background-color: white;
     border-radius: 50%;
     transition: all 0.3s linear;
   }
