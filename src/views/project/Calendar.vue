@@ -1,5 +1,5 @@
 <template>
-  <div class="calendar">
+  <div class="task-calendar">
     <n-calendar
       v-model:value="value"
       #="{ year, month, date }"
@@ -37,10 +37,12 @@ function isDateDisabled(timestamp: number) {
 </script>
 
 <style lang="scss" scoped>
-.calendar {
+.task-calendar {
+  flex: 1;
   width: 100%;
-  height: 100%;
-  padding: 24px;
-  overflow: auto;
+  padding: 16px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: #f9f9f9;
 }
 </style>

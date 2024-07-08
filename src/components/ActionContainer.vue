@@ -2,7 +2,7 @@
   <div v-if="showTooltip" :class="['action-item', appStore.darkTheme ? 'dark' : 'light']" @click="handleClick">
     <n-tooltip :placement="placement" trigger="hover">
       <template #trigger>
-        <div>
+        <div class="icon-wrap">
           <slot></slot>
         </div>
       </template>
@@ -53,20 +53,29 @@ function handleClick() {
   align-items: center;
   position: relative;
   cursor: pointer;
-  & > div {
-    height: 100%;
+  .icon-wrap {
+    width: 36px;
+    height: 36px;
+    // background-color: #f6f6f6ff;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    border-radius: 50%;
   }
 }
 
 .light {
+  .icon-wrap {
+    background-color: #f6f6f6ff;
+  }
   &:hover {
     background-color: #f6f6f6ff;
   }
 }
 .dark {
+  .icon-wrap {
+    background-color: #333333ff;
+  }
   &:hover {
     background-color: #333333ff;
   }

@@ -1,8 +1,15 @@
 <template>
-  <ActionContainer :tooltip-content="'消息通知'" @on-click="handleOnClick">
-    <n-icon size="25" :component="Notifications" />
-    <n-badge :value="unreadCount" dot style="position: absolute; top: 10px; right: 12px; z-index: 99"> </n-badge>
-  </ActionContainer>
+  <n-tooltip trigger="hover">
+    消息通知
+    <template #trigger>
+      <n-button tertiary circle @click="handleOnClick">
+        <template #icon>
+          <n-icon :component="Notifications" />
+          <n-badge :value="unreadCount" dot style="position: absolute; top: -2px; right: -2px; z-index: 99"> </n-badge>
+        </template>
+      </n-button>
+    </template>
+  </n-tooltip>
   <n-drawer v-model:show="drawerShow" :width="430" placement="right">
     <n-drawer-content title="消息通知" closable :native-scrollbar="false">
       <n-card

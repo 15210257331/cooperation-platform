@@ -1,7 +1,7 @@
 <template>
   <router-link :class="{ 'app-logo': true, 'app-logo-collapse': appstore.sideCollapse }" to="/">
     <img class="logo-img" src="../assets/logo.png" />
-    <h2 class="logo-title">蜂鸟协作</h2>
+    <h2 class="logo-title">项目协作平台</h2>
   </router-link>
 </template>
 <script setup lang="ts">
@@ -27,15 +27,14 @@ const appstore = useAppStore()
 .app-logo {
   transition: width 0.3s;
   position: relative;
-  height: 45px;
-  min-height: 45px;
-  line-height: 45px;
-  width: 210px;
+  min-height: 49px;
+  line-height: 49px;
   box-sizing: border-box;
   text-decoration: none;
   overflow: hidden;
   white-space: nowrap;
   display: inline-block;
+  margin: 0 15px;
   & .logo-img {
     transition: all 0.3s;
     width: 35px;
@@ -51,8 +50,8 @@ const appstore = useAppStore()
     width: 130px;
     margin: 0 0 0 10px;
     font-family: DFPSongW9;
-    font-weight: 700;
-    font-size: 18px;
+    font-weight: 500;
+    font-size: 17px;
     overflow: hidden;
     height: 35px;
     line-height: 35px;

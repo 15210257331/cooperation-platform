@@ -1,40 +1,6 @@
 <template>
-  <n-card :content-style="{ padding: '10px 15px' }" class="task-item" @click="taskDetail">
-    <div class="border-line" :style="{ backgroundColor: borderColor }"></div>
-    <div class="title">
-      <p :class="{ complete: complete }">{{ task.name }}</p>
-      <n-dropdown trigger="hover" :options="options" @select="handleSelect">
-        <n-icon size="20" style="margin-top: 6px">
-          <EllipsisHorizontal />
-        </n-icon>
-      </n-dropdown>
-    </div>
-
-    <div class="time">
-      <n-tag :bordered="false" size="small" type="warning">
-        {{ startDate }}
-      </n-tag>
-      <span>--</span>
-      <n-tag :bordered="false" size="small" type="error">
-        {{ endDate }}
-      </n-tag>
-    </div>
-
-    <div class="description">
-      <p :class="{ complete: complete }">{{ task.description }}</p>
-    </div>
-
-    <div class="progress">
-      <div>
-        <span>任务进度:</span>
-        <span
-          ><strong>{{ progress }}</strong
-          >of 100%
-        </span>
-      </div>
-      <n-progress type="line" :color="progressColor" status="info" :percentage="progress" :show-indicator="false" />
-    </div>
-
+  <n-card hoverable :content-style="{ padding: '10px 15px' }" class="task-item" @click="taskDetail">
+    <!-- <div class="border-line" :style="{ backgroundColor: borderColor }"></div> -->
     <div class="tag">
       <n-space>
         <TaskTag
@@ -43,6 +9,43 @@
           :icon="AlertCircle"
           :tooltip-content="'任务优先级：' + priorityName"
         />
+        <TaskTag
+          v-if="expiration && !complete"
+          type="error"
+          name="已过期"
+          :icon="TimeSharp"
+          tooltip-content="该任务已经延期"
+        />
+      </n-space>
+      <n-dropdown trigger="hover" :options="options" @select="handleSelect">
+        <n-icon size="20" :component="EllipsisHorizontal" />
+      </n-dropdown>
+    </div>
+    <div class="title">
+      <p :class="{ complete: complete }">{{ task.name }}</p>
+    </div>
+    <div class="description">
+      <p :class="{ complete: complete }">{{ task.description }}</p>
+    </div>
+    <div class="time">
+      <n-icon size="15" color="#888" :component="Calendar" />
+      <span>{{ startDate }} - {{ endDate }}</span>
+    </div>
+    <div class="progress">
+      <div>
+        <span>任务进度:</span>
+        <span>{{ progress }}%</span>
+      </div>
+      <n-progress type="line" :color="progressColor" status="info" :percentage="progress" :show-indicator="false" />
+    </div>
+    <div class="tag">
+      <n-tooltip trigger="hover">
+        <template #trigger>
+          <n-avatar round size="small" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+        </template>
+        <span>{{ '超级管理员' }}</span>
+      </n-tooltip>
+      <n-space>
         <TaskTag
           v-if="remind && !complete"
           type="success"
@@ -65,7 +68,6 @@
           :tooltip-content="'该任务标记为已完成'"
         />
       </n-space>
-      <n-avatar round size="small" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
     </div>
 
     <!-- 任务详情modal -->
@@ -126,7 +128,8 @@ import {
   Alarm,
   ShareSocialSharp,
   AlertCircle,
-  TimeSharp
+  TimeSharp,
+  Calendar
 } from '@vicons/ionicons5'
 import { useRender } from '@/hooks'
 import TaskDetailModal from './TaskDetailModal.vue'
@@ -134,6 +137,7 @@ import TaskTag from '@/components/TaskTag.vue'
 import dayjs from 'dayjs'
 import { useMessage } from 'naive-ui'
 import { progressColors, leftBorderColors, priorityOptions, remindOptions } from '@/constant'
+import component from '../../../env'
 
 const props = defineProps<{
   task: TaskType
@@ -177,13 +181,13 @@ const options = ref([
 const startDate = computed(() => {
   const month = dayjs(props.task.startDate).format('MM')
   const day = dayjs(props.task.startDate).format('DD')
-  return `${month}月${day}日开始`
+  return `${month}月${day}日`
 })
 
 const endDate = computed(() => {
   const month = dayjs(props.task.endDate).format('MM')
   const day = dayjs(props.task.endDate).format('DD')
-  return `${month}月${day}日截止`
+  return `${month}月${day}日`
 })
 
 const progress = computed(() => {
@@ -285,6 +289,7 @@ async function setAlarm() {
 
   .title {
     display: flex;
+    margin-top: 8px;
     // align-items: center;
     p {
       flex: 1;
@@ -303,16 +308,17 @@ async function setAlarm() {
     align-items: center;
     span {
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 400;
       margin: 0 5px;
       color: #888;
     }
   }
   .description {
-    font-size: 13px;
+    font-size: 12px;
     color: #888;
-    font-weight: 600;
-    margin: 10px 0;
+    font-weight: 400;
+    margin-top: 6px;
+    margin-bottom: 10px;
     p {
       white-space: normal;
     }

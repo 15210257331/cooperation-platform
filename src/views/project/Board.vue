@@ -1,74 +1,73 @@
 <template>
-  <div v-for="group in groupList" :key="group.id" class="group-item">
-    <div class="group-header">
-      <div class="name">
-        <p>{{ group.name }}</p>
-        <span>({{ group.tasks.length }}/{{ totalTask }})</span>
+  <TaskFilter />
+  <div class="task-board">
+    <div v-for="(group, index) in groupList" :key="group.id" class="group-item">
+      <n-card :content-style="{ padding: '10px 15px' }">
+        <div class="group-header">
+          <div class="name">
+            <n-badge dot :type="formatBadgeType(index)" />
+            <p>{{ group.name }}</p>
+            <n-button tertiary size="tiny" type="tertiary">{{ group.tasks.length }}</n-button>
+          </div>
+          <n-icon size="20" :component="Add" style="margin-right: 8px" @click="createTask(group)"></n-icon>
+          <n-dropdown trigger="hover" :options="options" @select="handleSelect($event, group)">
+            <n-icon size="20" :component="EllipsisHorizontal"></n-icon>
+          </n-dropdown>
+        </div>
+      </n-card>
+
+      <div class="task-list">
+        <draggable
+          :delay="0.5"
+          :animation="300"
+          :sort="false"
+          :component-data="{
+            tag: 'ul',
+            name: 'flip-list'
+          }"
+          ghost-class="ghost"
+          drag-class="drag"
+          chosen-class="chosen"
+          :list="group.tasks"
+          :group="{
+            name: group.id,
+            put: put,
+            pull: pull
+          }"
+          item-key="id"
+          @change="change($event, group)"
+        >
+          <template #item="{ element, index }">
+            <TaskItem
+              :task="element"
+              :complete="group.complete"
+              :flow-id="(group.id as string)"
+              :index="index"
+            ></TaskItem>
+          </template>
+        </draggable>
       </div>
-      <n-dropdown trigger="hover" :options="options" @select="handleSelect($event, group)">
-        <n-icon size="20" :component="EllipsisHorizontal"></n-icon>
-      </n-dropdown>
-    </div>
-    <div class="task-list">
-      <draggable
-        :delay="0.5"
-        :animation="300"
-        :sort="false"
-        :component-data="{
-          tag: 'ul',
-          name: 'flip-list'
-        }"
-        ghost-class="ghost"
-        drag-class="drag"
-        chosen-class="chosen"
-        :list="group.tasks"
-        :group="{
-          name: group.id,
-          put: put,
-          pull: pull
-        }"
-        item-key="id"
-        @change="change($event, group)"
-      >
-        <template #item="{ element, index }">
-          <TaskItem
-            :task="element"
-            :complete="group.complete"
-            :flow-id="(group.id as string)"
-            :index="index"
-          ></TaskItem>
-        </template>
-      </draggable>
-      <CreateTaskButton v-if="group.canNew" @click="createTask(group)" />
     </div>
   </div>
   <!-- 新增/修改分组dialog -->
   <CreateGroupModal v-model:value="showCreateGroupModal" :data="selectedGroupData" />
   <!-- 新增任务modal -->
-  <CreateTaskModal v-model:value="showCreateTaskModal" :flow-id="selectedGroupData?.id"></CreateTaskModal>
+  <CreateTaskDrawer v-model:value="showCreateTaskModal" :flow-id="selectedGroupData?.id"></CreateTaskDrawer>
 </template>
 
 <script setup lang="ts">
+import { useAppStore, useProjectStore } from '@/store'
 import { computed, ref } from 'vue'
+import TaskFilter from './TaskFilter.vue'
 import { useDialog, useMessage } from 'naive-ui'
 import { GroupType } from '@/interface'
 import TaskItem from './TaskItem.vue'
-import CreateTaskButton from '@/components/CreateTaskButton.vue'
 import draggable from 'vuedraggable'
 import { useRender } from '@/hooks'
 import CreateGroupModal from './CreateGroupModal.vue'
-import CreateTaskModal from './CreateTaskModal.vue'
-import { Documents, Duplicate, TrashBin, EllipsisHorizontal } from '@vicons/ionicons5'
-import { useAppStore, useProjectStore } from '@/store'
+import { Documents, Duplicate, TrashBin, EllipsisHorizontal, Add } from '@vicons/ionicons5'
+import CreateTaskDrawer from './CreateTaskDrawer.vue'
 
-const props = withDefaults(
-  defineProps<{
-    data: Array<GroupType>
-  }>(),
-  {
-    data: () => []
-  }
-)
 const projectStore = useProjectStore()
 const appStore = useAppStore()
 const message = useMessage()
@@ -79,7 +78,11 @@ const showCreateGroupModal = ref<boolean>(false)
 const showCreateTaskModal = ref<boolean>(false)
 const selectedGroupData = ref<GroupType | null>(null)
 
-const options = [
+function formatBadgeType(index: number): any {
+  return ['error', 'warning', 'info', 'success'][index] || 'success'
+}
+
+const options: any = [
   {
     label: '分组设置',
     key: 'edit',
@@ -100,9 +103,9 @@ const options = [
     icon: renderIcon(TrashBin)
   }
 ]
-const groupList = computed(() => props.data)
+const groupList = computed(() => projectStore.currentProject?.groups)
 const totalTask = computed(() => {
-  return props.data.reduce((pre, current) => {
+  return groupList.value?.reduce((pre, current) => {
     return pre + current.tasks.length
   }, 0)
 })
@@ -169,7 +172,7 @@ function put(to: any, from: any) {
 // 判断是否可以拖拽到其他分组 返回可以拖拽目标分组的id值列表 | true | false
 function pull(to: any, from: any) {
   const fromGroupId = from.options.group.id
-  const fromGroup = groupList.value.find(item => item.id === fromGroupId)
+  const fromGroup = groupList.value?.find(item => item.id === fromGroupId)
   // console.log(fromGroup?.range.map(item => Number(item)))
   return fromGroup?.range.map(item => Number(item))
 }
@@ -190,6 +193,15 @@ async function change(evt: any, flow: any) {
 </script>
 
 <style lang="scss" scoped>
+.task-board {
+  flex: 1;
+  width: 100%;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 16px 16px 16px 16px;
+  background-color: #f9f9f9;
+}
 .group-item {
   border-radius: 4px;
   display: inline-block;
@@ -198,7 +210,6 @@ async function change(evt: any, flow: any) {
   overflow: hidden;
   height: 100%;
   .group-header {
-    height: 50px;
     width: 100%;
     overflow: hidden;
     display: flex;
@@ -218,6 +229,9 @@ async function change(evt: any, flow: any) {
         text-overflow: ellipsis;
         white-space: nowrap;
         line-height: 21px;
+        margin-right: 6px;
+        position: relative;
+        margin-left: 10px;
       }
       span {
         flex-shrink: 0;
@@ -233,7 +247,7 @@ async function change(evt: any, flow: any) {
     flex: 1;
     overflow-y: auto;
     height: calc(100% - 45px);
-    margin: 0 auto;
+    margin: 18px auto 0;
   }
 }
 .group-add {

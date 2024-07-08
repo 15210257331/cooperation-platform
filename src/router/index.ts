@@ -1,16 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw, RouterView } from 'vue-router'
-import {
-  Grid,
-  Layers,
-  PersonSharp,
-  Settings,
-  Aperture,
-  LayersSharp,
-  PeopleSharp,
-  AppsSharp,
-  Calendar
-} from '@vicons/ionicons5'
-import { createVNode, render } from 'vue'
+import { Grid, Layers, PersonSharp, Settings, Aperture, LayersSharp, PeopleSharp, AppsSharp } from '@vicons/ionicons5'
+import { createVNode, render, markRaw } from 'vue'
 /** 挂载注册ProgressBar组件 */
 import ProgressBar from '../components/ProgressBar.vue'
 /** 将组件转换成虚拟DOM */
@@ -38,7 +28,7 @@ export const routes: RouteRecordRaw[] = [
     path: '/',
     name: 'layout',
     component: () => import('@/layout/index.vue'),
-    redirect: '/project',
+    redirect: '/dashboard',
     beforeEnter: (to, from) => {
       const token = localStorage.getItem('token')
       if (!token) {
@@ -49,46 +39,44 @@ export const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        path: '/project',
-        name: 'project',
+        path: '/dashboard',
+        name: 'dashboard',
         meta: {
           show: true,
-          type: 'static',
-          title: '全部项目',
-          icon: AppsSharp
+          title: '概览',
+          icon: markRaw(Layers)
         },
-        component: () => import('@/views/project/index.vue')
-      },
-      {
-        path: '/member',
-        name: 'member',
-        meta: {
-          show: true,
-          type: 'static',
-          title: '成员',
-          icon: PeopleSharp
-        },
-        component: () => import('@/views/project/index.vue')
-      },
-      {
-        path: '/calendar',
-        name: 'calendar',
-        meta: {
-          show: true,
-          type: 'static',
-          title: '项目日历',
-          icon: Calendar
-        },
-        component: () => import('@/views/calendar/index.vue')
+        component: () => import('@/views/dashboard/index.vue')
       },
       {
         path: '/project/:id',
-        name: 'task',
+        name: 'project',
         meta: {
           show: true,
-          title: '任务'
+          title: '所有项目',
+          icon: markRaw(AppsSharp)
         },
-        component: () => import('@/views/task/index.vue')
+        component: () => import('@/views/project/index.vue')
+      },
+      {
+        path: '/setting',
+        name: 'setting',
+        meta: {
+          show: true,
+          title: '设置',
+          icon: markRaw(Settings)
+        },
+        component: () => import('@/views/setting/index.vue')
+      },
+      {
+        path: '/user',
+        name: 'user',
+        meta: {
+          show: true,
+          title: '用户管理',
+          icon: markRaw(PersonSharp)
+        },
+        component: () => import('@/views/user/index.vue')
       }
     ]
   }

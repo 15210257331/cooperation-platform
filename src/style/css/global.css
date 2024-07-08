@@ -5,3 +5,8 @@
 html, body, #app {
 	height: 100%;
 }
+
+
+.flex {
+	display: flex;
+}

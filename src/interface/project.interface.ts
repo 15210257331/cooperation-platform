@@ -10,7 +10,10 @@ export interface ProjectType {
   type: string
   star: boolean
   cover: string
+  status: number
   createDate: string
+  startDate: string
+  endDate: string
   groups: Array<GroupType>
 }
 /** group type */

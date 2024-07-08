@@ -1,13 +1,9 @@
 <template>
   <n-layout has-sider :style="styleObj">
-    <SiderBar />
+    <SideBar />
     <n-layout>
       <TopBar></TopBar>
-      <n-layout-content
-        has-sider
-        :style="{ 'background-color': appStore.darkTheme ? '#101014ff' : 'rgba(236, 241, 250,0)' }"
-      >
-        <SideBar />
+      <n-layout-content has-sider>
         <router-view />
       </n-layout-content>
     </n-layout>
@@ -16,15 +12,13 @@
 
 <script setup lang="ts">
 import TopBar from './TopBar.vue'
-import SideBar from './Sidebar.vue'
 import { onMounted, getCurrentInstance, computed, Component, h, ref } from 'vue'
 import { getUserInfo } from '@/api'
 import { useAppStore, useUserStore, useProjectStore } from '@/store'
-import SiderBar from './SiderBar.vue'
+import SideBar from './SideBar.vue'
 
 const appStore = useAppStore()
 const userStore = useUserStore()
-
 const styleObj = computed(() => {
   return {
     height: '100%',
@@ -63,7 +57,7 @@ function queryUnreadCount() {
 
 <style lang="scss" scoped>
 .n-layout-content {
-  height: calc(100% - 55px);
+  height: calc(100% - 50px);
   width: 100%;
   box-sizing: border-box;
   ::v-deep(.n-layout-scroll-container) {
