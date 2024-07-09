@@ -3,12 +3,17 @@
     <!-- <div class="border-line" :style="{ backgroundColor: borderColor }"></div> -->
     <div class="tag">
       <n-space>
-        <TaskTag
-          type="info"
-          :name="priorityName"
-          :icon="AlertCircle"
-          :tooltip-content="'任务优先级：' + priorityName"
-        />
+        <n-tooltip trigger="hover">
+          {{ '任务优先级：' + priorityName }}
+          <template #trigger>
+            <n-tag :type="'info'" :bordered="false" size="small">
+              {{ priorityName }}
+              <template #icon>
+                <n-icon :component="FlagSharp" />
+              </template>
+            </n-tag>
+          </template>
+        </n-tooltip>
         <TaskTag
           v-if="expiration && !complete"
           type="error"
@@ -41,9 +46,9 @@
     <div class="tag">
       <n-tooltip trigger="hover">
         <template #trigger>
-          <n-avatar round size="small" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+          <n-avatar round size="small" :src="owner.avatar" />
         </template>
-        <span>{{ '超级管理员' }}</span>
+        <span>{{ owner.nickname }}</span>
       </n-tooltip>
       <n-space>
         <TaskTag
@@ -129,7 +134,8 @@ import {
   ShareSocialSharp,
   AlertCircle,
   TimeSharp,
-  Calendar
+  Calendar,
+  FlagSharp
 } from '@vicons/ionicons5'
 import { useRender } from '@/hooks'
 import TaskDetailModal from './TaskDetailModal.vue'
@@ -137,7 +143,7 @@ import TaskTag from '@/components/TaskTag.vue'
 import dayjs from 'dayjs'
 import { useMessage } from 'naive-ui'
 import { progressColors, leftBorderColors, priorityOptions, remindOptions } from '@/constant'
-import component from '../../../env'
+import { formatDate } from '@/utils'
 
 const props = defineProps<{
   task: TaskType
@@ -179,15 +185,11 @@ const options = ref([
   }
 ])
 const startDate = computed(() => {
-  const month = dayjs(props.task.startDate).format('MM')
-  const day = dayjs(props.task.startDate).format('DD')
-  return `${month}月${day}日`
+  return formatDate(props.task.startDate, 'MM月DD日')
 })
 
 const endDate = computed(() => {
-  const month = dayjs(props.task.endDate).format('MM')
-  const day = dayjs(props.task.endDate).format('DD')
-  return `${month}月${day}日`
+  return formatDate(props.task.endDate, 'MM月DD日')
 })
 
 const progress = computed(() => {
@@ -208,13 +210,16 @@ const progressColor = computed(() => {
     return progressColors[4]
   } else if (progress > 90 && progress <= 100) {
     return progressColors[5]
-  } else {
-    return progressColors[5]
   }
+  return progressColors[5]
 })
 
 const borderColor = computed(() => {
   return leftBorderColors[Number(props.task.priority) - 1]
+})
+
+const owner = computed(() => {
+  return props.task.owner || {}
 })
 
 /**任务优先级 */

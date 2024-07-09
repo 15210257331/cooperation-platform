@@ -1,10 +1,13 @@
 <template>
-  <div class="project-wrap" >
+  <div class="project-wrap">
     <div class="project-header">
       <IconSelect :default="currentProject?.icon" only-show></IconSelect>
       <span class="name">{{ currentProject?.name }}</span>
       <n-icon color="#888" :component="Calendar" />
-      <span class="time">2023年4月23日 - 2023年6月15日</span>
+      <span class="time"
+        >{{ formatDate(currentProject?.startDate, 'YYYY年MM月DD日') }} -
+        {{ formatDate(currentProject?.endDate, 'YYYY年MM月DD日') }}</span
+      >
       <n-space justify="end" style="flex: 1">
         <n-tooltip trigger="hover">
           {{ currentProject?.star ? '该项目已收藏' : '点击收藏该项目' }}
@@ -35,8 +38,8 @@
       <n-tabs type="line" @update:value="handleTabChange">
         <n-tab v-for="item in tabs" :key="item.value" :name="item.value">{{ item.label }} </n-tab>
       </n-tabs>
-      <div class="project-member" style="">
-        <n-avatar-group expand-on-hover :options="projectMember" size="small" :max="6">
+      <div class="project-member">
+        <n-avatar-group expand-on-hover :options="members" size="small" :max="6">
           <template #avatar="{ option: { name, src } }">
             <n-tooltip>
               <template #trigger>
@@ -52,7 +55,7 @@
           </template>
         </n-avatar-group>
         <n-divider vertical />
-        <n-button tertiary circle type="info" size="small">
+        <n-button tertiary circle type="info" size="small" @click="handleAddMember">
           <template #icon>
             <n-icon :component="Add" />
           </template>
@@ -103,6 +106,7 @@ import {
 import { ProjectType } from '@/interface'
 import { useDialog, useMessage } from 'naive-ui'
 import { projectToggleStar } from '@/api'
+import { formatDate } from '@/utils'
 
 const projectStore = useProjectStore()
 const appStore = useAppStore()
@@ -235,34 +239,18 @@ function removeProject($event: ProjectType) {
   })
 }
 
-const projectMember = [
-  {
-    name: '张三',
-    src: 'https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg'
-  },
-  {
-    name: '李四',
-    src: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'
-  },
-  {
-    name: '王五',
-    src: 'https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg'
-  },
-  {
-    name: '赵六',
-    src: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'
-  },
-  {
-    name: '七仔',
-    src: 'https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg'
-  }
-]
+const members = computed(() => {
+  return projectStore.currentProject?.members.map(item => {
+    return { ...item, name: item.nickname, src: item.avatar }
+  })
+})
 function createDropdownOptions(options: Array<{ name: string; src: string }>) {
   return options.map(option => ({
     key: option.name,
     label: option.name
   }))
 }
+function handleAddMember() {}
 
 /** 监听路由变化请求项目详情 */
 const loading = ref<boolean>(true)

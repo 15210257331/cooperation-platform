@@ -28,6 +28,12 @@
         <n-form-item label="背景图:" path="cover">
           <UploadFile v-model:url="formValue.cover" title="点击上传" />
         </n-form-item>
+        <n-form-item label="开始时间:" path="cover">
+          <n-date-picker v-model:value="formValue.startDate" type="datetime" clearable />
+        </n-form-item>
+        <n-form-item label="结束时间:" path="cover">
+          <n-date-picker v-model:value="formValue.endDate" type="datetime" clearable />
+        </n-form-item>
         <n-form-item label="项目类型" path="type">
           <n-radio-group v-model:value="formValue.type" name="type">
             <n-space>
@@ -73,7 +79,9 @@ const formValue = ref({
   cover: '',
   icon: '',
   type: '',
-  star: false
+  star: false,
+  startDate: new Date().getTime(),
+  endDate: new Date().getTime()
 })
 const rules = {
   name: {
@@ -86,7 +94,7 @@ const rules = {
     message: '请选择项目icon'
   },
   cover: {
-    required: true,
+    required: false,
     message: '请选择项目背景图'
   },
   star: {
@@ -104,14 +112,16 @@ function show(data?: ProjectType) {
   showModal.value = true
   if (data) {
     title.value = '修改项目'
-    const { id, name, icon, cover, type, star } = data
+    const { id, name, icon, cover, type, star, startDate, endDate } = data
     formValue.value = {
       id: id as string,
       name: name,
       icon: icon,
       cover: cover,
       type: type,
-      star: star
+      star: star,
+      startDate: parseInt(startDate),
+      endDate: parseInt(endDate)
     }
   } else {
     title.value = '新建项目'
@@ -126,7 +136,9 @@ function resetForm() {
     cover: '',
     icon: '',
     type: '',
-    star: false
+    star: false,
+    startDate: new Date().getTime(),
+    endDate: new Date().getTime()
   }
 }
 
@@ -143,7 +155,12 @@ function handleSubmit(e: MouseEvent) {
           }
         })
       } else {
-        createProject(formValue.value).then(res => {
+        const data = {
+          ...formValue.value,
+          startDate: new Date(formValue.value.startDate),
+          endDate: new Date(formValue.value.endDate)
+        }
+        createProject(data).then(res => {
           if (res.code === 10000) {
             message.success('项目创建成功')
             showModal.value = false

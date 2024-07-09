@@ -24,7 +24,7 @@
       :indent="18"
       :options="menuData"
       default-expand-all
-      style="--n-item-height: 36px; overflow: auto;"
+      style="--n-item-height: 36px; overflow: auto"
       @update:value="handleItemClick"
     />
     <n-spin v-if="loading" size="small" description="加载中" style="margin-top: 100px" />
@@ -74,7 +74,7 @@ const menuData = computed<MenuOption[]>(() => {
   return (arr || []).map(item => {
     if (item.name === 'project') {
       return {
-        label: `所有项目`,
+        label: `所有项目(${projectStore.projectList.length})`,
         key: '/project',
         icon: renderIcon(item.meta?.icon as Component),
         children: [
@@ -114,7 +114,6 @@ const menuData = computed<MenuOption[]>(() => {
     }
   })
 })
-console.log(menuData)
 
 const handleItemClick = (key: string, item: MenuOption) => {
   const routePath = item.key as string

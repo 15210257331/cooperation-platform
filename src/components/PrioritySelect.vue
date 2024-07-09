@@ -17,12 +17,12 @@ import { ref } from 'vue'
 import { FlagSharp } from '@vicons/ionicons5'
 
 interface Props {
-  value: boolean | string | null
+  value: number | string | null
 }
 const props = defineProps<Props>()
 
 interface Emits {
-  (e: 'update:value', val: boolean): void
+  (e: 'update:value', val: number): void
 }
 const emit = defineEmits<Emits>()
 
@@ -47,6 +47,7 @@ const options = ref([
 const selectedIndex = ref<number>(0)
 function handleClick(index: number) {
   selectedIndex.value = index
+  emit('update:value', options.value[index].value)
 }
 </script>
 

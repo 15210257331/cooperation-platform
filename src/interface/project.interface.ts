@@ -1,3 +1,4 @@
+import { UserType } from './user.interface'
 export interface ProjectStoreType {
   currentProject: ProjectType | null
   projectList: ProjectType[]
@@ -14,6 +15,7 @@ export interface ProjectType {
   createDate: string
   startDate: string
   endDate: string
+  members: Array<UserType>
   groups: Array<GroupType>
 }
 /** group type */
@@ -30,10 +32,11 @@ export interface GroupType {
 
 export interface TaskType {
   name: string
-  description: string
   startDate: number | null
   endDate: number | null
-  priority: string | null
+  priority: number | null
+  tag: string
   progress: number
+  description: string
   [key: string]: any
 }

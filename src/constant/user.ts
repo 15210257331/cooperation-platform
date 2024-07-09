@@ -3,3 +3,5 @@ export const roleMap: any = {
   editor: '管理员',
   ghost: '普通用户'
 }
+
+export const defaultAvatar = 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'

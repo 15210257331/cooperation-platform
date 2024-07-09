@@ -27,7 +27,7 @@
               :show="false"
             />
             <n-space style="margin-top: 10px">
-              <n-tag :bordered="false" > 爱在西元前 </n-tag>
+              <n-tag :bordered="false"> 爱在西元前 </n-tag>
               <n-tag :bordered="false" type="success"> 不该 </n-tag>
               <n-tag :bordered="false" type="warning"> 超人不会飞 </n-tag>
               <n-tag :bordered="false" type="error"> 手写的从前 </n-tag>
@@ -39,7 +39,7 @@
           <n-select :options="options1" :render-label="renderLabel" :render-tag="renderSingleSelectTag" />
         </n-form-item>
         <n-form-item label="截止时间:" path="startDate">
-          <n-date-picker v-model:value="formValue.startDate" type="datetime" clearable />
+          <n-date-picker v-model:value="formValue.endDate" type="datetime" clearable />
         </n-form-item>
         <n-form-item label="描述:" path="description">
           <n-input
@@ -62,6 +62,9 @@
           </n-upload>
         </n-form-item>
       </n-form>
+      <template #footer>
+        <n-button @click="handleSubmit">发布</n-button>
+      </template>
     </n-drawer-content>
   </n-drawer>
 </template>
@@ -98,7 +101,8 @@ const formValue = ref<TaskType>({
   description: '',
   startDate: new Date().getTime(),
   endDate: new Date().getTime(),
-  priority: null,
+  priority: 1,
+  tag: '',
   progress: 0
 })
 
