@@ -1,6 +1,6 @@
 <template>
   <n-card size="small">
-    <n-space>
+    <n-space style="margin-bottom: 20px">
       <n-input v-model:value="queryParams.nickname" type="text" placeholder="请输入用户昵称" @keyup.enter="queryData" />
       <n-button type="success" @click="queryData">
         <template #icon>

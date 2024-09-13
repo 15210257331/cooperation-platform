@@ -69,6 +69,14 @@ watchEffect(() => {
   console.log(router)
 })
 
+const starProjectList = computed<ProjectType[]>(() => {
+  return projectStore.projectList.filter(item => item.star)
+})
+
+const normalProjectList = computed<ProjectType[]>(() => {
+  return projectStore.projectList.filter(item => !item.star)
+})
+
 const menuData = computed<MenuOption[]>(() => {
   const arr = router.options.routes.filter(item => item.path === '/')[0].children
   return (arr || []).map(item => {
@@ -80,9 +88,9 @@ const menuData = computed<MenuOption[]>(() => {
         children: [
           {
             type: 'group',
-            label: `我参与的(${projectStore.projectList.length})`,
+            label: `星标项目(${starProjectList.value.length})`,
             key: '11',
-            children: projectStore.projectList.map(item => {
+            children: starProjectList.value.map(item => {
               return {
                 ...item,
                 label: () => h(NEllipsis, null, { default: () => item.name }),
@@ -93,9 +101,9 @@ const menuData = computed<MenuOption[]>(() => {
           },
           {
             type: 'group',
-            label: '已归档(3)',
+            label: `普通项目(${normalProjectList.value.length})`,
             key: '33',
-            children: projectStore.projectList.map(item => {
+            children: normalProjectList.value.map(item => {
               return {
                 ...item,
                 label: () => h(NEllipsis, null, { default: () => item.name }),

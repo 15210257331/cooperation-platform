@@ -61,16 +61,16 @@ const appStore = useAppStore()
 const projectDetail = computed(() => projectStore.currentProject)
 
 const taskType = ref<string>('全部任务')
-const taskTypeList = [
-  {
-    label: '全部任务',
-    value: '全部任务'
-  },
-  {
-    label: '已完成',
-    value: '已完成'
-  }
-]
+const taskTypeList = computed(() => {
+  const groups = (projectStore.currentProject?.groups || []).map(item => {
+    return {
+      label: item.name,
+      value: item.name,
+      id: item.id
+    }
+  })
+  return [{ label: '全部任务', value: '全部任务', id: '' }, ...groups]
+})
 
 /** 任务搜索 */
 const keywords = ref<string>('')

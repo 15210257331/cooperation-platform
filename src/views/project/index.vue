@@ -39,7 +39,7 @@
         <n-tab v-for="item in tabs" :key="item.value" :name="item.value">{{ item.label }} </n-tab>
       </n-tabs>
       <div class="project-member">
-        <n-avatar-group expand-on-hover :options="members" size="small" :max="6">
+        <n-avatar-group expand-on-hover :options="members" size="small" :max="5">
           <template #avatar="{ option: { name, src } }">
             <n-tooltip>
               <template #trigger>
@@ -55,9 +55,9 @@
           </template>
         </n-avatar-group>
         <n-divider vertical />
-        <n-popover style="width: 260px; padding: 0; border-radius: 5px;" trigger="click">
+        <n-popover style="width: 260px; padding: 0; border-radius: 5px" trigger="click">
           <template #trigger>
-            <n-button tertiary circle type="info" size="small" @click="handleAddMember">
+            <n-button tertiary circle type="info" size="small" @click="queryMembers">
               <template #icon>
                 <n-icon :component="Add" />
               </template>
@@ -65,8 +65,7 @@
           </template>
           <div class="member-wrap">
             <div class="member-header">
-              <span>项目成员</span>
-              <span>邀请</span>
+              <span>邀请项目成员</span>
               <span style="flex: 1"></span>
               <n-button tertiary size="tiny">
                 <template #icon>
@@ -74,15 +73,18 @@
                 </template>
               </n-button>
             </div>
-            <div class="member-info">诺亚方舟 {{ 6 }} 位成员</div>
+            <div class="member-info">诺亚方舟共 {{ members?.length || 0 }} 位成员</div>
             <ul class="member-content">
-              <li v-for="item in [...members, ...members, ...members, ...members, ...members, ...members]" :key="item.id">
-                <n-avatar round :size="30" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+              <li v-for="item in allMembers" :key="item.id">
+                <n-avatar round :size="30" :src="item.avatar" />
                 <div>
                   <h5>{{ item.nickname }}</h5>
                   <span>{{ item.username }}</span>
                 </div>
-                <n-button secondary strong size="tiny">所有者</n-button>
+                <n-button v-if="isInProject(item)" secondary strong size="tiny"> 项目成员 </n-button>
+                <n-button v-else secondary strong type="warning" size="tiny" @click="handleAddMember(item)"
+                  >添加</n-button
+                >
               </li>
             </ul>
           </div>
@@ -93,6 +95,7 @@
     <PlaceholderContainer v-if="loading">
       <n-spin size="large" description="数据加载中" />
     </PlaceholderContainer>
+
     <component :is="currentView" v-else />
 
     <!-- 新增/修改项目弹窗 -->
@@ -104,7 +107,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch, markRaw } from 'vue'
+import { ref, onMounted, computed, watch, markRaw, reactive } from 'vue'
 import { useAppStore, useProjectStore } from '@/store'
 import PlaceholderContainer from '@/components/PlaceholderContainer.vue'
 import IconSelect from '@/components/IconSelect.vue'
@@ -116,6 +119,7 @@ import Board from './Board.vue'
 import List from './List.vue'
 import TaskCalendar from './Calendar.vue'
 import Document from './Document.vue'
+import { deleteUser, userList, updateUserRole, addProjectMembers } from '@/api'
 import {
   Calendar,
   EllipsisHorizontal,
@@ -267,6 +271,42 @@ function removeProject($event: ProjectType) {
   })
 }
 
+// 查询所有用户
+const allMembers = ref<any>([])
+const allMembersLoading = ref<boolean>(false)
+const queryParams = reactive({
+  pageIndex: 1,
+  pageSize: 100,
+  nickname: ''
+})
+function queryMembers() {
+  allMembersLoading.value = true
+  userList(queryParams)
+    .then(res => {
+      if (res.code === 10000) {
+        allMembers.value = res.data.list || []
+      }
+    })
+    .finally(() => {
+      allMembersLoading.value = false
+    })
+}
+
+// 添加项目成员
+function handleAddMember(item: any) {
+  const data = {
+    projectId: currentProject.value?.id,
+    memberId: item.id
+  }
+  addProjectMembers(data).then(res => {
+    console.log(res)
+    if (res.code === 10000) {
+      message.success('操作成功')
+    }
+  })
+}
+
+// 该项目已包含的成员
 const members = computed(() => {
   return projectStore.currentProject?.members.map(item => {
     return { ...item, name: item.nickname, src: item.avatar }
@@ -278,7 +318,10 @@ function createDropdownOptions(options: Array<{ name: string; src: string }>) {
     label: option.name
   }))
 }
-function handleAddMember() {}
+
+function isInProject(member: any) {
+  return members.value?.find(item => item.id === member.id)
+}
 
 /** 监听路由变化请求项目详情 */
 const loading = ref<boolean>(true)
@@ -371,15 +414,16 @@ function queryProjectDetail(projectId: string, keyword = '') {
     overflow: auto;
     min-height: 280px;
     height: 280px;
+    padding-bottom: 10px;
     li {
       padding: 3px 6px;
-      margin: 0 10px;
+      margin: 6px 10px;
       display: flex;
       align-items: center;
       justify-content: flex-start;
       border-radius: 3px;
       &:hover {
-        background-color: #ededed;
+        // background-color: #ededed;
       }
       & > div {
         flex: 1;

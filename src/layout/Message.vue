@@ -61,6 +61,7 @@ const unreadCount = computed(() => {
   return userStore.unReadCount
 })
 const notificationList = computed(() => {
+  console.log(userStore.notificationList)
   return userStore.notificationList
 })
 

@@ -48,6 +48,9 @@
         </draggable>
       </div>
     </div>
+    <PlaceholderContainer v-if="groupList.length === 0">
+      <n-empty size="large" description="什么也没有"></n-empty>
+    </PlaceholderContainer>
   </div>
   <!-- 新增/修改分组dialog -->
   <CreateGroupModal v-model:value="showCreateGroupModal" :data="selectedGroupData" />
@@ -103,7 +106,7 @@ const options: any = [
     icon: renderIcon(TrashBin)
   }
 ]
-const groupList = computed(() => projectStore.currentProject?.groups)
+const groupList = computed(() => projectStore.currentProject?.groups || [])
 const totalTask = computed(() => {
   return groupList.value?.reduce((pre, current) => {
     return pre + current.tasks.length

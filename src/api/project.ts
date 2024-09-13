@@ -19,6 +19,10 @@ export function projectToggleStar(data: { id: string; star: boolean }): Promise<
 export function deleteProject(id: string): Promise<ResType> {
   return axiosRequest.get(`/api/project/delete/${id}`)
 }
+// 查询项目成员
+export function addProjectMembers(data: any): Promise<ResType> {
+  return axiosRequest.post(`/api/project/addMember`, data)
+}
 
 /** 分组 */
 export function getFlowList(projectId: string, name: string): Promise<ResType> {
