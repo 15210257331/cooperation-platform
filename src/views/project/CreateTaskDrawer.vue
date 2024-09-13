@@ -12,59 +12,84 @@
         <n-form-item label="标题:" path="name">
           <n-input v-model:value="formValue.name" :autofocus="false" placeholder="输入任务名称" />
         </n-form-item>
-        <n-form-item label="优先级:" path="name">
-          <PrioritySelect v-model:value="formValue.priority" />
+        <n-form-item label="优先级:" path="priority">
+          <n-radio-group v-model:value="formValue.priority" size="small">
+            <n-radio-button v-for="song in priorityOptions" :key="song.value" :value="song.value" :label="song.label" />
+          </n-radio-group>
         </n-form-item>
-        <n-form-item label="标签:" path="name">
-          <div>
+        <n-form-item label="标签:" path="tags">
+          <div style="width: 100%">
             <n-select
-              v-model:value="formValue.tag"
+              v-model:value="formValue.tags"
+              :max-tag-count="3"
               filterable
               multiple
               tag
-              placeholder="输入，按回车确认"
+              placeholder="无合适标签？输入按回车新建"
               :show-arrow="false"
               :show="false"
+              @update:value="handleUpdateValue"
             />
             <n-space style="margin-top: 10px">
-              <n-tag :bordered="false"> 爱在西元前 </n-tag>
-              <n-tag :bordered="false" type="success"> 不该 </n-tag>
-              <n-tag :bordered="false" type="warning"> 超人不会飞 </n-tag>
-              <n-tag :bordered="false" type="error"> 手写的从前 </n-tag>
-              <n-tag :bordered="false" type="info"> 哪里都是你 </n-tag>
+              <n-tag
+                v-for="(item, index) in projectStore.currentProject?.tags"
+                :key="index"
+                size="small"
+                :bordered="false"
+                :disabled="item.disabled"
+                @click="handleSelectTag(item)"
+              >
+                {{ item.name }}
+              </n-tag>
             </n-space>
           </div>
         </n-form-item>
-        <n-form-item label="分配给:" path="name">
-          <n-select :options="options1" :render-label="renderLabel" :render-tag="renderSingleSelectTag" />
+        <n-form-item label="分配给:" path="member">
+          <n-select :options="members" :render-label="renderLabel" :render-tag="renderSingleSelectTag" />
         </n-form-item>
-        <n-form-item label="截止时间:" path="startDate">
+        <n-form-item label="截止时间:" path="endDate">
           <n-date-picker v-model:value="formValue.endDate" type="datetime" clearable />
         </n-form-item>
-        <n-form-item label="描述:" path="description">
+        <n-form-item label="任务描述:" label-placement="top" path="description">
           <n-input
             v-model:value="formValue.description"
             type="textarea"
-            placeholder="任务描述"
+            placeholder="请输入任务描述"
             :autosize="{
-              minRows: 3
+              minRows: 4
             }"
           />
         </n-form-item>
-        <n-form-item label="附件:" path="description">
-          <n-upload
-            action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
-            :default-file-list="fileListRef"
-            list-type="image"
-            :create-thumbnail-url="createThumbnailUrl"
-          >
-            <n-button>上传文件</n-button>
-          </n-upload>
+        <n-form-item label="附件:" label-placement="top" path="attachment">
+          <div style="display: flex; width: 100%">
+            <n-card
+              hoverable
+              :content-style="{ padding: '10px' }"
+              style="margin-right: 18px; flex: 1; border-radius: 8px"
+            >
+              <div class="attachment">
+                <n-icon :component="FlagSharp" :size="24" :color="'#d03050'" />
+                <div class="info">
+                  <p>product readme.text</p>
+                  <span>14.23M</span>
+                </div>
+              </div>
+            </n-card>
+            <n-card hoverable :content-style="{ padding: '10px' }" style="flex: 1; border-radius: 8px">
+              <div class="attachment">
+                <n-icon :component="FlagSharp" :size="24" :color="'#d03050'" />
+                <div class="info">
+                  <p>product readme.text</p>
+                  <span>14.23M</span>
+                </div>
+              </div>
+            </n-card>
+          </div>
         </n-form-item>
+        <n-space justify="end">
+          <n-button type="primary" size="small" @click="handleSubmit">发布任务</n-button>
+        </n-space>
       </n-form>
-      <template #footer>
-        <n-button @click="handleSubmit">发布</n-button>
-      </template>
     </n-drawer-content>
   </n-drawer>
 </template>
@@ -74,10 +99,9 @@ import { ref, computed, watch, h } from 'vue'
 import { FormInst, UploadFileInfo, useMessage } from 'naive-ui'
 import { useProjectStore } from '@/store'
 import { TaskType } from '@/interface'
-import { Close } from '@vicons/ionicons5'
+import { Close, FlagSharp } from '@vicons/ionicons5'
 import { priorityOptions } from '@/constant'
 import dayjs from 'dayjs'
-import PrioritySelect from '@/components/PrioritySelect.vue'
 import { NAvatar, NText, NTag, SelectRenderTag, SelectRenderLabel } from 'naive-ui'
 
 interface Props {
@@ -101,78 +125,31 @@ const formValue = ref<TaskType>({
   description: '',
   startDate: new Date().getTime(),
   endDate: new Date().getTime(),
-  priority: 1,
-  tag: '',
+  priority: '1',
+  tags: [],
   progress: 0
 })
 
-const fileListRef = ref<UploadFileInfo[]>([
-  {
-    id: 'a',
-    name: '我错了.png',
-    status: 'error'
-  },
-  {
-    id: 'b',
-    name: '普通文本.doc',
-    status: 'finished',
-    type: 'text/plain'
-  },
-  {
-    id: 'c',
-    name: '图片.png',
-    status: 'finished',
-    url: 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'
-  },
-  {
-    id: 'd',
-    name: '没传完.doc',
-    status: 'uploading',
-    percentage: 50
+function handleUpdateValue($event: any) {
+  if ($event.length > 0) {
+    const data = {
+      projectId: projectStore.currentProject?.id,
+      name: $event[$event.length - 1]
+    }
+    projectStore.createProjectTag(data)
   }
-])
-function createThumbnailUrl(file: File | null): Promise<string> | undefined {
-  if (!file) return undefined
-  message.info('createThumbnailUrl 产生了图片的 URL，你传什么都会变成 07akioni')
-  message.info(`${file.name}`)
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve('https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg')
-    }, 1000)
+}
+function handleSelectTag(item: any) {
+  if (formValue.value.tags.indexOf(item.name) === -1) {
+    formValue.value.tags.push(item.name)
+  }
+}
+
+const members = computed(() => {
+  return projectStore.currentProject?.members.map(item => {
+    return { ...item, label: item.nickname, value: item.id }
   })
-}
-const renderTag: SelectRenderTag = ({ option, handleClose }) => {
-  return h(
-    NTag,
-    {
-      type: option.type as 'success' | 'warning' | 'error',
-      closable: true,
-      size: 'small',
-      onMousedown: (e: FocusEvent) => {
-        e.preventDefault()
-      },
-      onClose: (e: MouseEvent) => {
-        e.stopPropagation()
-        handleClose()
-      }
-    },
-    { default: () => option.label }
-  )
-}
-const options1 = [
-  {
-    label: '07akioni',
-    value: '07akioni'
-  },
-  {
-    label: '08akioni',
-    value: '08akioni'
-  },
-  {
-    label: '09akioni',
-    value: '09akioni'
-  }
-]
+})
 const renderSingleSelectTag: SelectRenderTag = ({ option }) => {
   return h(
     'div',
@@ -191,7 +168,7 @@ const renderSingleSelectTag: SelectRenderTag = ({ option }) => {
           marginRight: '12px'
         }
       }),
-      option.label as string
+      option.nickname as string
     ]
   )
 }
@@ -219,7 +196,7 @@ const renderLabel: SelectRenderLabel = option => {
           }
         },
         [
-          h('div', null, [option.label as string]),
+          h('div', null, [option.nickname as string]),
           h(
             NText,
             { depth: 3, tag: 'div' },
@@ -275,7 +252,10 @@ async function createTask() {
   const data = Object.assign({}, formValue.value, {
     startDate: new Date(formValue.value.startDate as number),
     endDate: new Date(formValue.value.endDate as number),
-    flowId: props.flowId
+    flowId: props.flowId,
+    tagIds: formValue.value.tags.map(
+      item => projectStore.currentProject?.tags.find(sonItem => sonItem.name === item).id
+    )
   })
   if (dayjs(data.startDate).isAfter(dayjs(data.endDate))) {
     message.success('开始时间不能大于结束时间！')
@@ -294,7 +274,8 @@ function resetForm() {
     startDate: new Date().getTime(),
     endDate: new Date().getTime(),
     priority: null,
-    progress: 0
+    progress: 0,
+    tags: []
   }
   formRef.value?.restoreValidation()
 }
@@ -305,4 +286,24 @@ function handleClose() {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.attachment {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .info {
+    margin-left: 8px;
+    p {
+      font-size: 13px;
+      margin: 0;
+      line-height: 13px;
+      font-weight: 500;
+    }
+    span {
+      color: #888;
+      font-size: 12px;
+      line-height: 12px;
+    }
+  }
+}
+</style>

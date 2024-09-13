@@ -41,7 +41,7 @@ class Bus implements BusClass {
     }
   }
 
-  // once 就是存一个临时的函数de 通过on 添加到时间列表 然后 emit 的时候 就调用 de 然后调用完了就执行off删除函数
+  // once 就是存一个临时的函数de 通过on 添加到事件列表 然后 emit 的时候 就调用 de 然后调用完了就执行off删除函数
   once(name: string, fn: Function) {
     const de = (...args: Array<any>) => {
       fn.apply(this, args)

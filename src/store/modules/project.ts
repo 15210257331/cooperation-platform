@@ -10,7 +10,8 @@ import {
   getProjectList,
   deleteProject,
   createProject,
-  updateProject
+  updateProject,
+  createTagAPI
 } from '@/api'
 import { useLocalStorage } from '@/hooks'
 
@@ -130,6 +131,19 @@ export const useProjectStore = defineStore('project', {
           if (res.code === 10000) {
             const index = this.currentProject?.groups.findIndex(item => item.id === id) as number
             this.currentProject?.groups.splice(index, 1)
+            resolve(true)
+          } else {
+            reject(false)
+          }
+        })
+      })
+    },
+    // 新增项目标签
+    async createProjectTag(data: any) {
+      return new Promise((resolve, reject) => {
+        createTagAPI(data).then(res => {
+          if (res.code === 10000) {
+            this.currentProject?.tags.unshift(res.data)
             resolve(true)
           } else {
             reject(false)

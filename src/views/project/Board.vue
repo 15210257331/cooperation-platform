@@ -247,7 +247,7 @@ async function change(evt: any, flow: any) {
     flex: 1;
     overflow-y: auto;
     height: calc(100% - 45px);
-    margin: 18px auto 0;
+    margin: 10px auto 0;
   }
 }
 .group-add {

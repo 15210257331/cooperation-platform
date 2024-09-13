@@ -55,11 +55,38 @@
           </template>
         </n-avatar-group>
         <n-divider vertical />
-        <n-button tertiary circle type="info" size="small" @click="handleAddMember">
-          <template #icon>
-            <n-icon :component="Add" />
+        <n-popover style="width: 260px; padding: 0; border-radius: 5px;" trigger="click">
+          <template #trigger>
+            <n-button tertiary circle type="info" size="small" @click="handleAddMember">
+              <template #icon>
+                <n-icon :component="Add" />
+              </template>
+            </n-button>
           </template>
-        </n-button>
+          <div class="member-wrap">
+            <div class="member-header">
+              <span>项目成员</span>
+              <span>邀请</span>
+              <span style="flex: 1"></span>
+              <n-button tertiary size="tiny">
+                <template #icon>
+                  <n-icon :component="Close"></n-icon>
+                </template>
+              </n-button>
+            </div>
+            <div class="member-info">诺亚方舟 {{ 6 }} 位成员</div>
+            <ul class="member-content">
+              <li v-for="item in [...members, ...members, ...members, ...members, ...members, ...members]" :key="item.id">
+                <n-avatar round :size="30" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                <div>
+                  <h5>{{ item.nickname }}</h5>
+                  <span>{{ item.username }}</span>
+                </div>
+                <n-button secondary strong size="tiny">所有者</n-button>
+              </li>
+            </ul>
+          </div>
+        </n-popover>
       </div>
     </div>
 
@@ -101,7 +128,8 @@ import {
   Albums,
   BagHandle,
   Duplicate,
-  ShareSocialSharp
+  ShareSocialSharp,
+  Close
 } from '@vicons/ionicons5'
 import { ProjectType } from '@/interface'
 import { useDialog, useMessage } from 'naive-ui'
@@ -311,6 +339,63 @@ function queryProjectDetail(projectId: string, keyword = '') {
       top: 16px;
       display: flex;
       align-items: center;
+    }
+  }
+}
+
+.member-wrap {
+  // padding: 16px 10px;
+  .member-header {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    padding: 0 10px;
+    border-bottom: 1px solid rgb(239, 239, 245);
+    span {
+      margin-right: 10px;
+      font-size: 13px;
+      cursor: pointer;
+      &:hover {
+        color: #18a058;
+      }
+    }
+  }
+  .member-info {
+    font-size: 12px;
+    line-height: 30px;
+    padding-left: 16px;
+    // margin-bottom: 10px;
+  }
+  .member-content {
+    overflow: auto;
+    min-height: 280px;
+    height: 280px;
+    li {
+      padding: 3px 6px;
+      margin: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      border-radius: 3px;
+      &:hover {
+        background-color: #ededed;
+      }
+      & > div {
+        flex: 1;
+        margin-left: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        h5 {
+          font-size: 12px;
+          font-weight: 400;
+        }
+        span {
+          font-size: 11px;
+          color: #888;
+        }
+      }
     }
   }
 }

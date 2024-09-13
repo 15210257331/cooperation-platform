@@ -4,23 +4,23 @@ export const leftBorderColors = ['#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9
 export const priorityOptions = [
   {
     value: '1',
-    label: '较低'
+    label: '较低',
+    type: 'primary'
   },
   {
     value: '2',
-    label: '一般'
-  },
-  {
-    value: '3',
-    label: '中等'
+    label: '一般',
+    type: 'info'
   },
   {
     value: '4',
-    label: '较高'
+    label: '较高',
+    type: 'warning'
   },
   {
     value: '5',
-    label: '紧急'
+    label: '紧急',
+    type: 'error'
   }
 ]
 

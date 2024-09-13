@@ -4,23 +4,19 @@
     <div class="tag">
       <n-space>
         <n-tooltip trigger="hover">
-          {{ '任务优先级：' + priorityName }}
+          {{ '任务优先级：' + priority?.label }}
           <template #trigger>
-            <n-tag :type="'info'" :bordered="false" size="small">
-              {{ priorityName }}
+            <n-tag :type="priority?.type" :bordered="false" size="small">
+              {{ priority?.label }}
               <template #icon>
                 <n-icon :component="FlagSharp" />
               </template>
             </n-tag>
           </template>
         </n-tooltip>
-        <TaskTag
-          v-if="expiration && !complete"
-          type="error"
-          name="已过期"
-          :icon="TimeSharp"
-          tooltip-content="该任务已经延期"
-        />
+        <n-tag v-for="item in props.task.tags" :key="item.id" type="warning" :bordered="false" size="small">
+          {{ item.name }}
+        </n-tag>
       </n-space>
       <n-dropdown trigger="hover" :options="options" @select="handleSelect">
         <n-icon size="20" :component="EllipsisHorizontal" />
@@ -41,7 +37,7 @@
         <span>任务进度:</span>
         <span>{{ progress }}%</span>
       </div>
-      <n-progress type="line" :color="progressColor" status="info" :percentage="progress" :show-indicator="false" />
+      <n-progress type="line" :color="progressColor" :height="6" status="info" :percentage="progress" :show-indicator="false" />
     </div>
     <div class="tag">
       <n-tooltip trigger="hover">
@@ -223,8 +219,8 @@ const owner = computed(() => {
 })
 
 /**任务优先级 */
-const priorityName = computed(() => {
-  return priorityOptions.filter(item => item.value === props.task.priority)[0].label
+const priority = computed(() => {
+  return priorityOptions.find(item => item.value === props.task.priority)
 })
 
 const remind = computed(() => {

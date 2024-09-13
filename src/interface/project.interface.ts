@@ -17,6 +17,8 @@ export interface ProjectType {
   endDate: string
   members: Array<UserType>
   groups: Array<GroupType>
+  tags: Array<any>
+  [key: string]: any
 }
 /** group type */
 export interface GroupType {
@@ -34,9 +36,9 @@ export interface TaskType {
   name: string
   startDate: number | null
   endDate: number | null
-  priority: number | null
-  tag: string
+  priority: string | null
   progress: number
   description: string
+  tags: Array<any>
   [key: string]: any
 }

@@ -124,7 +124,8 @@ const formValue = ref<TaskType>({
   startDate: dayjs(props.task.startDate).valueOf(),
   endDate: dayjs(props.task.startDate).valueOf(),
   priority: props.task.priority,
-  progress: props.task.progress
+  progress: props.task.progress,
+  tags: props.task.tags
 })
 
 const rules = {
