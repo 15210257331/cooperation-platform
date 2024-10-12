@@ -47,7 +47,7 @@ inquirer.prompt(question1).then(answer1 => {
       console.log(chalk.green('开始部署'))
       const { username, password } = answer2
       const deployConfig = {
-        projectName: 'quick-task',
+        projectName: 'cooperation-platform',
         type: 'docker',
         remoteDirectory: '/root/web',
         host: {
