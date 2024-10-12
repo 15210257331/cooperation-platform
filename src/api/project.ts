@@ -1,4 +1,4 @@
-import { axiosRequest, ResType } from './http'
+import { axiosRequest, ResType } from './request'
 
 /** 项目 */
 export function getProjectList(sort: string): Promise<ResType> {

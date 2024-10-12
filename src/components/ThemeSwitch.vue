@@ -24,7 +24,7 @@ const isDarkTheme = computed(() => {
   return appStore.darkTheme
 })
 
-/** 切换主题是动态重新获取一下最新的主题颜色 */
+/** 切换主题时动态重新获取一下最新的主题颜色 */
 const nicePrimaryColor = ref<string>()
 watch(
   () => appStore.theme,

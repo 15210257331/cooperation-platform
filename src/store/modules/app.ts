@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { darkTheme } from 'naive-ui'
-import { themes } from '@/constant'
+import { themes } from '@/config'
 
 interface AppState {
   /** 应用主题是否为暗色主题 */

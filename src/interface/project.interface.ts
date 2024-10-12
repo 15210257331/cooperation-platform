@@ -36,7 +36,7 @@ export interface TaskType {
   name: string
   startDate: number | null
   endDate: number | null
-  priority: string | null
+  priority: number | null
   progress: number
   description: string
   tags: Array<any>

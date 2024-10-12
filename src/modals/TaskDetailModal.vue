@@ -101,7 +101,7 @@ import { FormInst, useMessage } from 'naive-ui'
 import { useProjectStore } from '@/store'
 import { TaskType } from '@/interface'
 import { Close } from '@vicons/ionicons5'
-import { priorityOptions } from '@/constant'
+import { priorityOptions } from '@/config'
 import dayjs from 'dayjs'
 
 const props = defineProps<{

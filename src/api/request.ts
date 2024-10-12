@@ -52,19 +52,19 @@ export default class AxiosRequest {
       },
       // 当http的状态码不是200时触发
       (axiosError: AxiosError) => {
-        console.log(axiosError)
-        if (axiosError.response && axiosError.response.data) {
-          const statusCode = axiosError.response.status
-          const description = axiosError.message
-          const content = (axiosError.response.data as any).message
-            ? (axiosError.response.data as any).message
-            : axiosError.message
+        console.log('axiosError信息', axiosError)
+        if (axiosError.code === 'ERR_NETWORK') {
+          window.$message?.error('网络错误，请稍后再试')
+        } else if (axiosError.response && axiosError.response.data) {
+          const { status, data } = axiosError.response
+          const message = axiosError.message
+          const content = (data as any).message || message
           // 401 token验证失败 跳转到登录页面
-          if (statusCode === 401) {
+          if (status === 401) {
             window.location.href = '/login'
             // 其它错误
           } else {
-            showErrorNotification(description, content)
+            showErrorNotification(message, content)
           }
         } else {
           showErrorNotification(axiosError.name, axiosError.message)

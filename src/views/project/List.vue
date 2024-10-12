@@ -1,130 +1,127 @@
 <template>
   <TaskFilter />
   <div class="task-list" :style="{ backgroundColor: appStore.darkTheme ? 'rgba(255, 255, 255, 0.12)' : '#f9f9f9' }">
-    <n-data-table :columns="columns" :data="data" :pagination="pagination" default-expand-all />
+    <n-data-table striped :columns="columns" :data="taskList" :pagination="pagination" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { h, defineComponent } from 'vue'
-import { NTag, NButton, useMessage } from 'naive-ui'
+import { h, defineComponent, computed } from 'vue'
+import { NTag, NButton, useMessage, NSpace, NAvatar, NBadge, NProgress } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
-import TaskFilter from './TaskFilter.vue'
-import { useAppStore } from '@/store'
-
-type RowData = {
-  key: number
-  name: string
-  age: number
-  address: string
-  tags: string[]
-}
+import TaskFilter from './components/TaskFilter.vue'
+import { useAppStore, useProjectStore } from '@/store'
+import TaskStatus from './components/TaskStatus.vue'
+import UserInfo from './components/UserInfo.vue'
+import TaskPriority from './components/TaskPriority.vue'
+import TaskOperation from './components/TaskOperation.vue'
 
 const message = useMessage()
 const appStore = useAppStore()
+const projectStore = useProjectStore()
 
-const data = [
-  {
-    key: 0,
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer']
-  },
-  {
-    key: 1,
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['wow']
-  },
-  {
-    key: 2,
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher']
-  }
-]
+const taskList = computed(() => {
+  let taskList: any = []
+  projectStore.currentProject?.groups.map(item => {
+    item.tasks.map(sonItem => {
+      sonItem.status = item.name
+    })
+    taskList = [...taskList, ...item.tasks]
+  })
+  return taskList
+})
+console.log(taskList)
+
 const pagination = {
   pageSize: 10
 }
-const columns = createColumns({
-  sendMail(rowData) {
-    message.info('send mail to ' + rowData.name)
-  }
-})
-
-function createColumns({ sendMail }: { sendMail: (rowData: RowData) => void }): DataTableColumns<RowData> {
-  return [
-    {
-      type: 'expand',
-      expandable: rowData => rowData.name !== 'Jim Green',
-      renderExpand: rowData => {
-        return `${rowData.name} is a good guy.`
-      }
-    },
-    {
-      title: '标题',
-      key: 'key',
-      render: (_, index) => {
-        return `${index + 1}`
-      }
-    },
-    {
-      title: '状态',
-      key: 'name'
-    },
-    {
-      title: '持有者',
-      key: 'age'
-    },
-    {
-      title: '任务进度',
-      key: 'address'
-    },
-    {
-      title: '优先级',
-      key: 'address'
-    },
-    {
-      title: '标签',
-      key: 'tags',
-      render(row) {
-        const tags = row.tags.map(tagKey => {
-          return h(
-            NTag,
-            {
-              style: {
-                marginRight: '6px'
-              },
-              type: 'info',
-              bordered: false
-            },
-            {
-              default: () => tagKey
-            }
-          )
-        })
-        return tags
-      }
-    },
-    {
-      title: 'Action',
-      key: 'actions',
-      render(row) {
-        return h(
-          NButton,
-          {
-            size: 'small',
-            onClick: () => sendMail(row)
-          },
-          { default: () => 'Send Email' }
-        )
-      }
+const columns: DataTableColumns<any> = [
+  {
+    title: '标题',
+    key: 'name',
+    align: 'center'
+  },
+  {
+    title: '状态',
+    key: 'status',
+    align: 'center',
+    render: (rowData, rowIndex) => {
+      return h(TaskStatus, {
+        type: 'success',
+        name: rowData.status
+      })
     }
-  ]
-}
+  },
+  {
+    title: '持有者',
+    key: 'age',
+    align: 'center',
+    render: (rowData, rowIndex) => {
+      const { owner } = rowData
+      return h(UserInfo, {
+        nickname: owner.nickname,
+        avatar: owner.avatar
+      })
+    }
+  },
+  {
+    title: '任务进度',
+    key: 'progress',
+    align: 'center',
+    render: rowData => {
+      return h(NProgress, {
+        type: 'line',
+        height: 6,
+        status: 'info',
+        percentage: rowData.progress,
+        showIndicator: false
+      })
+    }
+  },
+  {
+    title: '优先级',
+    key: 'priority',
+    align: 'center',
+    render: (rowData, rowIndex) => {
+      return h(TaskPriority, {
+        priority: rowData.priority
+      })
+    }
+  },
+  {
+    title: '标签',
+    key: 'tags',
+    align: 'center',
+    render(row) {
+      return row.tags.map((item: { name: any }) => {
+        return h(
+          NTag,
+          {
+            style: {
+              marginRight: '6px'
+            },
+            size: 'small',
+            type: 'info',
+            bordered: false
+          },
+          {
+            default: () => item.name
+          }
+        )
+      })
+    }
+  },
+  {
+    title: '操作',
+    key: 'actions',
+    align: 'center',
+    render(rowData) {
+      return h(TaskOperation, {
+        task: rowData
+      })
+    }
+  }
+]
 </script>
 
 <style lang="scss" scoped>

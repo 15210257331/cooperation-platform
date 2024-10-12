@@ -1,4 +1,4 @@
-import { axiosRequest, ResType } from './http'
+import { axiosRequest, ResType } from './request'
 
 /** 登录 */
 export function login(data: any): Promise<ResType> {

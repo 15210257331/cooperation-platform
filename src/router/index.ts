@@ -44,7 +44,7 @@ export const routes: RouteRecordRaw[] = [
         meta: {
           show: true,
           title: '概览',
-          icon: markRaw(Layers)
+          icon: markRaw(AppsSharp)
         },
         component: () => import('@/views/dashboard/index.vue')
       },
@@ -54,7 +54,7 @@ export const routes: RouteRecordRaw[] = [
         meta: {
           show: true,
           title: '所有项目',
-          icon: markRaw(AppsSharp)
+          icon: markRaw(Layers)
         },
         component: () => import('@/views/project/index.vue')
       },

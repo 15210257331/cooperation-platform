@@ -7,7 +7,7 @@
         :show-require-mark="false"
         :label-width="'auto'"
         :model="formValue"
-        :rules="rules"
+        :rules="formRules"
       >
         <n-form-item label="标题:" path="name">
           <n-input v-model:value="formValue.name" :autofocus="false" placeholder="输入任务名称" />
@@ -100,7 +100,7 @@ import { FormInst, UploadFileInfo, useMessage } from 'naive-ui'
 import { useProjectStore } from '@/store'
 import { TaskType } from '@/interface'
 import { Close, FlagSharp } from '@vicons/ionicons5'
-import { priorityOptions } from '@/constant'
+import { priorityOptions } from '@/config'
 import dayjs from 'dayjs'
 import { NAvatar, NText, NTag, SelectRenderTag, SelectRenderLabel } from 'naive-ui'
 
@@ -125,10 +125,27 @@ const formValue = ref<TaskType>({
   description: '',
   startDate: new Date().getTime(),
   endDate: new Date().getTime(),
-  priority: '1',
+  priority: 1,
   tags: [],
   progress: 0
 })
+const formRules = {
+  name: {
+    required: true,
+    message: '请输入任务名称',
+    trigger: 'blur'
+  },
+  description: {
+    required: true,
+    message: '请输入任务描述',
+    trigger: 'blur'
+  },
+  // priority: {
+  //   required: true,
+  //   message: '请选择任务优先级',
+  //   trigger: ['blur', 'change']
+  // }
+}
 
 function handleUpdateValue($event: any) {
   if ($event.length > 0) {
@@ -209,23 +226,6 @@ const renderLabel: SelectRenderLabel = option => {
     ]
   )
 }
-const rules = {
-  name: {
-    required: true,
-    message: '请输入任务名称',
-    trigger: 'blur'
-  },
-  description: {
-    required: true,
-    message: '请输入任务描述',
-    trigger: 'blur'
-  },
-  priority: {
-    required: true,
-    message: '请选择任务优先级',
-    trigger: ['blur', 'change']
-  }
-}
 
 const showModal = computed({
   get() {
@@ -273,7 +273,7 @@ function resetForm() {
     description: '',
     startDate: new Date().getTime(),
     endDate: new Date().getTime(),
-    priority: null,
+    priority: 1,
     progress: 0,
     tags: []
   }

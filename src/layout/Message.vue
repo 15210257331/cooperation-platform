@@ -89,7 +89,7 @@ function format(value: any) {
     height: 100%;
     flex: 1;
     .title {
-      color: #303133;
+      // color: #303133;
       font-size: 14px;
       font-weight: 700;
       height: 25px;

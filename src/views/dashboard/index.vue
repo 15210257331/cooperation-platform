@@ -54,15 +54,12 @@
       />
     </SectionArea>
   </div>
-  <!-- 新增/修改项目弹窗 -->
-  <CreateProjectModal ref="createProjectModalRef" @result="result" />
 </template>
 
 <script setup lang="ts">
 import { computed, ref, h } from 'vue'
 import { useDialog, useMessage, NButton, NIcon, DropdownOption } from 'naive-ui'
 import { Apps, ReorderFour, ChevronDown } from '@vicons/ionicons5'
-import TopBar from '../../layout/TopBar.vue'
 import ProjectCardList from './components/ProjectCardList.vue'
 import ProjectTableList from './components/ProjectTableList.vue'
 import ShortcutItem from './components/ShortcutItem.vue'

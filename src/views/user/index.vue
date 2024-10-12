@@ -75,7 +75,7 @@ import { deleteUser, userList, updateUserRole } from '@/api'
 import { DataTableColumns, useMessage, NTag, NButton, useDialog } from 'naive-ui'
 import dayjs from 'dayjs'
 import { SearchSharp, RefreshSharp, Close } from '@vicons/ionicons5'
-import { roleMap } from '@/constant'
+import { roleMap } from '@/config'
 
 const message = useMessage()
 const dialog = useDialog()

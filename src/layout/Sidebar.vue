@@ -12,11 +12,23 @@
   >
     <AppLogo />
     <n-divider style="margin: 0" />
-    <n-input round size="small" placeholder="搜索项目..." style="margin: 10px 15px; width: auto">
-      <template #prefix>
-        <n-icon :component="Search" />
-      </template>
-    </n-input>
+    <div class="action">
+      <n-input size="small" placeholder="搜索..." style="margin-right: 12px">
+        <template #prefix>
+          <n-icon :component="Search" />
+        </template>
+      </n-input>
+      <n-dropdown trigger="click" placement="bottom-start" :options="options" @select="handleSelect">
+        <n-button tertiary size="small">
+          <template #icon>
+            <n-icon size="20">
+              <Add />
+            </n-icon>
+          </template>
+        </n-button>
+      </n-dropdown>
+    </div>
+
     <n-menu
       v-if="!loading"
       v-model:value="activeKey"
@@ -29,6 +41,8 @@
     />
     <n-spin v-if="loading" size="small" description="加载中" style="margin-top: 100px" />
   </n-layout-sider>
+  <!-- 新增/修改项目弹窗 -->
+  <CreateProjectModal ref="createProjectModalRef" @result="result" />
 </template>
 
 <script setup lang="ts">
@@ -38,6 +52,8 @@ import { ProjectType } from '@/interface'
 import { useRouter, useRoute } from 'vue-router'
 import AppLogo from '@/components/AppLogo.vue'
 import IconSelect from '@/components/IconSelect.vue'
+import { Close, Add, Copy, ShareSocialSharp } from '@vicons/ionicons5'
+import CreateProjectModal from '@/modals/CreateProjectModal.vue'
 import {
   EllipsisHorizontal,
   TrashBin,
@@ -82,7 +98,7 @@ const menuData = computed<MenuOption[]>(() => {
   return (arr || []).map(item => {
     if (item.name === 'project') {
       return {
-        label: `所有项目(${projectStore.projectList.length})`,
+        label: `项目列表(${projectStore.projectList.length})`,
         key: '/project',
         icon: renderIcon(item.meta?.icon as Component),
         children: [
@@ -123,6 +139,31 @@ const menuData = computed<MenuOption[]>(() => {
   })
 })
 
+const options = ref([
+  {
+    label: '新建项目',
+    key: '1',
+    icon: renderIcon(Copy)
+  },
+  {
+    type: 'divider',
+    key: 'divider'
+  },
+  {
+    label: '新建项目分组',
+    key: 'trash',
+    icon: renderIcon(TrashBin)
+  }
+])
+
+const createProjectModalRef = ref<InstanceType<typeof CreateProjectModal> | null>(null)
+function handleSelect(val: string) {
+  console.log(val)
+  if (val === '1') {
+    createProjectModalRef.value?.show()
+  }
+}
+
 const handleItemClick = (key: string, item: MenuOption) => {
   const routePath = item.key as string
   router.push(routePath)
@@ -136,6 +177,8 @@ function queryProjectList() {
     loading.value = false
   })
 }
+
+const result = () => {}
 </script>
 
 <style lang="scss" scoped>
@@ -150,6 +193,12 @@ function queryProjectList() {
   padding-left: 10px;
   font-weight: 500;
   margin-bottom: 12px;
+}
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 8px;
 }
 .nav-list,
 .project-list {
@@ -196,6 +245,6 @@ function queryProjectList() {
 }
 
 ::v-deep(.n-input .n-input__border, .n-input .n-input__state-border) {
-  border: none;
+  // border: none;
 }
 </style>

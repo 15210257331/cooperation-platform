@@ -1,4 +1,4 @@
-import { axiosRequest, ResType } from './http'
+import { axiosRequest, ResType } from './request'
 
 /** 获取消息通知列表 */
 export function getNotificationList(queryParams: any): Promise<ResType> {

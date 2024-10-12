@@ -18,6 +18,7 @@ const appstore = useAppStore()
     // display: none;
     // height: 0!important;
     width: 0 !important;
+    color: var(--nice-primary-color)
   }
   .logo-img {
     width: 30px !important;
@@ -57,6 +58,8 @@ const appstore = useAppStore()
     line-height: 35px;
     font-weight: 500;
     vertical-align: middle;
+    // color: var(--nice-primary-color);
+    color: $test-color
   }
 }
 </style>

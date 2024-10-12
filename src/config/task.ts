@@ -1,24 +1,30 @@
 export const progressColors = ['#CB3A56', '#F47983', '#AE7000', '#3DE1AD', '#801DAE', '#21A675']
 export const leftBorderColors = ['#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc']
+
+type tagType = 'primary' | 'info' | 'warning' | 'error' | 'default' | 'success' | undefined
 /** 任务优先级 */
-export const priorityOptions = [
+export const priorityOptions: Array<{
+  value: number
+  label: string
+  type: tagType
+}> = [
   {
-    value: '1',
+    value: 1,
     label: '较低',
     type: 'primary'
   },
   {
-    value: '2',
+    value: 2,
     label: '一般',
     type: 'info'
   },
   {
-    value: '4',
+    value: 3,
     label: '较高',
     type: 'warning'
   },
   {
-    value: '5',
+    value: 4,
     label: '紧急',
     type: 'error'
   }

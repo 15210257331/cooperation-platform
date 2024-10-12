@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { priorityOptions } from '@/constant'
+import { priorityOptions } from '@/config'
 
 interface Props {
   propName: string;

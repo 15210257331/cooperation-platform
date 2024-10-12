@@ -61,15 +61,15 @@
 <script setup lang="ts">
 import { useAppStore, useProjectStore } from '@/store'
 import { computed, ref } from 'vue'
-import TaskFilter from './TaskFilter.vue'
+import TaskFilter from './components/TaskFilter.vue'
 import { useDialog, useMessage } from 'naive-ui'
 import { GroupType } from '@/interface'
-import TaskItem from './TaskItem.vue'
+import TaskItem from './components/TaskItem.vue'
 import draggable from 'vuedraggable'
 import { useRender } from '@/hooks'
-import CreateGroupModal from './CreateGroupModal.vue'
+import CreateGroupModal from '@/modals/CreateGroupModal.vue'
 import { Documents, Duplicate, TrashBin, EllipsisHorizontal, Add } from '@vicons/ionicons5'
-import CreateTaskDrawer from './CreateTaskDrawer.vue'
+import CreateTaskDrawer from '@/modals/CreateTaskDrawer.vue'
 
 const projectStore = useProjectStore()
 const appStore = useAppStore()

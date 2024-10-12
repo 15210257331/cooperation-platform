@@ -50,7 +50,7 @@ import { useUserStore, UserInfoType } from '@/store'
 import { Close } from '@vicons/ionicons5'
 import { FormInst, useMessage } from 'naive-ui'
 import { updateUserInfo } from '@/api'
-import { themes } from '@/constant'
+import { themes } from '@/config'
 import { useAppStore } from '@/store'
 interface Props {
   /** 弹窗显隐 */

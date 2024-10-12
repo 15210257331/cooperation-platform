@@ -1,4 +1,4 @@
-import { axiosRequest, ResType } from './http'
+import { axiosRequest, ResType } from './request'
 
 // 项目标签列表
 export function getTagListAPI(projectId: string): Promise<ResType> {

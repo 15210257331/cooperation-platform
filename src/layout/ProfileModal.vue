@@ -57,7 +57,7 @@ import { Close } from '@vicons/ionicons5'
 import { FormInst, useMessage } from 'naive-ui'
 import { updateUserInfo } from '@/api'
 import UploadFile from '@/components/UploadFile.vue'
-import { roleMap } from '@/constant'
+import { roleMap } from '@/config'
 interface Props {
   /** 弹窗显隐 */
   value: boolean
