@@ -9,7 +9,7 @@ import { computed } from 'vue'
 import { priorityOptions } from '@/config'
 
 interface Props {
-  propName: string;
+  propName: number;
 }
 const props = defineProps<Props>()
 
