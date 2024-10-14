@@ -58,8 +58,8 @@ const appstore = useAppStore()
     line-height: 35px;
     font-weight: 500;
     vertical-align: middle;
-    // color: var(--nice-primary-color);
-    color: $test-color
+    color: var(--nice-primary-color);
+    // color: $test-color
   }
 }
 </style>

@@ -1,72 +1,67 @@
 <template>
-  <n-card size="small">
-    <n-space style="margin-bottom: 20px">
-      <n-input v-model:value="queryParams.nickname" type="text" placeholder="请输入用户昵称" @keyup.enter="queryData" />
-      <n-button type="success" @click="queryData">
-        <template #icon>
-          <n-icon>
-            <SearchSharp />
-          </n-icon>
-        </template>
-        搜索
-      </n-button>
-      <n-button @click="reset">
-        <template #icon>
-          <n-icon>
-            <RefreshSharp />
-          </n-icon>
-        </template>
-        重置</n-button
-      >
-    </n-space>
-    <n-data-table
-      :bordered="false"
-      :columns="columns"
-      :data="dataList"
-      :remote="true"
-      :loading="loading"
-      :pagination="{ page: queryParams.pageIndex, pageSize: queryParams.pageSize, itemCount: total }"
-      @update:page="pageChange"
-    />
-    <n-modal v-model:show="showModal">
-      <n-card
-        :segmented="{
-          content: true,
-          footer: true
-        }"
-        style="width: 520px"
-        :title="'设置角色'"
-        :bordered="false"
-        role="dialog"
-        aria-modal="true"
-      >
-        <template #header-extra>
-          <n-button quaternary circle>
+  <div class="user-wrap" :style="{ backgroundColor: appStore.darkTheme ? 'rgba(255, 255, 255, 0.12)' : '#f9f9f9' }">
+    <div class="header">
+      <n-tabs type="bar">
+        <n-tab v-for="item in tabs" :key="item.value" :name="item.value">{{ item.title }}</n-tab>
+      </n-tabs>
+    </div>
+    <div class="content">
+      <n-card size="small">
+        <n-space style="margin-bottom: 20px">
+          <n-input v-model:value="queryParams.nickname" type="text" placeholder="请输入用户昵称" @keyup.enter="queryData" />
+          <n-button type="success" @click="queryData">
             <template #icon>
-              <n-icon size="20" @click="showModal = false">
-                <Close />
+              <n-icon>
+                <SearchSharp />
               </n-icon>
             </template>
+            搜索
           </n-button>
-        </template>
-        <div>
-          <n-radio-group v-model:value="role" name="radiogroup">
-            <n-space>
-              <n-radio v-for="(item, key) in roleMap" :key="key" :value="key">
-                {{ item }}
-              </n-radio>
-            </n-space>
-          </n-radio-group>
-        </div>
-        <template #footer>
-          <n-space horizontal style="float: right">
-            <n-button tertiary @click="showModal = false"> 取消 </n-button>
-            <n-button type="primary" @click="setRole"> 确认 </n-button>
-          </n-space>
-        </template>
+          <n-button @click="reset">
+            <template #icon>
+              <n-icon>
+                <RefreshSharp />
+              </n-icon>
+            </template>
+            重置</n-button>
+        </n-space>
+        <n-data-table :bordered="false" :columns="columns" :data="dataList" :remote="true" :loading="loading"
+          :pagination="{ page: queryParams.pageIndex, pageSize: queryParams.pageSize, itemCount: total }"
+          @update:page="pageChange" />
+        <n-modal v-model:show="showModal">
+          <n-card :segmented="{
+            content: true,
+            footer: true
+          }" style="width: 520px" :title="'设置角色'" :bordered="false" role="dialog" aria-modal="true">
+            <template #header-extra>
+              <n-button quaternary circle>
+                <template #icon>
+                  <n-icon size="20" @click="showModal = false">
+                    <Close />
+                  </n-icon>
+                </template>
+              </n-button>
+            </template>
+            <div>
+              <n-radio-group v-model:value="role" name="radiogroup">
+                <n-space>
+                  <n-radio v-for="(item, key) in roleMap" :key="key" :value="key">
+                    {{ item }}
+                  </n-radio>
+                </n-space>
+              </n-radio-group>
+            </div>
+            <template #footer>
+              <n-space horizontal style="float: right">
+                <n-button tertiary @click="showModal = false"> 取消 </n-button>
+                <n-button type="primary" @click="setRole"> 确认 </n-button>
+              </n-space>
+            </template>
+          </n-card>
+        </n-modal>
       </n-card>
-    </n-modal>
-  </n-card>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -76,9 +71,11 @@ import { DataTableColumns, useMessage, NTag, NButton, useDialog } from 'naive-ui
 import dayjs from 'dayjs'
 import { SearchSharp, RefreshSharp, Close } from '@vicons/ionicons5'
 import { roleMap } from '@/config'
+import { useAppStore } from '@/store'
 
 const message = useMessage()
 const dialog = useDialog()
+const appStore = useAppStore()
 
 type RowData = {
   id: number
@@ -89,6 +86,16 @@ type RowData = {
   role: string
   createDate: string
 }
+const tabs = ref<Array<any>>([
+  {
+    title: '用户管理',
+    value: 'all'
+  },
+  {
+    title: '角色管理',
+    value: '1'
+  }
+])
 const columns: DataTableColumns<RowData> = [
   {
     title: '用户名',
@@ -224,7 +231,7 @@ function userDelete(id: number) {
         }
       })
     },
-    onNegativeClick: () => {}
+    onNegativeClick: () => { }
   })
 }
 
@@ -240,6 +247,29 @@ function setRole() {
 </script>
 
 <style lang="scss" scoped>
+.user-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .header {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    background-color: white;
+  }
+
+  .content {
+    width: 100%;
+    flex: 1;
+    overflow: auto;
+    padding: 15px;
+  }
+}
+
 .user {
   padding: 10px;
 }

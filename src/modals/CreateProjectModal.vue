@@ -37,8 +37,8 @@
         <n-form-item label="项目类型" path="type">
           <n-radio-group v-model:value="formValue.type" name="type">
             <n-space>
-              <n-radio value="group"> group </n-radio>
-              <n-radio value="general"> general </n-radio>
+              <n-radio value="group"> 流程化 </n-radio>
+              <n-radio value="general"> 普通 </n-radio>
             </n-space>
           </n-radio-group>
         </n-form-item>
