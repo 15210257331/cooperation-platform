@@ -1,6 +1,6 @@
 <template>
   <div class="user-wrap" :style="{ backgroundColor: appStore.darkTheme ? 'rgba(255, 255, 255, 0.12)' : '#f9f9f9' }">
-    <div class="header">
+    <div class="header"  :style="{ backgroundColor: appStore.darkTheme ? 'rgb(24, 24, 28)' : 'white' }">
       <n-tabs type="bar">
         <n-tab v-for="item in tabs" :key="item.value" :name="item.value">{{ item.title }}</n-tab>
       </n-tabs>
@@ -182,7 +182,7 @@ const total = ref<number>(0)
 const loading = ref<boolean>(false)
 const queryParams = reactive({
   pageIndex: 1,
-  pageSize: 4,
+  pageSize: 10,
   nickname: ''
 })
 const showModal = ref<boolean>(false)

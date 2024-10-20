@@ -1,8 +1,8 @@
-import { axiosRequest, ResType } from './request'
+import { axiosRequest, ResType, ParamsType } from './request'
 
 /** 项目 */
-export function getProjectList(sort: string): Promise<ResType> {
-  return axiosRequest.get(`/api/project/list?sort=${sort}`)
+export function getProjectList(params: ParamsType): Promise<ResType> {
+  return axiosRequest.get(`/api/project/list`, params)
 }
 export function getProjectDetail(id: string): Promise<ResType> {
   return axiosRequest.get(`/api/project/detail/${id}`)

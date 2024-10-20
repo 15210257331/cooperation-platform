@@ -17,7 +17,7 @@
         class="action-wrap"
         :style="{ backgroundColor: appStore.darkTheme ? 'rgb(40, 40, 42)' : 'rgba(46, 51, 56, .05)' }"
       >
-        <n-avatar round size="small">{{ userStore.userInfo.nickname.slice(0, 1) }}</n-avatar>
+        <n-avatar round size="small" src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg">{{ userStore.userInfo.nickname.slice(0, 1) }}</n-avatar>
         <div class="nickname">{{ userStore.userInfo.nickname }}</div>
         <n-icon :size="18" :component="ChevronDownOutline" />
       </div>

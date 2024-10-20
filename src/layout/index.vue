@@ -1,6 +1,6 @@
 <template>
   <n-layout has-sider :style="styleObj">
-    <SideBar />
+    <Sidebar />
     <n-layout>
       <TopBar></TopBar>
       <n-layout-content has-sider>
@@ -15,7 +15,7 @@ import TopBar from './TopBar.vue'
 import { onMounted, getCurrentInstance, computed, Component, h, ref } from 'vue'
 import { getUserInfo } from '@/api'
 import { useAppStore, useUserStore, useProjectStore } from '@/store'
-import SideBar from './SideBar.vue'
+import Sidebar from './Sidebar.vue'
 
 const appStore = useAppStore()
 const userStore = useUserStore()

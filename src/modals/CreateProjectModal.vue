@@ -22,7 +22,7 @@
         <n-form-item label="项目名称" path="name">
           <n-input v-model:value="formValue.name" placeholder="请输入项目名称" />
         </n-form-item>
-        <n-form-item label="项目icon" path="icon">
+        <n-form-item label="项目图标" path="icon">
           <IconSelect v-model="formValue.icon"></IconSelect>
         </n-form-item>
         <n-form-item label="背景图:" path="cover">
@@ -37,7 +37,7 @@
         <n-form-item label="项目类型" path="type">
           <n-radio-group v-model:value="formValue.type" name="type">
             <n-space>
-              <n-radio value="group"> 流程化 </n-radio>
+              <n-radio value="group"> 工作流 </n-radio>
               <n-radio value="general"> 普通 </n-radio>
             </n-space>
           </n-radio-group>
@@ -81,7 +81,7 @@ const formValue = ref({
   type: '',
   star: false,
   startDate: new Date().getTime(),
-  endDate: new Date().getTime()
+  endDate: new Date(Date.now() + 3600 * 1000 * 7).getTime()
 })
 const rules = {
   name: {

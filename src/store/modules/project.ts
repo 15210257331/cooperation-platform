@@ -21,14 +21,16 @@ export const useProjectStore = defineStore('project', {
   state: (): ProjectStoreType => {
     return {
       currentProject: null,
+      projectListLoading: false,
       projectList: []
     }
   },
   actions: {
     // 查询项目列表
-    queryProjectList() {
+    queryProjectList(keywords: string, sort = '') {
       return new Promise((resolve, reject) => {
-        getProjectList('')
+        this.projectListLoading = true
+        getProjectList({ keywords, sort })
           .then(res => {
             if (res.code === 10000) {
               this.projectList = res.data || []
@@ -40,10 +42,13 @@ export const useProjectStore = defineStore('project', {
           .catch(err => {
             reject(false)
           })
+          .finally(() => {
+            this.projectListLoading = false
+          })
       })
     },
-    createProject() {},
-    updateProject() {},
+    createProject() { },
+    updateProject() { },
     // 删除项目
     deleteProject(id: string) {
       return new Promise((resolve, reject) => {

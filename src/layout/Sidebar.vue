@@ -13,7 +13,7 @@
     <AppLogo />
     <n-divider style="margin: 0" />
     <div class="action">
-      <n-input size="small" placeholder="搜索..." style="margin-right: 12px">
+      <n-input v-model:value="keywords" size="small" clearable placeholder="搜索项目..." style="margin-right: 12px" @keyup.enter="queryProjectList(keywords)" @clear="queryProjectList('')">
         <template #prefix>
           <n-icon :component="Search" />
         </template>
@@ -84,6 +84,15 @@ watchEffect(() => {
   activeKey.value = route.path
   console.log(router)
 })
+
+const loading = computed<boolean>(() => {
+  return projectStore.projectListLoading
+})
+const keywords = ref<string>('')
+queryProjectList(keywords.value)
+function queryProjectList(keywords:string) {
+  projectStore.queryProjectList(keywords)
+}
 
 const starProjectList = computed<ProjectType[]>(() => {
   return projectStore.projectList.filter(item => item.star)
@@ -158,27 +167,20 @@ const options = ref([
 
 const createProjectModalRef = ref<InstanceType<typeof CreateProjectModal> | null>(null)
 function handleSelect(val: string) {
-  console.log(val)
   if (val === '1') {
     createProjectModalRef.value?.show()
   }
 }
+function result() {
+  projectStore.queryProjectList(keywords.value,)
+}
 
 const handleItemClick = (key: string, item: MenuOption) => {
   const routePath = item.key as string
+  console.log(routePath)
   router.push(routePath)
 }
 
-const loading = ref<boolean>(false)
-queryProjectList()
-function queryProjectList() {
-  loading.value = true
-  projectStore.queryProjectList().finally(() => {
-    loading.value = false
-  })
-}
-
-const result = () => {}
 </script>
 
 <style lang="scss" scoped>

@@ -54,6 +54,8 @@
       />
     </SectionArea>
   </div>
+  <!-- 新增/修改项目弹窗 -->
+  <CreateProjectModal ref="createProjectModalRef" @result="result" />
 </template>
 
 <script setup lang="ts">
@@ -70,7 +72,7 @@ import { useRender } from '@/hooks'
 import SectionArea from '@/components/SectionArea.vue'
 import { getProjectList, deleteProject, projectToggleStar } from '@/api'
 import PlaceholderContainer from '@/components/PlaceholderContainer.vue'
-import CreateProjectModal from './components/CreateProjectModal.vue'
+import CreateProjectModal from '@/modals/CreateProjectModal.vue'
 
 const dialog = useDialog()
 const projectStore = useProjectStore()
@@ -79,7 +81,24 @@ const message = useMessage()
 const router = useRouter()
 const { renderIcon } = useRender()
 
-const createProjectModalRef = ref<InstanceType<typeof CreateProjectModal> | null>(null)
+const shortcutActionList = [
+  {
+    title: '新增项目',
+    icon: 'https://lhcdn.lanhuapp.com/dashboard/production/assets/dc_prj.8ef4ddf0.svg',
+    type: 1
+  },
+  {
+    title: '新建任务',
+    icon: 'https://lhcdn.lanhuapp.com/dashboard/production/assets/master_go.529dd3fa.svg',
+    type: 2
+  },
+  {
+    title: '文档',
+    icon: 'https://lhcdn.lanhuapp.com/dashboard/production/assets/ts_doc.58db84fd.svg',
+    type: 3
+  }
+]
+
 const showType = ref<string>('card')
 const orderOptions = [
   {
@@ -103,7 +122,6 @@ const orderOptions = [
   }
 ]
 const selectOrderType = ref<DropdownOption>(orderOptions[0].children[0])
-const loading = ref<boolean>(true)
 const options = [
   {
     label: '卡片模式',
@@ -116,78 +134,48 @@ const options = [
     icon: renderIcon(ReorderFour)
   }
 ]
-
-const shortcutActionList = [
-  {
-    title: '新增项目',
-    icon: 'https://lhcdn.lanhuapp.com/dashboard/production/assets/dc_prj.8ef4ddf0.svg',
-    type: 1
-  },
-  {
-    title: '新建任务',
-    icon: 'https://lhcdn.lanhuapp.com/dashboard/production/assets/master_go.529dd3fa.svg',
-    type: 2
-  },
-  {
-    title: '文档',
-    icon: 'https://lhcdn.lanhuapp.com/dashboard/production/assets/ts_doc.58db84fd.svg',
-    type: 3
-  }
-]
-
-const projectList = ref<ProjectType[]>([])
-
-queryProjectList()
-
-function queryProjectList(sort = '') {
-  loading.value = true
-  getProjectList(sort)
-    .then(res => {
-      if (res.code === 10000) {
-        projectList.value = res.data || []
-        // console.log(projectList)
-      }
-    })
-    .finally(() => {
-      loading.value = false
-    })
-}
+const loading = computed<boolean>(() => {
+  return projectStore.projectListLoading
+})
+const projectList = computed<ProjectType[]>(() => {
+  return projectStore.projectList
+})
 
 function handleSelect(key: string) {
   showType.value = key
 }
 function handleOrderOptionChange(key: string, option: DropdownOption) {
   ;(selectOrderType.value as DropdownOption) = option
-  queryProjectList(key)
+  projectStore.queryProjectList('', key)
 }
+
+const createProjectModalRef = ref<InstanceType<typeof CreateProjectModal> | null>(null)
 function handleShortcutClick(type: number) {
   // 新建项目
   if (type === 1) {
     createProjectModalRef.value?.show()
   }
 }
-
 function handleUpdateProject($event: ProjectType) {
   createProjectModalRef.value?.show($event)
 }
-
 function result() {
-  queryProjectList(selectOrderType.value.key as string)
+  projectStore.queryProjectList('', selectOrderType.value.key as string)
 }
+
 function toggleStar($event: ProjectType) {
   projectToggleStar({ id: $event.id as string, star: !$event.star }).then(res => {
     if (res.code === 10000) {
       message.success(res.message)
-      queryProjectList(selectOrderType.value.key as string)
+      projectStore.queryProjectList('', selectOrderType.value.key as string)
     }
   })
 }
 function clickProject($event: ProjectType) {
-  router.push({
-    name: 'task'
-  })
-  projectStore.setCurrentProject($event)
+  const id = $event.id
+  router.push(`/project/${id}`)
 }
+
 function removeProject($event: ProjectType) {
   const id = $event.id as string
   dialog.warning({
@@ -199,7 +187,7 @@ function removeProject($event: ProjectType) {
       deleteProject(id).then(res => {
         if (res.code === 10000) {
           message.success('项目删除成功！')
-          queryProjectList()
+          projectStore.queryProjectList('', selectOrderType.value.key as string)
         }
       })
     },

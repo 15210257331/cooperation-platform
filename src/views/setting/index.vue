@@ -1,6 +1,6 @@
 <template>
   <div class="setting-wrap" :style="{ backgroundColor: appStore.darkTheme ? 'rgba(255, 255, 255, 0.12)' : '#f9f9f9' }">
-    <div class="header">
+    <div class="header" :style="{ backgroundColor: appStore.darkTheme ? 'rgb(24, 24, 28)' : 'white' }">
       <n-tabs type="bar">
         <n-tab v-for="item in tabs" :key="item.value" :name="item.value">{{ item.title }}</n-tab>
       </n-tabs>
@@ -188,7 +188,7 @@ const list = ref<Array<any>>([
     align-items: center;
     justify-content: space-between;
     padding: 0 18px;
-    background-color: white;
+    // background-color: white;
   }
   .content {
     width: 100%;

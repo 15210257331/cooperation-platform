@@ -1,6 +1,7 @@
 import { UserType } from './user.interface'
 export interface ProjectStoreType {
   currentProject: ProjectType | null
+  projectListLoading: boolean
   projectList: ProjectType[]
 }
 
