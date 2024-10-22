@@ -42,9 +42,9 @@ export const routes: RouteRecordRaw[] = [
         path: '/dashboard',
         name: 'dashboard',
         meta: {
-          show: true,
           title: '概览',
-          icon: markRaw(Layers)
+          icon: markRaw(Layers),
+          permission: 1
         },
         component: () => import('@/views/dashboard/index.vue')
       },
@@ -52,9 +52,9 @@ export const routes: RouteRecordRaw[] = [
         path: '/project/:id',
         name: 'project',
         meta: {
-          show: true,
           title: '所有项目',
-          icon: markRaw(AppsSharp)
+          icon: markRaw(AppsSharp),
+          permission: 16
         },
         component: () => import('@/views/project/index.vue')
       },
@@ -62,9 +62,9 @@ export const routes: RouteRecordRaw[] = [
         path: '/user',
         name: 'user',
         meta: {
-          show: true,
           title: '用户管理',
-          icon: markRaw(PersonSharp)
+          icon: markRaw(PersonSharp),
+          permission: 256
         },
         component: () => import('@/views/user/index.vue')
       },
@@ -72,9 +72,9 @@ export const routes: RouteRecordRaw[] = [
         path: '/setting',
         name: 'setting',
         meta: {
-          show: true,
           title: '设置',
-          icon: markRaw(Settings)
+          icon: markRaw(Settings),
+          permission: 8192
         },
         component: () => import('@/views/setting/index.vue')
       }

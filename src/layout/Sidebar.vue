@@ -13,7 +13,15 @@
     <AppLogo />
     <n-divider style="margin: 0" />
     <div class="action">
-      <n-input v-model:value="keywords" size="small" clearable placeholder="搜索项目..." style="margin-right: 12px" @keyup.enter="queryProjectList(keywords)" @clear="queryProjectList('')">
+      <n-input
+        v-model:value="keywords"
+        size="small"
+        clearable
+        placeholder="搜索项目..."
+        style="margin-right: 12px"
+        @keyup.enter="queryProjectList(keywords)"
+        @clear="queryProjectList('')"
+      >
         <template #prefix>
           <n-icon :component="Search" />
         </template>
@@ -46,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { Component, computed, h, ref, watchEffect } from 'vue'
+import { Component, computed, h, onMounted, ref, watchEffect } from 'vue'
 import { getProjectList } from '@/api'
 import { ProjectType } from '@/interface'
 import { useRouter, useRoute } from 'vue-router'
@@ -68,7 +76,7 @@ import {
   FileTrayFull,
   AppsSharp
 } from '@vicons/ionicons5'
-import { useRender } from '@/hooks'
+import { usePermission, useRender } from '@/hooks'
 import { useProjectStore } from '@/store'
 import { MenuOption, NEllipsis, NIcon, TreeOption, useDialog, useMessage } from 'naive-ui'
 
@@ -78,6 +86,7 @@ const router = useRouter()
 const route = useRoute()
 const { renderIcon } = useRender()
 const projectStore = useProjectStore()
+const { hasPermission } = usePermission()
 
 const activeKey = ref<string | null>(null)
 watchEffect(() => {
@@ -90,7 +99,7 @@ const loading = computed<boolean>(() => {
 })
 const keywords = ref<string>('')
 queryProjectList(keywords.value)
-function queryProjectList(keywords:string) {
+function queryProjectList(keywords: string) {
   projectStore.queryProjectList(keywords)
 }
 
@@ -103,56 +112,59 @@ const normalProjectList = computed<ProjectType[]>(() => {
 })
 
 const menuData = computed<MenuOption[]>(() => {
-  const arr = router.options.routes.filter(item => item.path === '/')[0].children
-  return (arr || []).map(item => {
-    if (item.name === 'project') {
-      return {
-        label: `项目列表(${projectStore.projectList.length})`,
-        key: '/project',
-        icon: renderIcon(item.meta?.icon as Component),
-        children: [
-          {
-            type: 'group',
-            label: `星标项目(${starProjectList.value.length})`,
-            key: '11',
-            children: starProjectList.value.map(item => {
-              return {
-                ...item,
-                label: () => h(NEllipsis, null, { default: () => item.name }),
-                key: `/project/${item.id}`,
-                icon: renderIcon(FileTrayFull)
-              }
-            })
-          },
-          {
-            type: 'group',
-            label: `普通项目(${normalProjectList.value.length})`,
-            key: '33',
-            children: normalProjectList.value.map(item => {
-              return {
-                ...item,
-                label: () => h(NEllipsis, null, { default: () => item.name }),
-                key: `/project/${item.id}`,
-                icon: renderIcon(LogoBuffer)
-              }
-            })
-          }
-        ]
+  const arr = router.options.routes.filter(item => item.path === '/')[0].children || []
+  return arr
+    .filter(item => hasPermission(item.meta?.permission as number))
+    .map(item => {
+      if (item.name === 'project') {
+        return {
+          label: `项目列表(${projectStore.projectList.length})`,
+          key: '/project',
+          icon: renderIcon(item.meta?.icon as Component),
+          children: [
+            {
+              type: 'group',
+              label: `星标项目(${starProjectList.value.length})`,
+              key: '11',
+              children: starProjectList.value.map(item => {
+                return {
+                  ...item,
+                  label: () => h(NEllipsis, null, { default: () => item.name }),
+                  key: `/project/${item.id}`,
+                  icon: renderIcon(FileTrayFull)
+                }
+              })
+            },
+            {
+              type: 'group',
+              label: `普通项目(${normalProjectList.value.length})`,
+              key: '33',
+              children: normalProjectList.value.map(item => {
+                return {
+                  ...item,
+                  label: () => h(NEllipsis, null, { default: () => item.name }),
+                  key: `/project/${item.id}`,
+                  icon: renderIcon(LogoBuffer)
+                }
+              })
+            }
+          ]
+        }
       }
-    }
-    return {
-      label: item.meta?.title,
-      key: item.path,
-      icon: renderIcon(item.meta?.icon as Component)
-    }
-  })
+      return {
+        label: item.meta?.title,
+        key: item.path,
+        icon: renderIcon(item.meta?.icon as Component)
+      }
+    })
 })
 
 const options = ref([
   {
     label: '新建项目',
     key: '1',
-    icon: renderIcon(Copy)
+    icon: renderIcon(Copy),
+    permission: 2
   },
   {
     type: 'divider',
@@ -172,15 +184,14 @@ function handleSelect(val: string) {
   }
 }
 function result() {
-  projectStore.queryProjectList(keywords.value,)
+  projectStore.queryProjectList(keywords.value)
 }
 
 const handleItemClick = (key: string, item: MenuOption) => {
   const routePath = item.key as string
-  console.log(routePath)
+  // console.log(routePath)
   router.push(routePath)
 }
-
 </script>
 
 <style lang="scss" scoped>

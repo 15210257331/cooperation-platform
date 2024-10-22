@@ -30,6 +30,9 @@ Sentry.init({
   tracesSampleRate: 1.0
 })
 
+import { permissionDirective } from '@/directives'
+app.directive('permission', permissionDirective)
+
 /** 路由 */
 import router from './router'
 app.use(router)

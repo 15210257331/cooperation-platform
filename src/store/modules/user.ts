@@ -7,7 +7,7 @@ export interface UserInfoType {
   nickname: string
   phone: any
   avatar: string
-  role: number
+  roles: any[]
   intro: string
 }
 
@@ -28,7 +28,7 @@ function initUserInfo(): UserInfoType {
     nickname: '',
     phone: null,
     avatar: '',
-    role: 0,
+    roles: [],
     intro: ''
   }
 }
@@ -85,6 +85,7 @@ export const useUserStore = defineStore('user', {
     }
   },
   getters: {
-    nickname: state => state.userInfo.nickname
+    nickname: state => state.userInfo.nickname,
+    roles: state => state.userInfo.roles
   }
 })

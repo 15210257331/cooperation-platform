@@ -14,7 +14,6 @@ export function githubLogin(data: any): Promise<ResType> {
   return axiosRequest.post('/api/user/github/login', data)
 }
 
-
 /** 微信登录 */
 export function wechatLogin(data: any): Promise<ResType> {
   return axiosRequest.get('/api/user/login/wechat')
@@ -51,7 +50,7 @@ export function deleteUser(id: number): Promise<ResType> {
   return axiosRequest.get(`/api/user/delete/${id}`)
 }
 
-/** 修改用户角色 */
+/** 修改指定用户角色 */
 export function updateUserRole(data: any): Promise<ResType> {
   return axiosRequest.post(`/api/user/setRole`, data)
 }
@@ -59,4 +58,29 @@ export function updateUserRole(data: any): Promise<ResType> {
 /** 退出登录 */
 export function logout(data: any): Promise<ResType> {
   return axiosRequest.post(`/api/user/logout`, data)
+}
+
+/** 角色列表 */
+export function roleListAPI(data: any): Promise<ResType> {
+  return axiosRequest.post(`/api/user/role/list`, data)
+}
+
+/** 添加角色 */
+export function roleAddAPI(data: any): Promise<ResType> {
+  return axiosRequest.post(`/api/user/role/add`, data)
+}
+
+/** 修改角色 */
+export function roleUpdateAPI(data: any): Promise<ResType> {
+  return axiosRequest.post(`/api/user/role/update`, data)
+}
+
+/** 角色删除 */
+export function deleteRoleAPI(id: string): Promise<ResType> {
+  return axiosRequest.get(`/api/user/role/delete/${id}`)
+}
+
+/** 设置角色权限 */
+export function setRolePermissionAPI(data: any): Promise<ResType> {
+  return axiosRequest.post(`/api/user/role/setPermission`, data)
 }

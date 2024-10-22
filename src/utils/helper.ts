@@ -26,3 +26,13 @@ export function formatDate(value: Date | string | any, format = 'YYYY年MM月DD�
   }
   return ''
 }
+
+/**
+ * 生成随机数 包含最大值和最小值
+ * @param min
+ * @param max
+ * @returns
+ */
+export function getRandomNumber(max: number, min = 0) {
+  return Math.ceil(Math.random() * max + min)
+}

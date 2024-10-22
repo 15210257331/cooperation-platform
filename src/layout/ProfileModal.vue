@@ -33,8 +33,10 @@
         <n-form-item label="手机号:" path="phone">
           <n-input v-model:value="formValue.phone" placeholder="手机号" />
         </n-form-item>
-        <n-form-item label="角色:" path="role">
-          <n-select v-model:value="formValue.role" disabled :options="options" />
+        <n-form-item label="角色:" path="roles">
+          <n-tag v-for="item in formValue.roles" :key="item.id" :bordered="false" type="info">
+            {{ item.name }}
+          </n-tag>
         </n-form-item>
         <n-form-item label="个人简介:" path="intro">
           <n-input v-model:value="formValue.intro" type="textarea" placeholder="个人简介" />
