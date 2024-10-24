@@ -1,4 +1,4 @@
-import { getNotificationList, getUnreadCount, readNotification } from '@/api'
+import { getNotificationList, getUnreadCount, getUserInfo, readNotification } from '@/api'
 import { defineStore } from 'pinia'
 
 export interface UserInfoType {
@@ -42,6 +42,21 @@ export const useUserStore = defineStore('user', {
     }
   },
   actions: {
+    queryUserInfo() {
+      return new Promise((resolve, reject) => {
+        getUserInfo()
+          .then(res => {
+            if (res.code === 10000) {
+              const userInfo = res.data
+              this.setUserInfo(userInfo)
+              resolve(true)
+            }
+          })
+          .catch(() => {
+            reject(false)
+          })
+      })
+    },
     queryNotificationList(queryParams: any) {
       getNotificationList(queryParams).then(res => {
         if (res.code === 10000) {

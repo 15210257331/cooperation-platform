@@ -85,7 +85,7 @@ const columns: DataTableColumns<RowData> = [
             style: {
               marginRight: '6px'
             },
-            type: ['success', 'warning', 'error', 'info'][getRandomNumber(3)],
+            type: 'warning',
             size: 'small',
             bordered: false
           },

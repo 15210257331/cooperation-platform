@@ -74,7 +74,7 @@ import { FormInst, FormRules, useMessage } from 'naive-ui'
 import { reactive, ref, onMounted } from 'vue'
 import { login, githubAuthorize } from '@/api'
 import { useRouter, useRoute } from 'vue-router'
-import { useAppStore } from '@/store'
+import { useAppStore, useUserStore } from '@/store'
 import { LockClosed, Person, Close, LogoWechat, LogoGithub, LogoGitlab } from '@vicons/ionicons5'
 
 interface Emits {
@@ -86,6 +86,7 @@ const message = useMessage()
 const router = useRouter()
 const route = useRoute()
 const appStore = useAppStore()
+const userStore = useUserStore()
 
 const githubCode = ref<string>('')
 const thirdLoginLoading = ref<boolean>(false)
@@ -163,12 +164,14 @@ function handleSubmit(e: MouseEvent) {
       const { username, password } = form
       login({ username, password }).then(res => {
         if (res.code === 10000) {
+          const { token, userInfo } = res.data
           if (rememberMe.value === true) {
             rememberPass()
           } else {
             deletePass()
           }
-          localStorage.setItem('token', res.data.token)
+          localStorage.setItem('token', token)
+          userStore.setUserInfo(userInfo)
           successLogin()
         }
       })

@@ -175,7 +175,7 @@ const options = ref([
     key: 'trash',
     icon: renderIcon(TrashBin)
   }
-])
+].filter(item => hasPermission(item.permission as number)))
 
 const createProjectModalRef = ref<InstanceType<typeof CreateProjectModal> | null>(null)
 function handleSelect(val: string) {

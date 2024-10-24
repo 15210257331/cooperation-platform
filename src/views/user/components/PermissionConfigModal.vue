@@ -23,7 +23,7 @@
       </n-space>
       <n-checkbox-group v-model:value="selectPermission">
         <template v-for="item in permissionOptions" :key="item.id">
-          <n-space v-if="item.type === 'menu'" style="margin: 10px 0">
+          <n-space v-if="item.type === 'menu'" style="margin: 18px 0 10px 0">
             <n-tooltip trigger="hover">
               <template #trigger>
                 <n-checkbox :value="item.value">

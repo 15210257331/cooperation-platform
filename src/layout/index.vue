@@ -31,16 +31,16 @@ onMounted(async () => {
   queryUnreadCount()
 })
 
-/** 请求用户信息 */
-queryUserInfo()
-function queryUserInfo() {
-  getUserInfo().then(res => {
-    if (res.code === 10000) {
-      const userInfo = res.data
-      userStore.setUserInfo(userInfo)
-    }
-  })
-}
+// /** 请求用户信息 */
+// queryUserInfo()
+// function queryUserInfo() {
+//   getUserInfo().then(res => {
+//     if (res.code === 10000) {
+//       const userInfo = res.data
+//       userStore.setUserInfo(userInfo)
+//     }
+//   })
+// }
 
 const queryParams = {
   pageIndex: 1,

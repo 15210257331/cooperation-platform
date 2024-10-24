@@ -1,6 +1,6 @@
 <template>
   <div class="not-found">
-    <n-result status="404" title="404 资源不存在" description="生活总归带点荒谬">
+    <n-result status="403" title="403 该页面无权限查看" description="生活总归带点荒谬">
       <template #footer>
         <n-button @click="goDashboard">返回首页</n-button>
       </template>

@@ -3,7 +3,7 @@
     <n-layout-header class="header">
       <div class="header-left">
         <img :src="logo" alt="" />
-        <h2>个人任务待办</h2>
+        <h2>项目协作平台</h2>
       </div>
       <div class="header-right">
         <n-space>

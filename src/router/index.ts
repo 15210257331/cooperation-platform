@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw, RouterView } from 'vue-router'
 import { Grid, Layers, PersonSharp, Settings, Aperture, LayersSharp, PeopleSharp, AppsSharp } from '@vicons/ionicons5'
 import { createVNode, render, markRaw } from 'vue'
+import { useUserStore } from '@/store'
+import { usePermission } from '@/hooks'
 /** 挂载注册ProgressBar组件 */
 import ProgressBar from '../components/ProgressBar.vue'
 /** 将组件转换成虚拟DOM */
@@ -25,17 +27,31 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/404/index.vue') // 注意这里要带上 文件后缀.vue
   },
   {
+    path: '/403',
+    name: '403',
+    component: () => import('@/views/403/index.vue') // 注意这里要带上 文件后缀.vue
+  },
+  {
     path: '/',
     name: 'layout',
     component: () => import('@/layout/index.vue'),
     redirect: '/dashboard',
-    beforeEnter: (to, from) => {
+    beforeEnter: async (to, from) => {
+      const userStore = useUserStore()
+      const { hasPermission } = usePermission()
       const token = localStorage.getItem('token')
-      if (!token) {
+      const res = await userStore.queryUserInfo()
+      if (!token || !res) {
         return {
           path: '/login'
         }
       }
+      if (to.meta.permission && !hasPermission(to.meta.permission as number)) {
+        return {
+          path: '/403'
+        }
+      }
+      return true
     },
     children: [
       {
@@ -87,7 +103,7 @@ const router = createRouter({
   routes
 })
 
-// 路由前置拦截器用于户权限判断
+// 路由前置拦截器
 router.beforeEach((to, from) => {
   Vnode.component?.exposed?.startLoading()
   // 根据路由修改网站标题
