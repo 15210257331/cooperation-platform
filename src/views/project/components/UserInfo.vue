@@ -1,11 +1,12 @@
 <template>
   <div class="user-info">
-    <n-avatar dot :round="true" size="small" :src="avatar" />
+    <n-avatar dot :round="true" size="small" :src="avatar" :fallback-src="defaultAvatar"/>
     <span>{{ nickname }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
+import { defaultAvatar } from '@/config'
 const props = defineProps<{
   avatar: string
   nickname: string

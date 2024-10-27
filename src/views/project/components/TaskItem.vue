@@ -47,7 +47,7 @@
     <div class="tag">
       <n-tooltip trigger="hover">
         <template #trigger>
-          <n-avatar round size="small" :src="owner.avatar" />
+          <n-avatar round size="small" :src="owner.avatar" :fallback-src="defaultAvatar"/>
         </template>
         <span>{{ owner.nickname }}</span>
       </n-tooltip>
@@ -94,6 +94,7 @@ import { useMessage } from 'naive-ui'
 import { progressColors, leftBorderColors, priorityOptions, remindOptions } from '@/config'
 import { formatDate } from '@/utils'
 import TaskOperation from './TaskOperation.vue'
+import { defaultAvatar } from '@/config'
 
 const props = defineProps<{
   task: TaskType

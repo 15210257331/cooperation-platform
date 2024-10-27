@@ -88,7 +88,7 @@ export default class AxiosRequest {
   }
 
   post(url: string, data: any): Promise<ResType> {
-    console.log(url)
+    // console.log(url)
     return new Promise((resolve, reject) => {
       this.instance
         .post(url, data)

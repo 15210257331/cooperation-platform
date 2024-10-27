@@ -19,13 +19,7 @@
         :content-style="{ padding: '0px', marginBottom: '20px' }"
       >
         <div class="message-item">
-          <n-avatar
-            size="small"
-            round
-            :src="item.avatar"
-            fallback-src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-            class="message-avatar"
-          />
+          <n-avatar size="small" round :src="item.avatar" :fallback-src="defaultAvatar" class="message-avatar" />
           <div class="message-body">
             <h4 class="title">{{ item.title }}</h4>
             <div class="content" v-html="item.content"></div>
@@ -48,6 +42,7 @@ import { useUserStore } from '@/store'
 import { computed, ref } from 'vue'
 import dayjs from 'dayjs'
 import { useMessage } from 'naive-ui'
+import { defaultAvatar } from '@/config'
 
 const userStore = useUserStore()
 const message = useMessage()

@@ -20,6 +20,12 @@ export function getSrcPath(srcName = 'src') {
   return `${rootPath}/${srcName}`
 }
 
+/**
+ * 时间格式化
+ * @param value
+ * @param format
+ * @returns
+ */
 export function formatDate(value: Date | string | any, format = 'YYYY年MM月DD日 HH:mm:ss') {
   if (value) {
     return dayjs(value).format(format)

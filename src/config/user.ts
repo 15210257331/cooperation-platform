@@ -4,7 +4,7 @@ export const roleMap: any = {
   ghost: '普通用户'
 }
 
-export const defaultAvatar = 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'
+export const defaultAvatar = 'https://lhcdn.lanhuapp.com/dashboard/production/assets/ts_doc.58db84fd.svg'
 
 export const permissionOptions = [
   {

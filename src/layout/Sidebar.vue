@@ -91,7 +91,7 @@ const { hasPermission } = usePermission()
 const activeKey = ref<string | null>(null)
 watchEffect(() => {
   activeKey.value = route.path
-  console.log(router)
+  // console.log(router)
 })
 
 const loading = computed<boolean>(() => {

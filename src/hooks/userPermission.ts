@@ -15,7 +15,7 @@ export function usePermission() {
     }
     // 获取用户绑定的角色
     const userPermissions = (userStore.roles || []).reduce((pre, cur) => pre | cur.permission, 0)
-    console.log(userPermissions)
+    // console.log(userPermissions)
     // 按位与操作检查用户是否具备所需权限
     return (userPermissions & requiredPermission) === requiredPermission
   }

@@ -41,7 +41,11 @@ export function deleteFlow(id: string): Promise<ResType> {
   return axiosRequest.get(`/api/flow/delete/${id}`)
 }
 
-// 任务
+/**
+ * 任务
+ * @param
+ * @returns
+ */
 export function getTaskList(data: any): Promise<ResType> {
   return axiosRequest.post(`/api/task/list`, data)
 }
@@ -51,11 +55,6 @@ export function createTask(data: any): Promise<ResType> {
 export function updateTaskProps(data: any): Promise<ResType> {
   return axiosRequest.post(`/api/task/updateProps`, data)
 }
-/**
- * 任务详情
- * @param taskId
- * @returns
- */
 export function taskDetail(taskId: string): Promise<ResType> {
   return axiosRequest.get(`/api/task/detail?taskId=${taskId}`)
 }
@@ -63,8 +62,17 @@ export function taskDetail(taskId: string): Promise<ResType> {
 export function deleteTask(id: string): Promise<ResType> {
   return axiosRequest.get(`/api/task/delete/${id}`)
 }
-
 // 任务完成趋势
 export function taskTrend(type: string): Promise<ResType> {
   return axiosRequest.get(`/api/task/trend?type=${type}`)
+}
+
+/**
+ * 迭代
+ */
+export function getIterationListAPI(params: ParamsType): Promise<ResType> {
+  return axiosRequest.get(`/api/iteration/list`, params)
+}
+export function createIterationAPI(data: any): Promise<ResType> {
+  return axiosRequest.post(`/api/iteration/create`, data)
 }

@@ -4,14 +4,21 @@
       <IconSelect :default="currentProject?.icon" only-show></IconSelect>
       <span class="name">{{ currentProject?.name }}</span>
       <n-icon color="#888" :component="Calendar" />
-      <span class="time">{{ formatDate(currentProject?.startDate, 'YYYY年MM月DD日') }} -
-        {{ formatDate(currentProject?.endDate, 'YYYY年MM月DD日') }}</span>
+      <span class="time"
+        >{{ formatDate(currentProject?.startDate, 'YYYY年MM月DD日') }} -
+        {{ formatDate(currentProject?.endDate, 'YYYY年MM月DD日') }}</span
+      >
       <n-space justify="end" style="flex: 1">
         <n-tooltip trigger="hover">
           {{ currentProject?.star ? '该项目已收藏' : '点击收藏该项目' }}
           <template #trigger>
-            <n-button tertiary circle size="small" :type="currentProject?.star ? 'warning' : 'default'"
-              @click="toggleStar(currentProject as ProjectType)">
+            <n-button
+              tertiary
+              circle
+              size="small"
+              :type="currentProject?.star ? 'warning' : 'default'"
+              @click="toggleStar(currentProject as ProjectType)"
+            >
               <template #icon>
                 <n-icon :component="Star" />
               </template>
@@ -36,7 +43,7 @@
           <template #avatar="{ option: { name, src } }">
             <n-tooltip>
               <template #trigger>
-                <n-avatar :src="src" />
+                <n-avatar :src="src" :fallback-src="defaultAvatar" />
               </template>
               {{ name }}
             </n-tooltip>
@@ -69,14 +76,15 @@
             <div class="member-info">共 {{ members?.length || 0 }} 位成员</div>
             <ul class="member-content">
               <li v-for="item in allMembers" :key="item.id">
-                <n-avatar round :size="30" :src="item.avatar" />
+                <n-avatar round :size="30" :src="item.avatar" :fallback-src="defaultAvatar" />
                 <div>
                   <h5>{{ item.nickname }}</h5>
                   <span>{{ item.username }}</span>
                 </div>
                 <n-button v-if="isInProject(item)" secondary strong size="tiny"> 项目成员 </n-button>
-                <n-button v-else secondary strong type="warning" size="tiny"
-                  @click="handleAddMember(item)">添加</n-button>
+                <n-button v-else secondary strong type="warning" size="tiny" @click="handleAddMember(item)"
+                  >添加</n-button
+                >
               </li>
             </ul>
           </div>
@@ -110,8 +118,8 @@ import CreateProjectModal from '@/modals/CreateProjectModal.vue'
 import Board from './Board.vue'
 import List from './List.vue'
 import TaskCalendar from './Calendar.vue'
-import Document from './Document.vue'
 import Iteration from './Iteration.vue'
+import { defaultAvatar } from '@/config'
 import { deleteUser, userList, updateUserRole, addProjectMembers } from '@/api'
 import {
   Calendar,
@@ -120,12 +128,9 @@ import {
   Add,
   TrashBin,
   DocumentText,
-  ArrowForwardCircleSharp,
-  Notifications,
   Albums,
   BagHandle,
   Duplicate,
-  ShareSocialSharp,
   Close
 } from '@vicons/ionicons5'
 import { ProjectType } from '@/interface'
@@ -155,19 +160,14 @@ const tabs = ref<Array<{ label: string; value: string; component: any }>>([
     component: markRaw(List)
   },
   {
-    label: '项目日历',
-    value: 'calendar',
-    component: markRaw(TaskCalendar)
-  },
-  {
-    label: '文档',
-    value: 'document',
-    component: markRaw(Document)
-  },
-  {
     label: '迭代',
     value: 'iteration',
     component: markRaw(Iteration)
+  },
+  {
+    label: '项目日历',
+    value: 'calendar',
+    component: markRaw(TaskCalendar)
   }
 ])
 function handleTabChange(value: string) {
@@ -390,7 +390,6 @@ function queryProjectDetail(projectId: string, keyword = '') {
 }
 
 .member-wrap {
-
   // padding: 16px 10px;
   .member-header {
     height: 36px;
@@ -436,7 +435,7 @@ function queryProjectDetail(projectId: string, keyword = '') {
         // background-color: #ededed;
       }
 
-      &>div {
+      & > div {
         flex: 1;
         margin-left: 10px;
         display: flex;
