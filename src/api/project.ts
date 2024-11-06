@@ -76,3 +76,12 @@ export function getIterationListAPI(params: ParamsType): Promise<ResType> {
 export function createIterationAPI(data: any): Promise<ResType> {
   return axiosRequest.post(`/api/iteration/create`, data)
 }
+export function updateIterationAPI(data: any): Promise<ResType> {
+  return axiosRequest.post(`/api/iteration/update`, data)
+}
+export function completeIterationAPI(data: any): Promise<ResType> {
+  return axiosRequest.post(`/api/iteration/complete`, data)
+}
+export function deleteIterationAPI(id: string): Promise<ResType> {
+  return axiosRequest.get(`/api/iteration/delete/${id}`)
+}

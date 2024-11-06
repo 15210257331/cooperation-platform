@@ -32,7 +32,7 @@
       </template>
     </n-input>
     <n-space justify="end" style="flex: 1">
-      <n-button type="warning" size="small" @click="handleCreateIteration">添加迭代</n-button>
+      <n-button type="warning" size="tiny" @click="handleCreateIteration">添加迭代</n-button>
     </n-space>
   </div>
 </template>
@@ -45,6 +45,7 @@ import { useAppStore, useProjectStore } from '@/store'
 interface Emits {
   (e: 'onSearch', val: string): void
   (e: 'onStatusChange', val: number): void
+  (e: 'onCreateIteration'): void
 }
 const emit = defineEmits<Emits>()
 
@@ -71,7 +72,9 @@ function handleStatusChange(value: string) {
   emit('onStatusChange', status)
 }
 
-function handleCreateIteration() {}
+function handleCreateIteration() {
+  emit('onCreateIteration')
+}
 </script>
 
 <style lang="scss" scoped>

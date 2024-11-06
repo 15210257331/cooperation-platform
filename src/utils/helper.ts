@@ -42,3 +42,8 @@ export function formatDate(value: Date | string | any, format = 'YYYY年MM月DD�
 export function getRandomNumber(max: number, min = 0) {
   return Math.ceil(Math.random() * max + min)
 }
+
+export function getLabelFromValue(options: any[], value: string | number): any {
+  const res = options.find(item => item.value === value)
+  return res ? res.label : '--'
+}

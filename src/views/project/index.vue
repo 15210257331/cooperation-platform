@@ -4,21 +4,14 @@
       <IconSelect :default="currentProject?.icon" only-show></IconSelect>
       <span class="name">{{ currentProject?.name }}</span>
       <n-icon color="#888" :component="Calendar" />
-      <span class="time"
-        >{{ formatDate(currentProject?.startDate, 'YYYY年MM月DD日') }} -
-        {{ formatDate(currentProject?.endDate, 'YYYY年MM月DD日') }}</span
-      >
+      <span class="time">{{ formatDate(currentProject?.startDate, 'YYYY年MM月DD日') }} -
+        {{ formatDate(currentProject?.endDate, 'YYYY年MM月DD日') }}</span>
       <n-space justify="end" style="flex: 1">
         <n-tooltip trigger="hover">
           {{ currentProject?.star ? '该项目已收藏' : '点击收藏该项目' }}
           <template #trigger>
-            <n-button
-              tertiary
-              circle
-              size="small"
-              :type="currentProject?.star ? 'warning' : 'default'"
-              @click="toggleStar(currentProject as ProjectType)"
-            >
+            <n-button tertiary circle size="small" :type="currentProject?.star ? 'warning' : 'default'"
+              @click="toggleStar(currentProject as ProjectType)">
               <template #icon>
                 <n-icon :component="Star" />
               </template>
@@ -35,7 +28,7 @@
       </n-space>
     </div>
     <div class="project-view">
-      <n-tabs type="line" @update:value="handleTabChange">
+      <n-tabs type="line" :value="selectValue" @update:value="handleTabChange">
         <n-tab v-for="item in tabs" :key="item.value" :name="item.value">{{ item.label }} </n-tab>
       </n-tabs>
       <div class="project-member">
@@ -82,9 +75,8 @@
                   <span>{{ item.username }}</span>
                 </div>
                 <n-button v-if="isInProject(item)" secondary strong size="tiny"> 项目成员 </n-button>
-                <n-button v-else secondary strong type="warning" size="tiny" @click="handleAddMember(item)"
-                  >添加</n-button
-                >
+                <n-button v-else secondary strong type="warning" size="tiny"
+                  @click="handleAddMember(item)">添加</n-button>
               </li>
             </ul>
           </div>
@@ -148,6 +140,7 @@ const message = useMessage()
 const currentProject = computed(() => projectStore.currentProject)
 
 const currentView = ref(markRaw(Board))
+const selectValue = ref('board')
 const tabs = ref<Array<{ label: string; value: string; component: any }>>([
   {
     label: '看板',
@@ -171,6 +164,7 @@ const tabs = ref<Array<{ label: string; value: string; component: any }>>([
   }
 ])
 function handleTabChange(value: string) {
+  selectValue.value = value
   currentView.value = tabs.value.find(item => item.value === value)?.component
 }
 
@@ -339,6 +333,8 @@ function queryProjectDetail(projectId: string, keyword = '') {
   loading.value = true
   projectStore.queryProjectDetail(projectId, keyword).finally(() => {
     loading.value = false
+
+    handleTabChange('board')
   })
 }
 </script>
@@ -390,6 +386,7 @@ function queryProjectDetail(projectId: string, keyword = '') {
 }
 
 .member-wrap {
+
   // padding: 16px 10px;
   .member-header {
     height: 36px;
@@ -435,7 +432,7 @@ function queryProjectDetail(projectId: string, keyword = '') {
         // background-color: #ededed;
       }
 
-      & > div {
+      &>div {
         flex: 1;
         margin-left: 10px;
         display: flex;

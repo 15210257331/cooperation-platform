@@ -9,7 +9,12 @@
             <p>{{ group.name }}</p>
             <n-button tertiary size="tiny" type="tertiary">{{ group.tasks.length }}</n-button>
           </div>
-          <n-icon size="20" :component="Add" style="margin-right: 8px" @click="createTask(group)"></n-icon>
+          <!-- <n-icon size="20" :component="Add" style="margin-right: 8px" @click="createTask(group)"></n-icon> -->
+          <n-button tertiary size="tiny" type="tertiary" style="margin-right: 8px" @click="createTask(group)">
+            <template #icon>
+              <n-icon><Add /></n-icon>
+            </template>
+          </n-button>
           <n-dropdown trigger="hover" :options="options" @select="handleSelect($event, group)">
             <n-icon size="20" :component="EllipsisHorizontal"></n-icon>
           </n-dropdown>

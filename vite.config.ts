@@ -54,7 +54,11 @@ export default defineConfig(({ command, mode }) => {
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `@import "@/style/main.scss","@/style/variable.scss";`
+          silenceDeprecations: ["legacy-js-api"], // 解决警告 Deprecation Warning: The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+          additionalData: `
+            @use "@/style/main.scss" as *;
+            @use "@/style/variable.scss" as *;
+          `
         }
       }
     },
