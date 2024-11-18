@@ -4,7 +4,7 @@
       <n-form
         ref="formRef"
         :label-placement="'left'"
-        :show-require-mark="false"
+        :show-require-mark="true"
         :label-width="'auto'"
         :model="formValue"
         :rules="formRules"
@@ -35,6 +35,7 @@
                 v-for="(item, index) in projectStore.currentProject?.tags"
                 :key="index"
                 size="small"
+                type="warning"
                 :bordered="false"
                 :disabled="item.disabled"
                 @click="handleSelectTag(item)"
@@ -44,11 +45,14 @@
             </n-space>
           </div>
         </n-form-item>
-        <n-form-item label="分配给:" path="member">
-          <n-select :options="members" :render-label="renderLabel" :render-tag="renderSingleSelectTag" />
+        <n-form-item label="迭代:" path="iterationId">
+          <n-select v-model:value="formValue.iterationId" :options="iterationList" placeholder="请选择迭代" />
         </n-form-item>
-        <n-form-item label="截止时间:" path="endDate">
-          <n-date-picker v-model:value="formValue.endDate" type="datetime" clearable />
+        <n-form-item label="开始时间:" path="startDate">
+          <n-date-picker v-model:value="formValue.startDate" type="date" clearable />
+        </n-form-item>
+        <n-form-item label="结束时间:" path="endDate">
+          <n-date-picker v-model:value="formValue.endDate" type="date" clearable />
         </n-form-item>
         <n-form-item label="任务描述:" label-placement="top" path="description">
           <n-input
@@ -86,10 +90,11 @@
             </n-card>
           </div>
         </n-form-item>
-        <n-space justify="end">
-          <n-button type="primary" size="small" @click="handleSubmit">发布任务</n-button>
-        </n-space>
       </n-form>
+
+      <template #footer>
+        <n-button type="primary" size="small" @click="handleSubmit">创建任务</n-button>
+      </template>
     </n-drawer-content>
   </n-drawer>
 </template>
@@ -103,6 +108,7 @@ import { Close, FlagSharp } from '@vicons/ionicons5'
 import { priorityOptions } from '@/config'
 import dayjs from 'dayjs'
 import { NAvatar, NText, NTag, SelectRenderTag, SelectRenderLabel } from 'naive-ui'
+import { getIterationListAPI, completeIterationAPI, deleteIterationAPI } from '@/api'
 
 interface Props {
   /** 弹窗显隐 */
@@ -123,8 +129,9 @@ const formRef = ref<FormInst | null>(null)
 const formValue = ref<TaskType>({
   name: '',
   description: '',
-  startDate: new Date().getTime(),
-  endDate: new Date().getTime(),
+  iterationId: null,
+  startDate: Date.now(),
+  endDate: Date.now() + 1000 * 60 * 60 * 24 * 5,
   priority: 1,
   tags: [],
   progress: 0
@@ -139,7 +146,7 @@ const formRules = {
     required: true,
     message: '请输入任务描述',
     trigger: 'blur'
-  },
+  }
   // priority: {
   //   required: true,
   //   message: '请选择任务优先级',
@@ -227,8 +234,30 @@ const renderLabel: SelectRenderLabel = option => {
   )
 }
 
+const iterationList = ref<Array<any>>([])
+
+function getIterationList() {
+  const params = {
+    projectId: projectStore.currentProject?.id as string,
+    name: ''
+  }
+  getIterationListAPI(params).then(res => {
+    if (res.code === 10000) {
+      const list = res.data.list || []
+      iterationList.value = list.map(item => {
+        return {
+          label: item.name,
+          value: item.id,
+          disabled: item.status === 3 ? true : false
+        }
+      })
+    }
+  })
+}
+
 const showModal = computed({
   get() {
+    getIterationList()
     return props.value
   },
   set(val: boolean) {
@@ -263,6 +292,7 @@ async function createTask() {
   }
   await projectStore.createTask(data)
   showModal.value = false
+  resetForm()
   formRef.value?.restoreValidation()
   message.success('操作成功')
 }
@@ -271,8 +301,9 @@ function resetForm() {
   formValue.value = {
     name: '',
     description: '',
-    startDate: new Date().getTime(),
-    endDate: new Date().getTime(),
+    iterationId: null,
+    startDate: Date.now(),
+    endDate: Date.now() + 1000 * 60 * 60 * 24 * 5,
     priority: 1,
     progress: 0,
     tags: []

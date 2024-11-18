@@ -4,14 +4,21 @@
       <IconSelect :default="currentProject?.icon" only-show></IconSelect>
       <span class="name">{{ currentProject?.name }}</span>
       <n-icon color="#888" :component="Calendar" />
-      <span class="time">{{ formatDate(currentProject?.startDate, 'YYYY年MM月DD日') }} -
-        {{ formatDate(currentProject?.endDate, 'YYYY年MM月DD日') }}</span>
+      <span class="time"
+        >{{ formatDate(currentProject?.startDate, 'YYYY年MM月DD日') }} -
+        {{ formatDate(currentProject?.endDate, 'YYYY年MM月DD日') }}</span
+      >
       <n-space justify="end" style="flex: 1">
         <n-tooltip trigger="hover">
           {{ currentProject?.star ? '该项目已收藏' : '点击收藏该项目' }}
           <template #trigger>
-            <n-button tertiary circle size="small" :type="currentProject?.star ? 'warning' : 'default'"
-              @click="toggleStar(currentProject as ProjectType)">
+            <n-button
+              tertiary
+              circle
+              size="small"
+              :type="currentProject?.star ? 'warning' : 'default'"
+              @click="toggleStar(currentProject as ProjectType)"
+            >
               <template #icon>
                 <n-icon :component="Star" />
               </template>
@@ -48,7 +55,14 @@
           </template>
         </n-avatar-group>
         <n-divider vertical />
-        <n-popover style="width: 260px; padding: 0; border-radius: 5px" trigger="click">
+        <n-dropdown :options="projectActions1" trigger="click" @select="handleProjectAction1">
+          <n-button tertiary circle size="small" type="info">
+            <template #icon>
+              <n-icon :component="Add" />
+            </template>
+          </n-button>
+        </n-dropdown>
+        <!-- <n-popover style="width: 260px; padding: 0; border-radius: 5px" trigger="click">
           <template #trigger>
             <n-button tertiary circle type="info" size="small" @click="queryMembers">
               <template #icon>
@@ -80,7 +94,7 @@
               </li>
             </ul>
           </div>
-        </n-popover>
+        </n-popover> -->
       </div>
     </div>
 
@@ -123,7 +137,10 @@ import {
   Albums,
   BagHandle,
   Duplicate,
-  Close
+  Close,
+  Reader,
+  BagAdd,
+  PersonAdd
 } from '@vicons/ionicons5'
 import { ProjectType } from '@/interface'
 import { useDialog, useMessage } from 'naive-ui'
@@ -178,14 +195,9 @@ function toggleStar($event: ProjectType) {
 
 const projectActions = [
   {
-    label: '修改信息',
+    label: '修改项目信息',
     key: '1',
     icon: renderIcon(Albums)
-  },
-  {
-    label: '添加分组',
-    key: '2',
-    icon: renderIcon(Duplicate)
   },
   {
     type: 'divider',
@@ -227,6 +239,44 @@ function handleProjectAction($event: any) {
       break
     case '7':
       removeProject(currentProject.value as ProjectType)
+      break
+    default:
+      break
+  }
+}
+
+const projectActions1 = [
+  {
+    label: '添加分组',
+    key: '1',
+    icon: renderIcon(BagAdd)
+  },
+  {
+    label: '添加项目成员',
+    key: '2',
+    icon: renderIcon(PersonAdd)
+  },
+  {
+    type: 'divider',
+    key: '3'
+  },
+  {
+    label: '添加项目组件',
+    key: '4',
+    icon: renderIcon(Reader)
+  }
+]
+function handleProjectAction1($event: any) {
+  console.log($event)
+  switch ($event) {
+    case '1':
+      createGroup()
+      break
+    case '2':
+      console.log('添加项目成员')
+      break
+    case '4':
+      console.log('添加组件')
       break
     default:
       break
@@ -333,7 +383,6 @@ function queryProjectDetail(projectId: string, keyword = '') {
   loading.value = true
   projectStore.queryProjectDetail(projectId, keyword).finally(() => {
     loading.value = false
-
     handleTabChange('board')
   })
 }
@@ -386,7 +435,6 @@ function queryProjectDetail(projectId: string, keyword = '') {
 }
 
 .member-wrap {
-
   // padding: 16px 10px;
   .member-header {
     height: 36px;
@@ -432,7 +480,7 @@ function queryProjectDetail(projectId: string, keyword = '') {
         // background-color: #ededed;
       }
 
-      &>div {
+      & > div {
         flex: 1;
         margin-left: 10px;
         display: flex;

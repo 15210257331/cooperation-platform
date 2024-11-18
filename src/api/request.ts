@@ -55,6 +55,7 @@ export default class AxiosRequest {
         console.log('axiosError信息', axiosError)
         if (axiosError.code === 'ERR_NETWORK') {
           window.$message?.error('网络错误，请稍后再试')
+          window.location.href = '/login'
         } else if (axiosError.response && axiosError.response.data) {
           const { status, data } = axiosError.response
           const message = axiosError.message

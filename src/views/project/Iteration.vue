@@ -39,11 +39,11 @@
             <span>{{ item.principal.nickname }}</span>
           </n-space>
         </n-descriptions-item>
-        <n-descriptions-item label="创建时间">
-          <n-tag :bordered="false" size="small" round> {{ formatDate(item.createDate) }} </n-tag>
-        </n-descriptions-item>
         <n-descriptions-item label="迭代类型">
           <n-button text type="primary"> {{ getLabelFromValue(iterationTypeOptions, item.type) }} </n-button>
+        </n-descriptions-item>
+        <n-descriptions-item label="任务数量">
+          <n-button text size="tiny" type="primary" style="margin-top: -1px" @click="hanldeClick">{{ item.tasks.length || 0 }}</n-button>
         </n-descriptions-item>
         <n-descriptions-item label="迭代进度" :span="4">
           <n-progress
@@ -110,6 +110,13 @@ const projectStore = useProjectStore()
 const { renderIcon } = useRender()
 const message = useMessage()
 const dialog = useDialog()
+
+interface Emits {
+  (e: 'onSearch', val: string): void
+  (e: 'onStatusChange', val: number): void
+  (e: 'onCreateIteration'): void
+}
+const emit = defineEmits<Emits>() 
 
 const iterationList = ref<any>([])
 const loading = ref<boolean>(false)
@@ -216,6 +223,11 @@ function handleDropDownClick($event: string, item: any) {
       }
     })
   }
+}
+
+
+function hanldeClick() {
+//  跳转到任务面板
 }
 </script>
 

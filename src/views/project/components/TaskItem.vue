@@ -47,11 +47,18 @@
     <div class="tag">
       <n-tooltip trigger="hover">
         <template #trigger>
-          <n-avatar round size="small" :src="owner.avatar" :fallback-src="defaultAvatar"/>
+          <n-avatar round size="small" :src="owner.avatar" :fallback-src="defaultAvatar" />
         </template>
         <span>{{ owner.nickname }}</span>
       </n-tooltip>
       <n-space>
+        <TaskTag
+          v-if="task.iteration?.name"
+          type="warning"
+          name="迭代"
+          :icon="LayersOutline"
+          :tooltip-content="'所属迭代：' + task.iteration?.name"
+        />
         <TaskTag
           v-if="remind && !complete"
           type="success"
@@ -85,7 +92,7 @@
 import { ref, computed } from 'vue'
 import { useProjectStore } from '@/store'
 import { TaskType } from '@/interface'
-import { Copy, TrashBin, Alarm, ShareSocialSharp, TimeSharp, Calendar, FlagSharp } from '@vicons/ionicons5'
+import { Copy, TrashBin, Alarm, ShareSocialSharp, TimeSharp, Calendar, FlagSharp,LayersOutline } from '@vicons/ionicons5'
 import { useRender } from '@/hooks'
 import TaskDetailModal from '@/modals/TaskDetailModal.vue'
 import TaskTag from '@/components/TaskTag.vue'
