@@ -29,13 +29,13 @@
     <n-space justify="end" style="flex: 1">
       <n-tag size="small" closable @close="handleClose"> 30天内 </n-tag>
       <n-tag size="small" type="warning" :bordered="false">
-        筛选
+        筛选:迭代
         <template #icon>
           <n-icon :component="FilterCircleSharp" />
         </template>
       </n-tag>
       <n-popselect v-model:value="sortType" :options="sortTypeList" size="small" trigger="click">
-        <n-button icon-placement="right" size="tiny" type="warning" secondary>
+        <n-button icon-placement="right" size="tiny" type="primary" secondary>
           {{ sortType }}
           <template #icon>
             <n-icon :component="ChevronDownOutline" />
@@ -64,7 +64,7 @@ const taskType = ref<string>('全部任务')
 const taskTypeList = computed(() => {
   const groups = (projectStore.currentProject?.groups || []).map(item => {
     return {
-      label: item.name,
+      label: `${item.name}`,
       value: item.name,
       id: item.id
     }

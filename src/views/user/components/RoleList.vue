@@ -2,8 +2,8 @@
   <n-card size="small">
     <div style="display: flex">
       <n-space style="margin-bottom: 20px">
-        <n-input v-model:value="queryParams.name" type="text" placeholder="请输入角色名称" @keyup.enter="queryData" />
-        <n-button type="success" @click="queryData">
+        <n-input v-model:value="queryParams.name" size="small" type="text" placeholder="请输入角色名称" @keyup.enter="queryData" />
+        <n-button type="success" size="small" @click="queryData">
           <template #icon>
             <n-icon>
               <SearchSharp />
@@ -11,7 +11,7 @@
           </template>
           搜索
         </n-button>
-        <n-button @click="reset">
+        <n-button size="small" @click="reset">
           <template #icon>
             <n-icon>
               <RefreshSharp />
@@ -21,7 +21,7 @@
         >
       </n-space>
       <div v-permission="2048" style="flex: 1">
-        <n-button type="warning" style="float: right" @click="handleRoleOrUpdateAdd(null)">
+        <n-button type="warning" size="small" style="float: right" @click="handleRoleOrUpdateAdd(null)">
           <template #icon>
             <n-icon>
               <Add />

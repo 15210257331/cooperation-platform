@@ -1,9 +1,16 @@
 <template>
   <n-modal v-model:show="showModal">
-    <n-card :segmented="{
-      content: true,
-      footer: true
-    }" style="width: 620px" :title="title" :bordered="false" role="dialog" aria-modal="true">
+    <n-card
+      :segmented="{
+        content: true,
+        footer: true
+      }"
+      style="width: 620px"
+      :title="title"
+      :bordered="false"
+      role="dialog"
+      aria-modal="true"
+    >
       <template #header-extra>
         <n-button quaternary circle>
           <template #icon>
@@ -25,16 +32,26 @@
           <n-date-picker v-model:value="formValue.endDate" type="datetime" clearable />
         </n-form-item>
         <n-form-item label="附件:" path="attachment">
-          <n-upload :headers="{
-            Authorization: `Bearer ${token}`
-          }" :action="action" :custom-request="customRequest">
+          <n-upload
+            :headers="{
+              Authorization: `Bearer ${token}`
+            }"
+            :action="action"
+            :custom-request="customRequest"
+            :default-file-list="defaultFileList"
+          >
             <n-button>上传文件</n-button>
           </n-upload>
         </n-form-item>
         <n-form-item label="迭代内容:" path="content">
-          <n-input v-model:value="formValue.content" type="textarea" placeholder="请输入迭代描述" :autosize="{
-            minRows: 4
-          }" />
+          <n-input
+            v-model:value="formValue.content"
+            type="textarea"
+            placeholder="请输入迭代详细内容"
+            :autosize="{
+              minRows: 4
+            }"
+          />
         </n-form-item>
       </n-form>
       <template #footer>
@@ -49,7 +66,7 @@
 
 <script setup lang="ts">
 import { FormInst, UploadCustomRequestOptions, useMessage } from 'naive-ui'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { createIterationAPI, updateIterationAPI, uploadFile } from '@/api'
 import { Close } from '@vicons/ionicons5'
 import { useProjectStore } from '@/store'
@@ -173,6 +190,15 @@ function handleSubmit(e: MouseEvent) {
 
 const token = localStorage.getItem('token')
 const action = import.meta.env.VITE_APP_BASE_API + '/api/file/upload'
+const defaultFileList = computed(() => {
+  return formValue.value.attachment.map((item, index) => {
+    return {
+      id: 'xxxx' + index,
+      name: item,
+      status: 'finished'
+    }
+  })
+})
 function handleFinish(val) {
   console.log(val.event)
 }

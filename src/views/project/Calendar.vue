@@ -1,7 +1,7 @@
 <template>
   <div class="task-calendar" :style="{ backgroundColor: appStore.darkTheme ? 'rgba(255, 255, 255, 0.12)' : '#f9f9f9' }">
     <n-calendar v-model:value="value"
-      :style="{ backgroundColor: appStore.darkTheme ? 'rgba(255, 255, 255, 0.12)' : 'white', padding: '12px', height: 'auto' }"
+      :style="{ backgroundColor: appStore.darkTheme ? 'rgb(24, 24, 28)' : 'white', padding: '12px', height: 'auto' }"
       #="{ year, month, date }" :is-date-disabled="isDateDisabled" @update:value="handleUpdateValue">
       <div class="calendar-cell">
         <div v-for="item in filterTasksByDate(year, month, date)" :key="item.id" :class="['task-item']">

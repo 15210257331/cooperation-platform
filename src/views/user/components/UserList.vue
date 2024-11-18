@@ -1,8 +1,8 @@
 <template>
   <n-card size="small">
     <n-space style="margin-bottom: 20px">
-      <n-input v-model:value="queryParams.nickname" type="text" placeholder="请输入用户昵称" @keyup.enter="queryData" />
-      <n-button type="success" @click="queryData">
+      <n-input v-model:value="queryParams.nickname" size="small" type="text" placeholder="请输入用户昵称" @keyup.enter="queryData" />
+      <n-button size="small" type="success" @click="queryData">
         <template #icon>
           <n-icon>
             <SearchSharp />
@@ -10,7 +10,7 @@
         </template>
         搜索
       </n-button>
-      <n-button @click="reset">
+      <n-button size="small" @click="reset">
         <template #icon>
           <n-icon>
             <RefreshSharp />

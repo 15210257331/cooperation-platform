@@ -23,7 +23,7 @@
       v-model:value="keywords"
       round
       size="small"
-      placeholder="迭代名称搜索"
+      placeholder="搜索迭代名称(按enter搜索)"
       style="width: 240px"
       @change="handleSearch"
     >
