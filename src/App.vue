@@ -23,8 +23,6 @@ import { defineComponent, h, onMounted } from 'vue'
 
 const appStore = useAppStore()
 
-console.log('add test code')
-
 onMounted(() => {
   const theme = localStorage.getItem('theme') || 'default'
   appStore.setTheme(theme)
